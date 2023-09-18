@@ -1,4 +1,7 @@
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Enemy.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\x64\Debug\Enemy.obj
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Game.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\x64\Debug\Game.obj
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\main.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\x64\Debug\main.obj
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\x64\Debug\Player.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\EnemyWander.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\EnemyFlee.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Game.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\Game.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\GenericEnemy.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\GenericEnemy.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\main.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\main.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\Player.obj
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemySeeker.cpp;C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\x64\Debug\EnemySeeker.obj

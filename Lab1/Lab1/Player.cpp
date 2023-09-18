@@ -8,20 +8,17 @@ Player::Player()
 
 void Player::Init()
 {
-	std::srand(time(nullptr));
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
 	if (!playerTexture.loadFromFile("Images\\Player.png"))
 	{
 		std::cout << "problem loading Player" << std::endl;
 	}
-
-	randomDirection = { static_cast<float>(std::rand() % 3 - 1),
-					static_cast<float>(std::rand() % 3 - 1) };
-
+	
 	playerSprite.setTexture(playerTexture);
 	playerSprite.setPosition(200, 200);
 	playerSprite.setOrigin(playerSprite.getTextureRect().width / 2, playerSprite.getTextureRect().height / 2);
-	playerSprite.setScale(1,1);
+	playerSprite.setScale(0.7,0.7);
 }
 
 void Player::Render(sf::RenderWindow& window)
@@ -31,49 +28,63 @@ void Player::Render(sf::RenderWindow& window)
 
 void Player::Update(sf::RenderWindow& window)
 {
-    ChangeVelocity(); 
+    ChangeVelocity();
     Move();
+    // Calculate the rotation angle in radians
+    float angle = std::atan2(velocity.y, velocity.x);
+    // Convert radians to degrees for the rotation
+    float degrees = angle * (180.0f / 3.14159265359f);
+    playerSprite.setRotation(degrees + 90); // Set the rotation angle
     playerSprite.setPosition(currentPosition);
-	WrapAround(window);
+    WrapAround(window);
+}
+
+sf::Vector2f Player::GetPlayerPos()
+{
+	return playerSprite.getPosition();
 }
 
 void Player::ChangeVelocity()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        velocity += acceleration;
-        if (velocity > 5)
-        {
-            velocity = 5;
-        }
+        if (velocity.y <= -MAX_SPEED) return;
+        velocity.y -= acceleration;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        velocity -= acceleration;
+        if (velocity.y >= MAX_SPEED) return;
+       velocity.y += acceleration;
+        
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    {
+        if (velocity.x <= -MAX_SPEED) return;
+        velocity.x -= acceleration;
+    }
 
-        if (velocity < -5)
-        {
-            velocity = -5;
-        }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
+        if (velocity.x >= MAX_SPEED) return;
+        velocity.x += acceleration;
+
     }
 }
 
 void Player::Move()
 {
-    float angle = playerSprite.getRotation() * (3.14159265359f / 180.0f); // Convert rotation angle to radians
-    float moveX = velocity * std::sin(angle);
-    float moveY = -velocity * std::cos(angle);
+    // Convert rotation angle to radians
+    //float angle = playerSprite.getRotation() * (3.14159265359f / 180.0f);
+    //float moveX = velocity.x *std::cos(angle); // Calculate x-axis movement
+    //float moveY = velocity.y *std::sin(angle); // Calculate y-axis movement
 
-    currentPosition.x += moveX;
-    currentPosition.y += moveY;
+    currentPosition.x += velocity.x;
+    currentPosition.y += velocity.y;
 
     playerSprite.setPosition(currentPosition);
-
-	playerSprite.setPosition(currentPosition);
-	sf::Vector2f movement = moveSpeed * randomDirection;
-	currentPosition += movement;
 }
+
 void Player::WrapAround(sf::RenderWindow& window)
 {
 	if (currentPosition.x > window.getSize().x)

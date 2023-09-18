@@ -6,34 +6,33 @@ class Player
 {
 public:
 
-	enum Direction
-	{
-		NORTH, 
-		SOUTH, 
-		EAST, 
-		WEST
-	};
-
 	Player();
 	void Init();
 	void Render(sf::RenderWindow& window);
 	void Update(sf::RenderWindow& window);
-	void Move();
-	void ChangeVelocity();
-	void WrapAround(sf::RenderWindow& window);
+
+	sf::Vector2f GetPlayerPos();
+
 
 	sf::Sprite playerSprite;
 	sf::Texture playerTexture;
 
+
 private:
 
+	void Move();
+	void ChangeVelocity();
+	void WrapAround(sf::RenderWindow& window);
+
 	float moveSpeed = 2;
-	float currentDirection = NORTH;
-	sf::Vector2f startPosition {200, 200};
+	const float MAX_SPEED = 5;
+	sf::Vector2f startPosition {100, 100};
 	sf::Vector2f currentPosition {startPosition};
-	float velocity = 0.0f; 
+	sf::Vector2f velocity = { 0, 0 };
 	float acceleration = 0.1f; 
-	sf::Vector2f randomDirection;
+
+
+
 
 };
 

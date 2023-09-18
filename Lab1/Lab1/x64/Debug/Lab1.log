@@ -1,9 +1,9 @@
-﻿  main.cpp
-  Player.cpp
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(11,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(23,103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(23,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(85,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+﻿  EnemyWander.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(59,85): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(59,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(60,23): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(60,18): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(78,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -12,7 +12,80 @@ C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(85,39): warning C
           [
               T=float
           ]
-C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(93,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyWander.cpp(86,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  EnemyFlee.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.h(37,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(46,85): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(46,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(47,23): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(47,18): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(58,42): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.cpp(66,42): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  Game.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.h(37,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+  GenericEnemy.cpp
+  main.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemyFlee.h(37,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Player.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(20,103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(20,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(21,28): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(21,24): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(96,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(104,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  EnemySeeker.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemySeeker.cpp(48,85): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemySeeker.cpp(48,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemySeeker.cpp(60,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\Lab1\EnemySeeker.cpp(68,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -22,4 +95,4 @@ C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Lab1\Player.cpp(93,39): warning C
               T=float
           ]
   Generating Code...
-  Lab1.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\x64\Debug\Lab1.exe
+  Lab1.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab1\x64\Debug\Lab1.exe

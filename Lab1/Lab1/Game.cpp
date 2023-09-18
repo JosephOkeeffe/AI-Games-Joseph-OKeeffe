@@ -2,8 +2,13 @@
 #include <iostream>
 
 Game::Game() :
-	m_window{ sf::VideoMode{ 1600U, 800U, 32U }, "SFML Game" },
-	m_exitGame{ false } //when true game will exit
+
+	//desktopMode{ sf::VideoMode::getDesktopMode() },
+	m_window{ sf::VideoMode{1200U, 800U, 32U}, "Lab 1"},
+	m_exitGame{ false },
+	enemy(player),
+	seeker(player),
+	fleer(player)
 {
 	Init();
 }
@@ -25,6 +30,7 @@ void Game::run()
 		while (timeSinceLastUpdate > timePerFrame)
 		{
 			timeSinceLastUpdate -= timePerFrame;
+			ProcessEvents();
 			Update(timePerFrame); //60 fps
 		}
 		Render(); // as many as possible
@@ -35,6 +41,24 @@ void Game::Init()
 {
 	player.Init();
 	enemy.Init();
+	seeker.Init();
+	fleer.Init();
+}
+
+void Game::ProcessEvents()
+{
+	sf::Event newEvent;
+	while (m_window.pollEvent(newEvent))
+	{
+		if (sf::Event::Closed == newEvent.type)
+		{
+			m_exitGame = true;
+		}
+		if (sf::Event::KeyPressed == newEvent.type)
+		{
+			ProcessKeys(newEvent);
+		}
+	}
 }
 
 void Game::ProcessKeys(sf::Event t_event)
@@ -49,8 +73,11 @@ void Game::Update(sf::Time t_deltaTime)
 {
 	if (m_exitGame){ m_window.close(); }
 
+
 	player.Update(m_window);
 	enemy.Update(m_window);
+	seeker.Update(m_window);
+	fleer.Update(m_window);
 }
 
 
@@ -59,6 +86,8 @@ void Game::Render()
 	m_window.clear(sf::Color::White);
 	player.Render(m_window);
 	enemy.Render(m_window);
+	seeker.Render(m_window);
+	fleer.Render(m_window);
 
 	m_window.display();
 }

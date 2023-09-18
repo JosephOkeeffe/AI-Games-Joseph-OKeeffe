@@ -1,2 +1,48 @@
-﻿  main.cpp
-  Lab1.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\Lab1\Debug\Lab1.exe
+﻿  Enemy.cpp
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Enemy.cpp(11,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Enemy.cpp(22,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Enemy.cpp(22,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Enemy.cpp(53,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Enemy.cpp(61,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  Game.cpp
+  main.cpp
+  Player.cpp
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(11,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(23,103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(23,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(85,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab1\Lab1\Player.cpp(93,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  Generating Code...
+LINK : fatal error LNK1104: cannot open file 'msvcprtd.lib'
