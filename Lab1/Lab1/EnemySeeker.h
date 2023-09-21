@@ -40,7 +40,7 @@ private:
 	float velocityLength = 0;
 	float maxRotation = 50;
 
-	float radius = 5;
+	float radius = 50;
 	float timeToTarget = 0.25;
 
 

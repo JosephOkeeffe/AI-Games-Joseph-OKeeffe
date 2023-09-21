@@ -23,7 +23,6 @@ Thumbs.db
 *.gch
 
 # IDE-specific files
-.vscode/
 .idea/
 *.suo
 *.user

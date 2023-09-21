@@ -22,7 +22,7 @@ void EnemySeeker::Render(sf::RenderWindow& window)
 void EnemySeeker::Update(sf::RenderWindow& window)
 {
 	WrapAround(window);
-	//KinematicSeek();
+	KinematicSeek();
 	KinematicArrive();
 
 	float angle = std::atan2(velocity.y, velocity.x);
@@ -94,15 +94,11 @@ void EnemySeeker::KinematicSeek()
 {
 	velocity = player.GetPlayerPos() - GetEnemyPos();
 	velocityLength = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-
-	// normalising the velocity
 	NormaliseVelocity();
 	velocity = velocity * maxSpeed;
-	// setting the orientation
 	orientation = GetNewOrientation(orientation, velocity);
 
 	currentPosition += velocity;
-
 }
 void EnemySeeker::KinematicArrive()
 {
@@ -119,10 +115,11 @@ void EnemySeeker::KinematicArrive()
 		{
 			NormaliseVelocity();
 			velocity = velocity * maxSpeed;
-		}
-		orientation = GetNewOrientation(orientation, velocity);
 
+		}
 	}
+	orientation = GetNewOrientation(orientation, velocity);
+
 
 }
 
