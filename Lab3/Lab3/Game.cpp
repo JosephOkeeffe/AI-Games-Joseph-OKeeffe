@@ -1,74 +1,63 @@
-/// <summary>
-/// @author Peter Lowe
-/// @date May 2019
-///
-/// you need to change the above lines or lose marks
-/// </summary>
-
 #include "Game.h"
 #include <iostream>
 
-
-
-/// <summary>
-/// default constructor
-/// setup the window properties
-/// load and setup the text 
-/// load and setup thne image
-/// </summary>
 Game::Game() :
-	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "SFML Game" },
-	m_exitGame{false} //when true game will exit
+
+	//desktopMode{ sf::VideoMode::getDesktopMode() },
+	m_window{ sf::VideoMode{1200U, 800U, 32U}, "Lab 1" },
+	m_exitGame{ false }
 {
-	setupFontAndText(); // load font 
-	setupSprite(); // load texture
+	Init();
 }
 
-/// <summary>
-/// default destructor we didn't dynamically allocate anything
-/// so we don't need to free it, but mthod needs to be here
-/// </summary>
+
 Game::~Game()
 {
 }
 
 void Game::run()
-{	
+{
 	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	const float fps{ 60.0f };
 	sf::Time timePerFrame = sf::seconds(1.0f / fps); // 60 fps
 	while (m_window.isOpen())
 	{
-		processEvents(); // as many as possible
 		timeSinceLastUpdate += clock.restart();
 		while (timeSinceLastUpdate > timePerFrame)
 		{
 			timeSinceLastUpdate -= timePerFrame;
-			processEvents(); // at least 60 fps
-			update(timePerFrame); //60 fps
+			ProcessEvents();
+			Update(timePerFrame); //60 fps
 		}
-		render(); // as many as possible
+		Render(); // as many as possible
 	}
 }
 
-void Game::processEvents()
+void Game::Init()
+{
+	m_player.Init();
+	m_enemy.Init();
+	m_enemy.SetBehaviour(new SeekBehaviour(m_enemy, m_player));
+}
+
+void Game::ProcessEvents()
 {
 	sf::Event newEvent;
 	while (m_window.pollEvent(newEvent))
 	{
-		if ( sf::Event::Closed == newEvent.type) // window message
+		if (sf::Event::Closed == newEvent.type)
 		{
 			m_exitGame = true;
 		}
-		if (sf::Event::KeyPressed == newEvent.type) //user pressed a key
+		if (sf::Event::KeyPressed == newEvent.type)
 		{
-			processKeys(newEvent);
+			ProcessKeys(newEvent);
 		}
 	}
 }
 
-void Game::processKeys(sf::Event t_event)
+void Game::ProcessKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
 	{
@@ -76,46 +65,26 @@ void Game::processKeys(sf::Event t_event)
 	}
 }
 
-void Game::update(sf::Time t_deltaTime)
+void Game::Update(sf::Time t_deltaTime)
 {
-	if (m_exitGame)
-	{
-		m_window.close();
-	}
+	if (m_exitGame) { m_window.close(); }
+
+
+	m_player.Update(m_window); 
+	m_enemy.Update();
+
 }
 
-void Game::render()
+
+void Game::Render()
 {
 	m_window.clear(sf::Color::White);
-	m_window.draw(m_welcomeMessage);
-	m_window.draw(m_logoSprite);
+	m_player.Render(m_window);
+	m_enemy.Render(m_window);
+
+
 	m_window.display();
 }
 
-void Game::setupFontAndText()
-{
-	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
-	{
-		std::cout << "problem loading arial black font" << std::endl;
-	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80U);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
 
-}
 
-void Game::setupSprite()
-{
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
-	{
-		// simple error message if previous call fails
-		std::cout << "problem loading logo" << std::endl;
-	}
-	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
-}

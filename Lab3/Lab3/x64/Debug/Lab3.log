@@ -1,4 +1,23 @@
-﻿  Game.cpp
-  main.cpp
-  Generating Code...
+﻿  Player.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Player.cpp(19,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Player.cpp(19,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Player.cpp(50,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Player.cpp(101,45): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Player.cpp(109,45): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
   Lab3.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe
