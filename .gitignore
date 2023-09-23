@@ -26,7 +26,6 @@ Thumbs.db
 .idea/
 *.suo
 *.user
-*.sln
 *.sdf
 
 # Dependency folders (adjust if needed)

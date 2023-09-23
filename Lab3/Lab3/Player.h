@@ -26,15 +26,30 @@ private:
 	sf::Vector2f Normalise(sf::Vector2f vector);
 	float VectorLength(sf::Vector2f vector);
 
-	float moveSpeed = 2;
-	const float MAX_SPEED = 5;
+	void CalculateVisionCone();
+
+	float moveSpeed = 0.5f;
+	const float MAX_SPEED = 3;
 	sf::Vector2f startPosition {100, 100};
-	sf::Vector2f currentPosition {startPosition};
 	sf::Vector2f velocity = { 0, 0 };
 	float acceleration = 0.1f;
 
 	float scale = 0.5f;
 	float rotation;
-	float rotationSpeed = 3.10f;
+	float rotationSpeed = 1.0f;
+
+	//sf::VertexArray visionConeColor(sf::Triangles, 3);
+	sf::VertexArray visionCone{ sf::Triangles, 3 };
+	sf::VertexArray line{ sf::Lines, 2 };
+	
+	sf::Vector2f coneVertex1;
+	sf::Vector2f coneVertex2;
+	sf::Vector2f coneVertex3;
+	sf::Color startColor = sf::Color(255, 255, 0, 220);
+	sf::Color endColor = sf::Color(255, 255, 204, 45);
+
+	float coneLength = 200;
+	float angleOffset = 200;
+
 };
 

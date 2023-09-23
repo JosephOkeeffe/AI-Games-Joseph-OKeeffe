@@ -19,3 +19,17 @@ float Behaviour::VectorLength(sf::Vector2f vector)
 	float vLength = std::sqrt(vector.x * vector.x + vector.y * vector.y);
 	return vLength;
 }
+
+sf::Vector2f Behaviour::GetDirectionFacing(sf::Vector2f targetPos, sf::Vector2f currentPos)
+{
+    return targetPos - currentPos;
+}
+
+sf::Vector2f Behaviour::AngleToVector(float angle)
+{
+    sf::Vector2f vector;
+    vector.x = cos(angle * (3.14159265 / 180));
+    vector.y = sin(angle * (3.14159265 / 180));
+    return vector;
+}
+

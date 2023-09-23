@@ -9,15 +9,16 @@ SeekBehaviour::SeekBehaviour(Enemy& enemy,Player& player) : m_enemy(enemy), m_pl
 SteeringOutput SeekBehaviour::GetSteering()
 {
     SteeringOutput steeringOutput;
-    steeringOutput.linear = m_player.GetPlayerPos() - m_enemy.GetPosition();
-    
-    Normalise(steeringOutput.linear);
 
+    // Linear
+    steeringOutput.linear = m_player.GetPlayerPos() - m_enemy.GetPosition();
+    Normalise(steeringOutput.linear);
     steeringOutput.linear *= maxAcceleration;
 
-    steeringOutput.angular = { 0,0 };
-
-    std::cout << "Linear" << steeringOutput.linear.x << "\n";
+    // Angular
+    sf::Vector2f direction = steeringOutput.linear;
+    float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
+    steeringOutput.angular = angle;
 
     return steeringOutput;
 }

@@ -25,17 +25,15 @@ void Player::Init()
 void Player::Render(sf::RenderWindow& window)
 {
     window.draw(playerSprite);
+    window.draw(visionCone);
+    window.draw(line);
 }
 
 void Player::Update(sf::RenderWindow& window)
 {
     ChangeVelocity();
     Move();
-    // Calculate the rotation angle in radians
-    float angle = std::atan2(velocity.y, velocity.x);
-    // Convert radians to degrees for the rotation
-    float degrees = angle * (180.0f / 3.14159265359f);
-    playerSprite.setPosition(currentPosition);
+    CalculateVisionCone();
     WrapAround(window);
 }
 
@@ -46,7 +44,6 @@ sf::Vector2f Player::GetPlayerPos()
 
 void Player::ChangeVelocity()
 {
-
     float directionRadians = (rotation * 3.18 / 180.0f);
 
     sf::Vector2f direction(std::cos(directionRadians), std::sin(directionRadians));
@@ -56,7 +53,6 @@ void Player::ChangeVelocity()
     {
         velocity += direction * acceleration;
 
-        // Limit the speed
         if (VectorLength(velocity) > MAX_SPEED)
         {
             velocity = Normalise(velocity) * MAX_SPEED;
@@ -66,6 +62,11 @@ void Player::ChangeVelocity()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         velocity -= (direction ) * acceleration;
+
+        if (VectorLength(velocity) > MAX_SPEED)
+        {
+            velocity = Normalise(velocity) * MAX_SPEED;
+        }
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -81,32 +82,28 @@ void Player::ChangeVelocity()
 
 void Player::Move()
 {
-    currentPosition.x += velocity.x;
-    currentPosition.y += velocity.y;
-
+    playerSprite.move(velocity);
     playerSprite.setRotation(rotation + 90);
-
-    playerSprite.setPosition(currentPosition);
 }
 
 
 void Player::WrapAround(sf::RenderWindow& window)
 {
-    if (currentPosition.x > window.getSize().x)
+    if (GetPlayerPos().x > window.getSize().x)
     {
-        currentPosition.x = 0;
+        playerSprite.setPosition(0, GetPlayerPos().y);
     }
-    else if (currentPosition.x < 0)
+    else if (GetPlayerPos().x < 0)
     {
-        currentPosition.x = window.getSize().x;
+        playerSprite.setPosition(window.getSize().x, GetPlayerPos().y);
     }
-    if (currentPosition.y > window.getSize().y)
+    if (GetPlayerPos().y > window.getSize().y)
     {
-        currentPosition.y = 0;
+        playerSprite.setPosition(GetPlayerPos().x, 0);
     }
-    else if (currentPosition.y < 0)
+    else if (GetPlayerPos().y < 0)
     {
-        currentPosition.y = window.getSize().y;
+        playerSprite.setPosition(GetPlayerPos().x, window.getSize().y);
     }
 }
 
@@ -128,6 +125,32 @@ float Player::VectorLength(sf::Vector2f vector)
 {
     float vLength = std::sqrt(vector.x * vector.x + vector.y * vector.y);
     return vLength;
+}
+
+void Player::CalculateVisionCone()
+{
+    coneVertex1 = GetPlayerPos();
+    coneVertex2 = GetPlayerPos() + sf::Vector2f(cos((playerSprite.getRotation() + 90 + angleOffset) * 3.14159265 / 180) * coneLength, sin((playerSprite.getRotation() + 90 + angleOffset) * 3.14159265 / 180) * coneLength);
+    coneVertex3 = GetPlayerPos() + sf::Vector2f(cos((playerSprite.getRotation() + 90 - angleOffset) * 3.14159265 / 180) * coneLength, sin((playerSprite.getRotation() + 90 - angleOffset) * 3.14159265 / 180) * coneLength);
+
+
+    visionCone[0].position = coneVertex1;
+    visionCone[0].color = startColor; 
+
+    visionCone[1].position = coneVertex2;
+    visionCone[1].color = endColor;
+
+    visionCone[2].position = coneVertex3;
+    visionCone[2].color = endColor;
+    //
+
+    sf::Vector2f lineEndpoint = GetPlayerPos() + sf::Vector2f(cos((playerSprite.getRotation() - 90  ) * 3.14159265 / 180) * coneLength, sin((playerSprite.getRotation() - 90 ) * 3.14159265 / 180) * coneLength);
+
+    line[0].position = GetPlayerPos();
+    line[1].position = lineEndpoint;
+
+    line[0].color = sf::Color::Black;
+    line[1].color = sf::Color::Black;
 }
 
 

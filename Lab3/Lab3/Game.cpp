@@ -4,11 +4,16 @@
 Game::Game() :
 
 	//desktopMode{ sf::VideoMode::getDesktopMode() },
-	m_window{ sf::VideoMode{1200U, 800U, 32U}, "Lab 1" },
-	m_exitGame{ false }
+	m_window{ sf::VideoMode{1200U, 800U, 32U}, "Lab 3" },
+	m_exitGame{ false },
+	m_wanderer(m_textures.m_wandererTexture, "Wanderer"),
+	m_seeker(m_textures.m_seekerTexture, "Seeker"),
+	m_arriveFast(m_textures.m_arriveFastTexture, "Arrive Fast"),
+	m_arriveSlow(m_textures.m_arriveSlowTexture, "Arrive Slow"),
+	m_pursue(m_textures.m_pursueTexture, "Pursue")
 {
 	Init();
-}
+} 
 
 
 Game::~Game()
@@ -36,9 +41,17 @@ void Game::run()
 
 void Game::Init()
 {
+	std::srand(time(nullptr));
 	m_player.Init();
-	m_enemy.Init();
-	m_enemy.SetBehaviour(new SeekBehaviour(m_enemy, m_player));
+	m_seeker.Init();
+	m_wanderer.Init();
+	m_arriveFast.Init();
+	m_seeker.SetBehaviour(new SeekBehaviour(m_seeker, m_player));
+	m_wanderer.SetBehaviour(new WandererBehaviour(m_wanderer, m_player));
+	m_arriveFast.SetBehaviour(new ArriveFast(m_arriveFast, m_player));
+	m_arriveSlow.SetBehaviour(new ArriveSlow(m_arriveSlow, m_player));
+	//m_pursue.SetBehaviour(new Pursue(m_pursue, m_player));
+	//m_enemies.push_back(m_seeker);
 }
 
 void Game::ProcessEvents()
@@ -71,7 +84,11 @@ void Game::Update(sf::Time t_deltaTime)
 
 
 	m_player.Update(m_window); 
-	m_enemy.Update();
+	m_seeker.Update(m_window);
+	m_wanderer.Update(m_window);
+	m_arriveFast.Update(m_window);
+	m_arriveSlow.Update(m_window);
+	//m_pursue.Update(m_window);
 
 }
 
@@ -80,8 +97,11 @@ void Game::Render()
 {
 	m_window.clear(sf::Color::White);
 	m_player.Render(m_window);
-	m_enemy.Render(m_window);
-
+	m_seeker.Render(m_window);
+	m_wanderer.Render(m_window);
+	m_arriveFast.Render(m_window);
+	m_arriveSlow.Render(m_window);
+	//m_pursue.Render(m_window);
 
 	m_window.display();
 }

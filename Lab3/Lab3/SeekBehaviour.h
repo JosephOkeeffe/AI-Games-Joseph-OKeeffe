@@ -13,7 +13,6 @@ public:
 
     SeekBehaviour(Enemy& enemy, Player& player);
 
-
     SteeringOutput GetSteering() override;
 
 private:
@@ -21,8 +20,7 @@ private:
     Enemy& m_enemy;
     Player& m_player;
 
-    float maxSpeed = 5.0f;
-    float maxAcceleration = 0.01f;
+    float maxAcceleration = 0.005f;
 
 };
 
