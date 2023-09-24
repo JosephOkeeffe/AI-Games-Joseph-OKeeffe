@@ -25,6 +25,7 @@ Thumbs.db
 # IDE-specific files
 .idea/
 *.suo
+*.sln
 *.user
 *.sdf
 
