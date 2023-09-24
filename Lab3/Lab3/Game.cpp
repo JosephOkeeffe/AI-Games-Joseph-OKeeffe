@@ -50,7 +50,8 @@ void Game::Init()
 	m_wanderer.SetBehaviour(new WandererBehaviour(m_wanderer, m_player));
 	m_arriveFast.SetBehaviour(new ArriveFast(m_arriveFast, m_player));
 	m_arriveSlow.SetBehaviour(new ArriveSlow(m_arriveSlow, m_player));
-	//m_pursue.SetBehaviour(new Pursue(m_pursue, m_player));
+	m_pursue.SetBehaviour(new SeekBehaviour(m_pursue, m_player));
+	//m_pursue.SetBehaviour(new PursueBehaviour(m_pursue, m_player));
 	//m_enemies.push_back(m_seeker);
 }
 
@@ -88,7 +89,7 @@ void Game::Update(sf::Time t_deltaTime)
 	m_wanderer.Update(m_window);
 	m_arriveFast.Update(m_window);
 	m_arriveSlow.Update(m_window);
-	//m_pursue.Update(m_window);
+	m_pursue.Update(m_window);
 
 }
 
@@ -101,7 +102,7 @@ void Game::Render()
 	m_wanderer.Render(m_window);
 	m_arriveFast.Render(m_window);
 	m_arriveSlow.Render(m_window);
-	//m_pursue.Render(m_window);
+	m_pursue.Render(m_window);
 
 	m_window.display();
 }

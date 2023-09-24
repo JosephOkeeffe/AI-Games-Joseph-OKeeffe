@@ -26,6 +26,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PursueBehaviour.cpp" />
     <ClCompile Include="SeekBehaviour.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="WandererBehaviour.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PursueBehaviour.h" />
     <ClInclude Include="SeekBehaviour.h" />
     <ClInclude Include="SteeringOutput.h" />
     <ClInclude Include="Textures.h" />
