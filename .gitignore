@@ -28,6 +28,7 @@ Thumbs.db
 *.sln
 *.user
 *.sdf
+*.vs
 
 # Dependency folders (adjust if needed)
 dependencies/
