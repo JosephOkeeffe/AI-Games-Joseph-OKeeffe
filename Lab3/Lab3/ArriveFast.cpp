@@ -21,7 +21,6 @@ SteeringOutput ArriveFast::GetSteering()
     }
     else
     {
-        // Calculate the target speed based on the distance
         float targetSpeed;
 
         if (distance < slowRadius)
@@ -33,20 +32,17 @@ SteeringOutput ArriveFast::GetSteering()
             targetSpeed = maxSpeed;
         }
 
-        // Calculate the target velocity
-        //sf::Vector2f targetVelocity = Normalise(direction) * targetSpeed;
+        sf::Vector2f targetVelocity = Normalise(direction) * targetSpeed;
 
-        //// Calculate the desired acceleration
-        ////sf::Vector2f acceleration = (targetVelocity - m_enemy.GetVelocity()) / timeToTarget;
+        sf::Vector2f acceleration = (targetVelocity - m_enemy.GetVelocity()) / timeToTarget;
 
-        //// Limit acceleration to maxAcceleration
-        //if (VectorLength(acceleration) > maxAcceleration)
-        //{
-        //    acceleration = Normalise(acceleration) * maxAcceleration;
-        //}
+        if (VectorLength(acceleration) > maxAcceleration)
+        {
+            acceleration = Normalise(acceleration) * maxAcceleration;
+        }
 
-        //steeringOutput.linear = acceleration;
-        //steeringOutput.angular = 0.0f;
+        steeringOutput.linear = acceleration;
+        steeringOutput.angular = 0.0f;
     }
 
     return steeringOutput;

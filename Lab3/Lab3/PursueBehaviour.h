@@ -4,7 +4,8 @@
 #include "SteeringOutput.h"
 #include "Player.h"
 #include "Enemy.h"
-class PursueBehaviour : public Behaviour
+#include "SeekBehaviour.h"
+class PursueBehaviour : public SeekBehaviour
 {
 public:
 
