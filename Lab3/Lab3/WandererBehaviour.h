@@ -20,9 +20,11 @@ private:
 
     sf::Vector2f wanderOrientation;
     sf::Vector2f targetOrientation;
-    float wanderOffset = 50;
+    float wanderOffset = 5;
     float wanderRadius = 25;
     float wanderRate = 100;
-    float maxAcceleration = 0.5f;
+    float maxAcceleration = 0.001f;
+
+    float m_wanderAngle;
 };
 

@@ -8,45 +8,49 @@ SteeringOutput ArriveFast::GetSteering()
 {
     SteeringOutput steeringOutput;
 
-    // Linear
-    sf::Vector2f direction = GetDirectionFacing(m_player.GetPlayerPos(), m_enemy.GetPosition());
+    // Calculate the direction from the enemy to the player
+    sf::Vector2f direction = m_player.GetPlayerPos() - m_enemy.GetPosition();
     float distance = VectorLength(direction);
 
-    if (distance < arrivalRadius)
+    // Check if the enemy is within the stop radius
+    if (distance < 20)
     {
-        targetSpeed = 0;
-    }
-    else if (distance > slowRadius)
-    {
-        targetSpeed = maxSpeed;
+        // Stop the enemy
+        steeringOutput.linear = sf::Vector2f(0.0f, 0.0f);
+        steeringOutput.angular = 0.0f;
     }
     else
     {
-        targetSpeed = maxSpeed * (distance / slowRadius);
+        // Calculate the target speed based on the distance
+        float targetSpeed;
+
+        if (distance < slowRadius)
+        {
+            targetSpeed = maxSpeed * (distance / slowRadius);
+        }
+        else
+        {
+            targetSpeed = maxSpeed;
+        }
+
+        // Calculate the target velocity
+        //sf::Vector2f targetVelocity = Normalise(direction) * targetSpeed;
+
+        //// Calculate the desired acceleration
+        ////sf::Vector2f acceleration = (targetVelocity - m_enemy.GetVelocity()) / timeToTarget;
+
+        //// Limit acceleration to maxAcceleration
+        //if (VectorLength(acceleration) > maxAcceleration)
+        //{
+        //    acceleration = Normalise(acceleration) * maxAcceleration;
+        //}
+
+        //steeringOutput.linear = acceleration;
+        //steeringOutput.angular = 0.0f;
     }
-
-    sf::Vector2f targetVelocity = direction;
-    targetVelocity = Normalise(targetVelocity);
-    targetVelocity = targetVelocity * targetSpeed;
-
-    float timeToTarget = 0.1;
-
-    steeringOutput.linear = targetVelocity - sf::Vector2f{50,50};
-    steeringOutput.linear = steeringOutput.linear / timeToTarget;
-
-    if (VectorLength(steeringOutput.linear) > maxAcceleration) 
-    {
-        steeringOutput.linear =  Normalise(steeringOutput.linear);
-        steeringOutput.linear = steeringOutput.linear * maxAcceleration;
-    }
-
-    // Angular
-    direction = steeringOutput.linear;
-    float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
-    steeringOutput.angular = angle;
 
     return steeringOutput;
-
 }
+
 
 

@@ -1,13 +1,2 @@
 ﻿  WandererBehaviour.cpp
-C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\WandererBehaviour.cpp(30,32): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\WandererBehaviour.cpp(31,32): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\WandererBehaviour.cpp(44,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Lab3.vcxproj -> C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe
+  Lab3.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe

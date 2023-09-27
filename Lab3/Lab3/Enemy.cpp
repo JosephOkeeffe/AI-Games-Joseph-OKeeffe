@@ -25,9 +25,9 @@ void Enemy::Init()
 
 void Enemy::Render(sf::RenderWindow& window)
 {
-    window.draw(enemySprite);
     window.draw(visionCone);
     window.draw(line);
+    window.draw(enemySprite);
     window.draw(m_text);
 }
 

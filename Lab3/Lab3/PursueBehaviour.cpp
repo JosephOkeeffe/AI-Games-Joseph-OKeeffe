@@ -8,3 +8,17 @@ SteeringOutput PursueBehaviour::GetSteering()
 {
 	return SteeringOutput();
 }
+
+//direction = target.position - my.position
+//distance = direction.length
+//speed = my.velocity.length
+//if speed <= distance / maxTimePrediction:
+//timePrediction = maxTimeprediction
+//else:
+//timePrediction = distance / speed
+//newtarget.position = target.position + target.velocity * timePrediction
+//seek(me, newTarget)
+//
+//or if we encapsulate this code in a Pursue function :
+//return seek(me, newTarget)
+

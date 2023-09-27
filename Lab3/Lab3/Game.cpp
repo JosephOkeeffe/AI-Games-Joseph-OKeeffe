@@ -46,13 +46,14 @@ void Game::Init()
 	m_seeker.Init();
 	m_wanderer.Init();
 	m_arriveFast.Init();
+	m_arriveSlow.Init();
+	m_pursue.Init();
 	m_seeker.SetBehaviour(new SeekBehaviour(m_seeker, m_player));
 	m_wanderer.SetBehaviour(new WandererBehaviour(m_wanderer, m_player));
 	m_arriveFast.SetBehaviour(new ArriveFast(m_arriveFast, m_player));
 	m_arriveSlow.SetBehaviour(new ArriveSlow(m_arriveSlow, m_player));
 	m_pursue.SetBehaviour(new SeekBehaviour(m_pursue, m_player));
-	//m_pursue.SetBehaviour(new PursueBehaviour(m_pursue, m_player));
-	//m_enemies.push_back(m_seeker);
+
 }
 
 void Game::ProcessEvents()
