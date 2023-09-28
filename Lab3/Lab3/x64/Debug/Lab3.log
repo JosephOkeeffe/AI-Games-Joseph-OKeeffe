@@ -1,7 +1,37 @@
-﻿  ArriveFast.cpp
-C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\ArriveFast.cpp(36,24): warning C4305: 'initializing': truncation from 'double' to 'float'
+﻿  Enemy.cpp
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.h(65,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(13,103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(13,62): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(63,49): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(71,66): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(118,190): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(118,119): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(134,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(135,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(136,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(144,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(145,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.cpp(146,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Game.cpp
-C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Game.cpp(44,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.h(65,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Game.cpp(44,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   main.cpp
+C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.h(65,16): warning C4305: 'initializing': truncation from 'double' to 'float'
   Generating Code...
-  Lab3.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe
+  Lab3.vcxproj -> C:\Users\josep\OneDrive - South East Technological University (Carlow Campus)\YEAR 4\AI Games\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe

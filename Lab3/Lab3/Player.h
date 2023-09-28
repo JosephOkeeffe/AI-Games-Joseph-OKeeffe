@@ -12,6 +12,7 @@ public:
 	void Update(sf::RenderWindow& window);
 
 	sf::Vector2f GetPlayerPos();
+	sf::Vector2f GetVelocity();
 
 
 	sf::Sprite playerSprite;
@@ -31,7 +32,7 @@ private:
 	float moveSpeed = 0.5f;
 	const float MAX_SPEED = 3;
 	sf::Vector2f startPosition {100, 100};
-	sf::Vector2f velocity = { 0, 0 };
+	sf::Vector2f m_velocity = { 0, 0 };
 	float acceleration = 0.1f;
 
 	float scale = 0.5f;

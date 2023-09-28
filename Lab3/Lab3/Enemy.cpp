@@ -2,14 +2,14 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(sf::Texture& texture, std::string name) : m_enemyTexture(texture), m_name(name)
+Enemy::Enemy(sf::Texture& texture, std::string name, sf::Vector2f position/*, Player& player*/) : m_enemyTexture(texture), m_name(name), m_startingPos(position)/*, m_player(player)*/
 {
 }
 
 void Enemy::Init()
 {
     enemySprite.setTexture(m_enemyTexture);
-    enemySprite.setPosition(200, 200);
+    enemySprite.setPosition(m_startingPos);
     enemySprite.setOrigin(enemySprite.getTextureRect().width / 2, enemySprite.getTextureRect().height / 2);
     enemySprite.setScale(scale, scale);
     
@@ -31,16 +31,23 @@ void Enemy::Render(sf::RenderWindow& window)
     window.draw(m_text);
 }
 
-void Enemy::Update(sf::RenderWindow& window)
+void Enemy::Update(sf::RenderWindow& window, sf::Vector2f pos)
 {
     SteeringOutput steeringOutput = currentBehaviour->GetSteering();
 
     m_velocity = steeringOutput.linear;
     enemySprite.move(m_velocity);
-    enemySprite.setRotation(steeringOutput.angular + 90);
+    //enemySprite.setRotation(steeringOutput.angular);
     WrapAround(window);
     CalculateVisionCone();
     m_text.setPosition(GetPosition() + textOffset);
+    IsInsideVisionCone(pos);
+
+
+    //float angle = std::atan2(m_velocity.y, m_velocity.x);
+    //// Convert radians to degrees for the rotation
+    //float degrees = angle * (180.0f / 3.14159265359f);
+    //enemySprite.setRotation(degrees + steeringOutput.angular); // Set the rotation angle
 
 
 }
@@ -85,12 +92,19 @@ float Enemy::GetOrientation()
     return m_orientation;
 }
 
+void Enemy::ChangeColor(sf::Color color)
+{
+    enemySprite.setColor(color);
+}
+
 
 void Enemy::CalculateVisionCone()
 {
     coneVertex1 = GetPosition();
-    coneVertex2 = GetPosition() + sf::Vector2f(cos((enemySprite.getRotation() + 90 + angleOffset) * 3.14159265 / 180) * coneLength, sin((enemySprite.getRotation() + 90 + angleOffset) * 3.14159265 / 180) * coneLength);
-    coneVertex3 = GetPosition() + sf::Vector2f(cos((enemySprite.getRotation() + 90 - angleOffset) * 3.14159265 / 180) * coneLength, sin((enemySprite.getRotation() + 90 - angleOffset) * 3.14159265 / 180) * coneLength);
+    coneVertex2 = GetPosition() + sf::Vector2f(cos((enemySprite.getRotation() + 90 + angleOffset) * PI / 180) * coneLength, 
+                                                sin((enemySprite.getRotation() + 90 + angleOffset) * PI / 180) * coneLength);
+    coneVertex3 = GetPosition() + sf::Vector2f(cos((enemySprite.getRotation() + 90 - angleOffset) * PI / 180) * coneLength, 
+                                                sin((enemySprite.getRotation() + 90 - angleOffset) * PI / 180) * coneLength);
 
 
     visionCone[0].position = coneVertex1;
@@ -101,7 +115,6 @@ void Enemy::CalculateVisionCone()
 
     visionCone[2].position = coneVertex3;
     visionCone[2].color = black;
-    //
 
     sf::Vector2f lineEndpoint = GetPosition() + sf::Vector2f(cos((enemySprite.getRotation() - 90) * 3.14159265 / 180) * coneLength, sin((enemySprite.getRotation() - 90) * 3.14159265 / 180) * coneLength);
 
@@ -111,5 +124,40 @@ void Enemy::CalculateVisionCone()
     line[0].color = sf::Color::Black;
     line[1].color = sf::Color::Black;
 }
+
+bool Enemy::IsInsideVisionCone(const sf::Vector2f& point) 
+{
+    sf::Vector2f vector1 = point - coneVertex1;
+    sf::Vector2f vector2 = point - coneVertex2;
+    sf::Vector2f vector3 = point - coneVertex3;
+
+    float angle1 = atan2(vector1.y, vector1.x) * 180.0f / 3.14159265;
+    float angle2 = atan2(vector2.y, vector2.x) * 180.0f / 3.14159265;
+    float angle3 = atan2(vector3.y, vector3.x) * 180.0f / 3.14159265;
+
+    while (angle1 < 0) angle1 += 360;
+    while (angle2 < 0) angle2 += 360;
+    while (angle3 < 0) angle3 += 360;
+
+    float angleA = atan2(coneVertex2.y - coneVertex1.y, coneVertex2.x - coneVertex1.x) * 180.0f / 3.14159265;
+    float angleB = atan2(coneVertex3.y - coneVertex2.y, coneVertex3.x - coneVertex2.x) * 180.0f / 3.14159265;
+    float angleC = atan2(coneVertex1.y - coneVertex3.y, coneVertex1.x - coneVertex3.x) * 180.0f / 3.14159265;
+
+    while (angleA < 0) angleA += 360;
+    while (angleB < 0) angleB += 360;
+    while (angleC < 0) angleC += 360;
+
+    if (angle1 >= angleA && angle1 <= angleB && angle2 >= angleB && angle2 <= angleC && angle3 >= angleC && angle3 <= angleA)
+    {
+        std::cout << "In \n";
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+
 
 

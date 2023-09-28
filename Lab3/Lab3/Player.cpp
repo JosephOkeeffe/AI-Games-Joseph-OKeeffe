@@ -42,32 +42,50 @@ sf::Vector2f Player::GetPlayerPos()
     return playerSprite.getPosition();
 }
 
+sf::Vector2f Player::GetVelocity()
+{
+    return m_velocity;
+}
+
 void Player::ChangeVelocity()
 {
-    float directionRadians = (rotation * 3.18 / 180.0f);
-
-    sf::Vector2f direction(std::cos(directionRadians), std::sin(directionRadians));
-
+    float rotationRadians = (rotation * 3.14159265f / 180.0f);
+    sf::Vector2f direction(std::cos(rotationRadians), std::sin(rotationRadians));
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        velocity += direction * acceleration;
+        m_velocity += direction * acceleration;
 
-        if (VectorLength(velocity) > MAX_SPEED)
+        if (VectorLength(m_velocity) > MAX_SPEED)
         {
-            velocity = Normalise(velocity) * MAX_SPEED;
+            m_velocity = Normalise(m_velocity) * MAX_SPEED;
         }
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        velocity -= (direction ) * acceleration;
+        m_velocity -= direction * acceleration; 
 
-        if (VectorLength(velocity) > MAX_SPEED)
+        if (VectorLength(m_velocity) > MAX_SPEED)
         {
-            velocity = Normalise(velocity) * MAX_SPEED;
+            m_velocity = Normalise(m_velocity) * MAX_SPEED;
         }
     }
+    else
+    {
+        if (VectorLength(m_velocity) > 0.0f)
+        {
+            sf::Vector2f velocityDirection = Normalise(m_velocity);
+
+            m_velocity -= velocityDirection * (acceleration / 2);
+
+            if (VectorLength(m_velocity) < 0.2f)
+            {
+                m_velocity = { 0,0 };
+            }
+        }
+    }
+
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
@@ -78,11 +96,12 @@ void Player::ChangeVelocity()
     {
         rotation -= rotationSpeed;
     }
+
 }
 
 void Player::Move()
 {
-    playerSprite.move(velocity);
+    playerSprite.move(m_velocity);
     playerSprite.setRotation(rotation + 90);
 }
 

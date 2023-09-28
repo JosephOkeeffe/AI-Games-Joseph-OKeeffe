@@ -4,13 +4,13 @@
 Game::Game() :
 
 	//desktopMode{ sf::VideoMode::getDesktopMode() },
-	m_window{ sf::VideoMode{1200U, 800U, 32U}, "Lab 3" },
+	m_window{ sf::VideoMode{SCREEN_WIDTH,SCREEN_HEIGHT, 32U}, "Lab 3" },
 	m_exitGame{ false },
-	m_wanderer(m_textures.m_wandererTexture, "Wanderer"),
-	m_seeker(m_textures.m_seekerTexture, "Seeker"),
-	m_arriveFast(m_textures.m_arriveFastTexture, "Arrive Fast"),
-	m_arriveSlow(m_textures.m_arriveSlowTexture, "Arrive Slow"),
-	m_pursue(m_textures.m_pursueTexture, "Pursue")
+	m_wanderer(m_textures.m_wandererTexture, "Wanderer", m_wandererPos),
+	m_seeker(m_textures.m_seekerTexture, "Seeker", m_seekerPos),
+	m_arriveFast(m_textures.m_arriveFastTexture, "Arrive Fast", m_arriveFastPos),
+	m_arriveSlow(m_textures.m_arriveSlowTexture, "Arrive Slow", m_arriveSlowPos),
+	m_pursue(m_textures.m_pursueTexture, "Pursue", m_pursuePos)
 {
 	Init();
 } 
@@ -52,7 +52,16 @@ void Game::Init()
 	m_wanderer.SetBehaviour(new WandererBehaviour(m_wanderer, m_player));
 	m_arriveFast.SetBehaviour(new ArriveFast(m_arriveFast, m_player));
 	m_arriveSlow.SetBehaviour(new ArriveSlow(m_arriveSlow, m_player));
-	m_pursue.SetBehaviour(new SeekBehaviour(m_pursue, m_player));
+	m_pursue.SetBehaviour(new PursueBehaviour(m_pursue, m_player));
+
+	if (!m_font.loadFromFile("Fonts\\ariblk.ttf")) { std::cout << "problem loading font" << std::endl; }
+	m_uiText.setFont(m_font);
+	m_uiText.setPosition(40, 10);
+	m_uiText.setCharacterSize(32);
+	m_uiText.setFillColor(sf::Color::Black);
+	m_uiText.setOutlineColor(sf::Color::Red);
+	m_uiText.setOutlineThickness(1);
+	m_uiText.setString("1 - Wanderer, 2 - Seeker, 3 - Arrive Fast, 4 Arrive Slow, 5 - Pursue");
 
 }
 
@@ -78,6 +87,9 @@ void Game::ProcessKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
+
+	DisableEnableEnemeis();
+	
 }
 
 void Game::Update(sf::Time t_deltaTime)
@@ -86,11 +98,11 @@ void Game::Update(sf::Time t_deltaTime)
 
 
 	m_player.Update(m_window); 
-	m_seeker.Update(m_window);
-	m_wanderer.Update(m_window);
-	m_arriveFast.Update(m_window);
-	m_arriveSlow.Update(m_window);
-	m_pursue.Update(m_window);
+	m_seeker.Update(m_window, m_player.GetPlayerPos());
+	m_wanderer.Update(m_window, m_player.GetPlayerPos());
+	m_arriveFast.Update(m_window, m_player.GetPlayerPos());
+	m_arriveSlow.Update(m_window, m_player.GetPlayerPos());
+	m_pursue.Update(m_window, m_player.GetPlayerPos());
 
 }
 
@@ -99,13 +111,39 @@ void Game::Render()
 {
 	m_window.clear(sf::Color::White);
 	m_player.Render(m_window);
-	m_seeker.Render(m_window);
-	m_wanderer.Render(m_window);
-	m_arriveFast.Render(m_window);
-	m_arriveSlow.Render(m_window);
-	m_pursue.Render(m_window);
+	if (showWanderer) { m_wanderer.Render(m_window);}
+	if (showSeeker) { m_seeker.Render(m_window);}
+	if (showArriveFast) { m_arriveFast.Render(m_window); }
+	if (showArriveSlow) { m_arriveSlow.Render(m_window); }
+	if (showPursue) { m_pursue.Render(m_window);}
 
+	m_window.draw(m_uiText);
+	
 	m_window.display();
+}
+
+void Game::DisableEnableEnemeis()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+	{
+		showWanderer = !showWanderer;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+	{
+		showSeeker = !showSeeker;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+	{
+		showArriveFast = !showArriveFast;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
+	{
+		showArriveSlow = !showArriveSlow;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
+	{
+		showPursue = !showPursue;
+	}
 }
 
 

@@ -5,8 +5,6 @@
 #include "Player.h"
 #include "Enemy.h"
 
-
-
 class SeekBehaviour : public Behaviour
 {
 public:

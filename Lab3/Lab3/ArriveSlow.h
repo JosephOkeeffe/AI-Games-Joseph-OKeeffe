@@ -20,10 +20,11 @@ private:
 
     float targetSpeed;
 
-    float arrivalRadius = 200.0f;
+    float arrivalRadius = 70.0f;
     float slowRadius = 300.0f;
     float maxSpeed = 2.0f;
     float maxAcceleration = 0.5f;
     float timeToTarget;
+    float bufferRadius = 1;
 };
 

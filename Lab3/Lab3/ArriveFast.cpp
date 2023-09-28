@@ -1,4 +1,5 @@
 #include "ArriveFast.h"
+#include <iostream>
 
 ArriveFast::ArriveFast(Enemy& enemy, Player& player) : m_enemy(enemy), m_player(player)
 {
@@ -9,23 +10,32 @@ SteeringOutput ArriveFast::GetSteering()
     SteeringOutput steeringOutput;
 
 
-
-    // Linear
     sf::Vector2f direction = GetDirectionFacing(m_player.GetPlayerPos(), m_enemy.GetPosition());
     float distance = VectorLength(direction);
 
     if (distance < arrivalRadius)
     {
+        m_enemy.ChangeColor(sf::Color(204, 0, 0));
 
-        targetSpeed = 0;
+        if (targetSpeed <= 0)
+        {
+            targetSpeed = 0;
+        } 
+        else
+        {
+            targetSpeed--;
+        }
+        
+
     }
     else if (distance > slowRadius)
     {
-
+        m_enemy.ChangeColor(sf::Color::White);
         targetSpeed = maxSpeed;
     }
     else
     {
+        m_enemy.ChangeColor(sf::Color(204, 102, 255));
         targetSpeed = maxSpeed * (distance / slowRadius);
     }
 
@@ -45,9 +55,9 @@ SteeringOutput ArriveFast::GetSteering()
     }
 
     // Angular
-  /*  direction = steeringOutput.linear;
+    direction = steeringOutput.linear;
     float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
-    steeringOutput.angular = angle;*/
+    steeringOutput.angular = angle;
 
     return steeringOutput;
 }

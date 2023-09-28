@@ -8,27 +8,34 @@ ArriveSlow::ArriveSlow(Enemy& enemy, Player& player) : m_enemy(enemy), m_player(
 SteeringOutput ArriveSlow::GetSteering()
 {
     SteeringOutput steeringOutput;
-    
 
-    // Linear
+
     sf::Vector2f direction = GetDirectionFacing(m_player.GetPlayerPos(), m_enemy.GetPosition());
     float distance = VectorLength(direction);
 
     if (distance < arrivalRadius)
     {
-        std::cout << "stop \n";
+        m_enemy.ChangeColor(sf::Color(204, 0, 0));
 
-        targetSpeed = 0;
+        if (targetSpeed <= 0)
+        {
+            targetSpeed = 0;
+        }
+        else
+        {
+            targetSpeed--;
+        }
+
+
     }
     else if (distance > slowRadius)
     {
-        std::cout << "MAX \n";
-
+        m_enemy.ChangeColor(sf::Color::White);
         targetSpeed = maxSpeed;
     }
     else
     {
-        std::cout << "Slow \n";
+        m_enemy.ChangeColor(sf::Color(204, 102, 255));
         targetSpeed = maxSpeed * (distance / slowRadius);
     }
 
@@ -48,9 +55,9 @@ SteeringOutput ArriveSlow::GetSteering()
     }
 
     // Angular
-  /*  direction = steeringOutput.linear;
+    direction = steeringOutput.linear;
     float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
-    steeringOutput.angular = angle;*/
+    steeringOutput.angular = angle;
 
     return steeringOutput;
 
