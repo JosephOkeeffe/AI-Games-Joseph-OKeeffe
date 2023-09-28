@@ -14,6 +14,9 @@ public:
     void WrapAround(sf::RenderWindow& window);
     sf::Vector2f GetPosition();
     float GetRotation();
+    sf::Vector2f GetVelocity();
+    float GetOrientation();
+
     void CalculateVisionCone();
 
     inline void SetBehaviour(Behaviour* newBehaviour) 
@@ -46,4 +49,10 @@ private:
     sf::Font m_font;
     sf::Text m_text;
     sf::Vector2f textOffset{ -50, 50 };
+
+    // Kinematic
+    float m_orientation;
+    sf::Vector2f m_velocity;
+    
+
 };

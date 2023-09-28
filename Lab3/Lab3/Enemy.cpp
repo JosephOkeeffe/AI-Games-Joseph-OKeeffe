@@ -35,7 +35,8 @@ void Enemy::Update(sf::RenderWindow& window)
 {
     SteeringOutput steeringOutput = currentBehaviour->GetSteering();
 
-    enemySprite.move(steeringOutput.linear);
+    m_velocity = steeringOutput.linear;
+    enemySprite.move(m_velocity);
     enemySprite.setRotation(steeringOutput.angular + 90);
     WrapAround(window);
     CalculateVisionCone();
@@ -72,6 +73,16 @@ sf::Vector2f Enemy::GetPosition()
 float Enemy::GetRotation()
 {
     return enemySprite.getRotation();
+}
+
+sf::Vector2f Enemy::GetVelocity()
+{
+    return m_velocity;
+}
+
+float Enemy::GetOrientation()
+{
+    return m_orientation;
 }
 
 

@@ -47,30 +47,22 @@ SteeringOutput WandererBehaviour::GetSteering()
 
     //return steeringOutput;
 
-    // Create a steering output to store the result
     SteeringOutput steeringOutput;
 
-    // Parameters for wandering
-    float wanderRadius = 0.5f; // Radius of the wander circle
-    float wanderDistance = 0.5f; // Distance ahead of the enemy to look for the circle
+    float wanderRadius = 0.5f; 
+    float wanderDistance = 0.5f; 
 
-    // Calculate a random angle change for wandering
-    float angleChange = (std::rand() % 360) * 0.5f; // You can adjust the factor to control the angle change rate
+    float angleChange = (std::rand() % 360) * 0.5f; 
 
-    // Update the wander angle (you can make wanderAngle a member variable)
     m_wanderAngle += angleChange;
 
-    // Calculate the center of the wander circle
     sf::Vector2f circleCenter = m_enemy.GetPosition() + Normalise(m_enemy.GetPosition()) * wanderDistance;
 
-    // Calculate the target position on the wander circle
     sf::Vector2f targetPosition = circleCenter + sf::Vector2f(std::cos(m_wanderAngle), std::sin(m_wanderAngle)) * wanderRadius;
 
-    // Calculate the desired linear and angular velocities
     sf::Vector2f desiredLinear = targetPosition - m_enemy.GetPosition();
-    float desiredAngular = 0.0f; // You can set this to control the enemy's angular velocity
+    float desiredAngular = 0.0f; 
 
-    // Assign the desired velocities to the steering output
     steeringOutput.linear = desiredLinear;
     steeringOutput.angular = desiredAngular;
 

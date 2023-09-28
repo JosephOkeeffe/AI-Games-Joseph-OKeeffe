@@ -1,4 +1,5 @@
 #include "ArriveSlow.h"
+#include <iostream>
 
 ArriveSlow::ArriveSlow(Enemy& enemy, Player& player) : m_enemy(enemy), m_player(player)
 {
@@ -7,6 +8,7 @@ ArriveSlow::ArriveSlow(Enemy& enemy, Player& player) : m_enemy(enemy), m_player(
 SteeringOutput ArriveSlow::GetSteering()
 {
     SteeringOutput steeringOutput;
+    
 
     // Linear
     sf::Vector2f direction = GetDirectionFacing(m_player.GetPlayerPos(), m_enemy.GetPosition());
@@ -14,14 +16,19 @@ SteeringOutput ArriveSlow::GetSteering()
 
     if (distance < arrivalRadius)
     {
+        std::cout << "stop \n";
+
         targetSpeed = 0;
     }
     else if (distance > slowRadius)
     {
+        std::cout << "MAX \n";
+
         targetSpeed = maxSpeed;
     }
     else
     {
+        std::cout << "Slow \n";
         targetSpeed = maxSpeed * (distance / slowRadius);
     }
 
@@ -31,7 +38,7 @@ SteeringOutput ArriveSlow::GetSteering()
 
     float timeToTarget = 0.1;
 
-    steeringOutput.linear = targetVelocity - sf::Vector2f{ 50,50 };
+    steeringOutput.linear = targetVelocity - m_enemy.GetVelocity(); // current vec of enemy???????
     steeringOutput.linear = steeringOutput.linear / timeToTarget;
 
     if (VectorLength(steeringOutput.linear) > maxAcceleration)
@@ -41,10 +48,15 @@ SteeringOutput ArriveSlow::GetSteering()
     }
 
     // Angular
-    direction = steeringOutput.linear;
+  /*  direction = steeringOutput.linear;
     float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
-    steeringOutput.angular = angle;
+    steeringOutput.angular = angle;*/
 
     return steeringOutput;
 
 }
+
+
+
+
+

@@ -24,7 +24,6 @@ public:
 	sf::Sprite sprite;
 	sf::Texture enemyTexture;
 
-
 private:
 
 	void SetupSprites();
