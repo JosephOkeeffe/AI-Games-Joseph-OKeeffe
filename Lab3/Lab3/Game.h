@@ -32,6 +32,12 @@ private:
 	const unsigned int SCREEN_WIDTH = 1800;
 	const unsigned int SCREEN_HEIGHT = 800;
 
+	sf::Vector2f m_wandererPos = { 500, 500 };
+	sf::Vector2f m_seekerPos = { 1700, 700 };
+	sf::Vector2f m_arriveFastPos = { 1200, 700 };
+	sf::Vector2f m_arriveSlowPos = { 800, 700 };
+	sf::Vector2f m_pursuePos = { 1000, 7000 };
+
 	sf::RenderWindow m_window;
 	Textures m_textures;
 	Player m_player;
@@ -41,11 +47,7 @@ private:
 	Enemy m_arriveFast;
 	Enemy m_pursue;
 
-	sf::Vector2f m_wandererPos = { 500, 700 };
-	sf::Vector2f m_seekerPos = { 1700, 700 };
-	sf::Vector2f m_arriveFastPos = { 1200, 700 };
-	sf::Vector2f m_arriveSlowPos = { 800, 700 };
-	sf::Vector2f m_pursuePos = { 1000, 7000 };
+
 	
 	sf::Font m_font;
 	sf::Text m_uiText;

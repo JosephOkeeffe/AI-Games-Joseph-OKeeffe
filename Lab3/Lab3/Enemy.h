@@ -8,7 +8,7 @@
 class Enemy
 {
 public:
-    Enemy(sf::Texture& texture, std::string name, sf::Vector2f startPos/*, Player& player*/);
+    Enemy(sf::Texture& texture, std::string name, sf::Vector2f startPos);
     void Init();
     void Render(sf::RenderWindow& window);
     void Update(sf::RenderWindow& window, sf::Vector2f pos);
@@ -24,12 +24,12 @@ public:
 
     void CalculateVisionCone();
 
-    inline void SetBehaviour(Behaviour* newBehaviour) 
+    inline void SetBehaviour(Behaviour* newBehaviour)
     {
         currentBehaviour = newBehaviour;
     }
 
-    
+
 
 
 private:
@@ -65,12 +65,6 @@ private:
     float m_orientation;
     sf::Vector2f m_velocity;
 
-
     float PI = 3.14159265;
-
-
-
-    //Player& m_player;
-    
 
 };

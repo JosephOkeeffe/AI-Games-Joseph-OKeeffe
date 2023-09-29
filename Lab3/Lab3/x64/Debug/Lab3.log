@@ -1,5 +1,3 @@
-﻿  ArriveFast.cpp
-C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.h(69,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\ArriveFast.cpp(38,24): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\ArriveFast.cpp(51,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  WandererBehaviour.cpp
+C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\Lab3\Enemy.h(68,16): warning C4305: 'initializing': truncation from 'double' to 'float'
   Lab3.vcxproj -> C:\Users\labuser\Desktop\AI Games - Oisin\AI-Games-Joseph-OKeeffe\AI-Games-Joseph-OKeeffe\Lab3\x64\Debug\Lab3.exe

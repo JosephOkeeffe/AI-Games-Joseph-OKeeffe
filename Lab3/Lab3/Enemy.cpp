@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(sf::Texture& texture, std::string name, sf::Vector2f position/*, Player& player*/) : m_enemyTexture(texture), m_name(name), m_startingPos(position)/*, m_player(player)*/
+Enemy::Enemy(sf::Texture& texture, std::string name, sf::Vector2f position) : m_enemyTexture(texture), m_name(name), m_startingPos(position)
 {
 }
 

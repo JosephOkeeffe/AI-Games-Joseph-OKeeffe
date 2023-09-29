@@ -24,6 +24,7 @@ SteeringOutput WandererBehaviour::GetSteering()
     sf::Vector2f desiredLinear = targetPosition - m_enemy.GetPosition();
     float desiredAngular = 0.0f; 
 
+
     steeringOutput.linear = desiredLinear;
     steeringOutput.angular = desiredAngular;
 
