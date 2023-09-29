@@ -25,7 +25,7 @@ void Game::run()
 	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	const float fps{ 60.0f };
-	sf::Time timePerFrame = sf::seconds(1.0f / fps); // 60 fps
+	sf::Time timePerFrame = sf::seconds(1.0f / fps); 
 	while (m_window.isOpen())
 	{
 		timeSinceLastUpdate += clock.restart();
@@ -33,9 +33,9 @@ void Game::run()
 		{
 			timeSinceLastUpdate -= timePerFrame;
 			ProcessEvents();
-			Update(timePerFrame); //60 fps
+			Update(timePerFrame); 
 		}
-		Render(); // as many as possible
+		Render();
 	}
 }
 
@@ -48,6 +48,7 @@ void Game::Init()
 	m_arriveFast.Init();
 	m_arriveSlow.Init();
 	m_pursue.Init();
+
 	m_seeker.SetBehaviour(new SeekBehaviour(m_seeker, m_player));
 	m_wanderer.SetBehaviour(new WandererBehaviour(m_wanderer, m_player));
 	m_arriveFast.SetBehaviour(new ArriveFast(m_arriveFast, m_player));

@@ -17,6 +17,7 @@ public:
     float GetRotation();
     sf::Vector2f GetVelocity();
     float GetOrientation();
+    void SetVelocity(sf::Vector2f velocity);
     void ChangeColor(sf::Color color);
 
     bool IsInsideVisionCone(const sf::Vector2f& positionToCheck);
@@ -37,7 +38,7 @@ private:
     float scale = 0.5f;
 
     sf::Texture& m_enemyTexture;
-    sf::Sprite enemySprite;
+    sf::Sprite m_enemySprite;
     sf::Vector2f m_startingPos;
 
     sf::VertexArray visionCone{ sf::Triangles, 3 };
@@ -47,10 +48,12 @@ private:
     sf::Vector2f coneVertex2;
     sf::Vector2f coneVertex3;
 
-    sf::Color red = sf::Color(255, 0, 0, 180);
-    sf::Color black = sf::Color(0, 0, 0, 90);
+    sf::Color currentColor;
+    sf::Color m_red = sf::Color(255, 0, 0, 180);
+    sf::Color m_green = sf::Color(0, 255, 0, 180);
+    sf::Color m_black = sf::Color(0, 0, 0, 90);
 
-    float coneLength = 200;
+    float coneLength = 250;
     float angleOffset = 200;
 
     std::string m_name;
@@ -62,7 +65,10 @@ private:
     float m_orientation;
     sf::Vector2f m_velocity;
 
+
     float PI = 3.14159265;
+
+
 
     //Player& m_player;
     

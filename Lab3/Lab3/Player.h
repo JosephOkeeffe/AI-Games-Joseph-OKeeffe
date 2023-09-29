@@ -13,6 +13,7 @@ public:
 
 	sf::Vector2f GetPlayerPos();
 	sf::Vector2f GetVelocity();
+	void SetPosition(sf::Vector2f pos);
 
 
 	sf::Sprite playerSprite;

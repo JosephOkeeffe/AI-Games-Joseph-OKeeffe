@@ -4,6 +4,7 @@
 #include "SteeringOutput.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "SeekBehaviour.h"
 
 class PursueBehaviour : public Behaviour
 {
@@ -18,8 +19,10 @@ private:
     Enemy& m_enemy;
     Player& m_player;
 
-    float timePrediction;
-    float maxTimePrediction = 5.0f;
-    float maxAcceleration = 0.01f;
+    float timePrediction = 1.0f;
+    float maxTimePrediction = 50.0f;
+    float maxAcceleration = 1.0f;
+
+
 };
 

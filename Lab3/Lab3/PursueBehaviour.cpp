@@ -21,16 +21,18 @@ SteeringOutput PursueBehaviour::GetSteering()
         timePrediction = distance / speed;
     }
 
+    sf::Vector2f tempPos = m_player.GetPlayerPos();
+    sf::Vector2f tempVel = m_player.GetVelocity();
     sf::Vector2f newTargetPosition = m_player.GetPlayerPos() + m_player.GetVelocity() * timePrediction;
 
-    // Linear
-    steeringOutput.linear = newTargetPosition - m_enemy.GetPosition();
-    Normalise(steeringOutput.linear);
-    steeringOutput.linear *= maxAcceleration;
+    Player newTarget;
+    newTarget.SetPosition(newTargetPosition);
 
-    direction = steeringOutput.linear;
-    float angle = atan2(direction.y, direction.x) * 180 / 3.14159265;
-    steeringOutput.angular = angle;
+    SeekBehaviour seek(m_enemy, newTarget);
+   
+    steeringOutput = seek.GetSteering();
+
+  
 
     return steeringOutput;
 

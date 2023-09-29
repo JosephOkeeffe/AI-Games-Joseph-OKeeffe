@@ -13,26 +13,21 @@ SteeringOutput ArriveSlow::GetSteering()
     sf::Vector2f direction = GetDirectionFacing(m_player.GetPlayerPos(), m_enemy.GetPosition());
     float distance = VectorLength(direction);
 
+    // STOP
     if (distance < arrivalRadius)
     {
         m_enemy.ChangeColor(sf::Color(204, 0, 0));
 
-        if (targetSpeed <= 0)
-        {
-            targetSpeed = 0;
-        }
-        else
-        {
-            targetSpeed--;
-        }
-
-
+        m_enemy.SetVelocity({ 0,0 });
+        targetSpeed = 0;
     }
+    // FULL SPEED
     else if (distance > slowRadius)
     {
         m_enemy.ChangeColor(sf::Color::White);
         targetSpeed = maxSpeed;
     }
+    // SLOW DOWN
     else
     {
         m_enemy.ChangeColor(sf::Color(204, 102, 255));
@@ -40,12 +35,12 @@ SteeringOutput ArriveSlow::GetSteering()
     }
 
     sf::Vector2f targetVelocity = direction;
-    targetVelocity = Normalise(targetVelocity);
+   // targetVelocity = Normalise(targetVelocity);
     targetVelocity = targetVelocity * targetSpeed;
 
     float timeToTarget = 0.1;
 
-    steeringOutput.linear = targetVelocity - m_enemy.GetVelocity(); // current vec of enemy???????
+    steeringOutput.linear = targetVelocity - m_enemy.GetVelocity();
     steeringOutput.linear = steeringOutput.linear / timeToTarget;
 
     if (VectorLength(steeringOutput.linear) > maxAcceleration)

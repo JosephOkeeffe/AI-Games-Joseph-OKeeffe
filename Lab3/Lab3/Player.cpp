@@ -39,12 +39,18 @@ void Player::Update(sf::RenderWindow& window)
 
 sf::Vector2f Player::GetPlayerPos()
 {
-    return playerSprite.getPosition();
+    sf::Vector2f pos = playerSprite.getPosition();
+    return pos;
 }
 
 sf::Vector2f Player::GetVelocity()
 {
     return m_velocity;
+}
+
+void Player::SetPosition(sf::Vector2f pos)
+{
+    playerSprite.setPosition(pos);
 }
 
 void Player::ChangeVelocity()
