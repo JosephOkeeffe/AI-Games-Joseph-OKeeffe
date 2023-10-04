@@ -251,11 +251,28 @@ void Boid::swarm(vector <Boid>& v)
 			R.normalise()
 			force = force + R*U
 */
+
+	float A = 1.0;  // Adjust this value for your specific requirements
+	float B = 1.0;  // Adjust this value for your specific requirements
+	float N = 2.0;  // Adjust this value for your specific requirements
+	float M = 6.0;  // Adjust this value for your specific requirements
+
+	// Making new vector R
 	Pvector	R;
-	Pvector sum(0, 0);
-
-// Your code here..
-
+	// Dont know what the target is meant to be but for now its just a new vector
+	Pvector	Target;
+	Target.set(500, 500);
+	// Trying to set R to the boid pos - target
+	R.set(v.front().location.subVector(Target));
+	// Getting magnitude of R
+	float D = R.magnitude();
+	// Getting U ?
+	float U = -A / std::pow(D, N) + B / std::pow(D, M);
+	// Normalising R
+	R.normalize();
+	// Getting the sum of R
+	Pvector sum(R.x, R.y);
+	// APplying the force to R
 	applyForce(sum);
 	update();
 	borders();

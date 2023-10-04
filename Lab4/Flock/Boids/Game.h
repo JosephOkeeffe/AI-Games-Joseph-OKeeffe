@@ -45,6 +45,8 @@ private:
 	string action = "flock";
 	bool close = false;
 
+	int MAX_BOIDS = 250;
+
 	//Create flock, vector of shapes, and initialize boids
 	Flock flock;
 	vector<sf::CircleShape> shapes;

@@ -35,7 +35,7 @@ public:
 	Pvector acceleration;
 	float maxSpeed;
 	float maxForce;
-	int neighbourDistance = 50;
+	int neighbourDistance = 75;
 
 	Boid() {}
 	Boid(float x, float y)
@@ -49,12 +49,14 @@ public:
 	Boid(float x, float y, bool predCheck) 
 	{
 		predator = predCheck;
-		if (predCheck == true) {
+		if (predCheck == true) 
+		{
 			maxSpeed = 7.5;
 			maxForce = 0.5;
 			velocity = Pvector(rand()%3-1, rand()%3-1);
-		} else {
-			maxSpeed = 3.5;
+		} else 
+		{
+			maxSpeed = 2.0;
 			maxForce = 0.5;
 			velocity = Pvector(rand()%3-2, rand()%3-2); // Allows for range of -2 -> 2
 		}
