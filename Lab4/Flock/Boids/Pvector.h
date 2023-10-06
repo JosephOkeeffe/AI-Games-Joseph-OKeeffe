@@ -62,7 +62,22 @@ public:
 	float angleBetween(Pvector v);
 	void normalize();
 
-	Pvector copy(Pvector v);	
+	Pvector copy(Pvector v);
+
+	Pvector operator- (const Pvector& other) const 
+	{
+		return Pvector(x - other.x, y - other.y);
+	}
+
+	Pvector operator+ (const Pvector& other) const
+	{
+		return Pvector(x + other.x, y + other.y);
+	}
+
+	Pvector operator*(float scalar) const 
+	{
+		return Pvector(x * scalar, y * scalar);
+	}
 };
 
 #endif

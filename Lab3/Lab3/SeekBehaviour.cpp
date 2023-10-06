@@ -11,9 +11,10 @@ SteeringOutput SeekBehaviour::GetSteering()
     SteeringOutput steeringOutput;
 
     // Linear
-    steeringOutput.linear = m_player.GetPlayerPos() - m_enemy.GetPosition();
-    Normalise(steeringOutput.linear);
-    steeringOutput.linear *= maxAcceleration;
+    sf::Vector2f desiredVelocity;
+    desiredVelocity = m_player.GetPlayerPos() - m_enemy.GetPosition();
+    desiredVelocity = Normalise(desiredVelocity);
+    steeringOutput.linear = desiredVelocity * maxAcceleration;
 
     // Angular
     sf::Vector2f direction = steeringOutput.linear;

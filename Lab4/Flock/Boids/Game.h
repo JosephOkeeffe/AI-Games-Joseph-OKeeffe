@@ -32,6 +32,8 @@ private:
 	void update(sf::Time t_deltaTime);
 	void render();
 
+	void SetupGrid();
+
 	sf::RenderWindow m_window; // main SFML window
 	//Gets the resolution, size, and bits per pixel for the screen of the PC that is running this program.
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -45,11 +47,21 @@ private:
 	string action = "flock";
 	bool close = false;
 
-	int MAX_BOIDS = 250;
+	int MAX_BOIDS = 500; 
+	// 500 is optimal for swarming
+	// flocking can hanlde 1000
 
 	//Create flock, vector of shapes, and initialize boids
 	Flock flock;
 	vector<sf::CircleShape> shapes;
+
+	static const int ROWS = 38;
+	static const int COLS = 26;
+
+	int cellSize = 100;
+	sf::RectangleShape cell[ROWS][COLS];
+	
+	bool showGrid = false;
 
 };
 

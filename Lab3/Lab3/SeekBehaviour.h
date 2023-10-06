@@ -18,7 +18,7 @@ private:
     Enemy& m_enemy;
     Player& m_player;
 
-    float maxAcceleration = 0.005f;
+    float maxAcceleration = 0.5f;
 
 };
 

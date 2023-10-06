@@ -28,6 +28,7 @@ SteeringOutput WandererBehaviour::GetSteering()
     steeringOutput.linear = desiredLinear;
     steeringOutput.angular = desiredAngular;
 
+
     return steeringOutput;
 }
 

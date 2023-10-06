@@ -2,6 +2,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <iostream>
+#include "SFML/Graphics.hpp"
 
 using namespace std;
 
@@ -85,6 +86,8 @@ Destructors are commented out for now. g++ throws errors if they are included.
 	void borders();
 	float angle(Pvector& v);
 	void swarm(vector <Boid>& v);
+
+	sf::Clock clock;
 };
 
 #endif

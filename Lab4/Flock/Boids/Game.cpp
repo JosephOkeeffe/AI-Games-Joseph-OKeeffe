@@ -2,17 +2,7 @@
 #include <iostream>
 using namespace std;
 
-
-/// <summary>
-/// default constructor
-/// setup the window properties
-/// load and setup the text 
-/// load and setup the image
-/// </summary>
-Game::Game() 
-// Tying to create window using desktop values did not work here.
-// So used the Create method inside the constructor/
-// sf::RenderWindow m_window( sf::VideoMode(desktop.width - 100, desktop.height - 100, desktop.bitsPerPixel), "Flocking", sf::Style::None );
+Game::Game()
 {
 	window_height = desktop.height;
 	window_width = desktop.width;
@@ -33,11 +23,13 @@ Game::Game()
 	else
 		std::cout << "successfully loaded ariblk.ttf font file" << std::endl;
 
+	SetupGrid();
 
 	for (int i = 0; i < MAX_BOIDS; i++) //Number of boids is hardcoded for testing pusposes.
 	{
-		//Boid b(rand() % window_width, rand() % window_height); //Starts the boid with a random position in the window.
-		Boid b(window_width / 3, window_height / 3); //Starts all boids in the center of the screen
+		Boid b(rand() % window_width, rand() % window_height); //Starts the boid with a random position in the window.
+		//Boid b(window_width / 3, window_height / 3); //Starts all boids in the center of the screen
+
 		sf::CircleShape shape(8, 3); //Shape with a radius of 10 and 3 points (Making it a triangle)
 
 		//Changing the Visual Properties of the shape
@@ -56,22 +48,10 @@ Game::Game()
 
 }
 
-/// <summary>
-/// default destructor we didn't dynamically allocate anything
-/// so we don't need to free it, but method needs to be here
-/// </summary>
 Game::~Game()
 {
 }
 
-
-/// <summary>
-/// main game loop
-/// update 60 times per second,
-/// process update as often as possible and at least 60 times per second
-/// draw as often as possible but only updates are on time
-/// if updates run slow then don't render frames
-/// </summary>
 void Game::run()
 {
 	sf::Clock clock;
@@ -91,11 +71,7 @@ void Game::run()
 		render(); // as many as possible
 	}
 }
-/// <summary>
-/// handle user and system events/ input
-/// get key presses/ mouse moves etc. from OS
-/// and user :: Don't do game update here
-/// </summary>
+
 void Game::processEvents()
 {
 	sf::Event newEvent;
@@ -113,14 +89,10 @@ void Game::processEvents()
 		{
 			processMouse(newEvent);
 		}
+		
 	}
 }
 
-
-/// <summary>
-/// deal with key presses from the user
-/// </summary>
-/// <param name="t_event">key press event</param>
 void Game::processKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
@@ -128,17 +100,25 @@ void Game::processKeys(sf::Event t_event)
 		m_exitGame = true;
 	}
 	else if (sf::Keyboard::Space == t_event.key.code)
+	{
 		if (action == "flock")
+		{
 			action = "swarm";
+		}
 		else
+		{
 			action = "flock";
+		}
+	}
+	else if (sf::Keyboard::G == t_event.key.code)
+	{
+		showGrid = !showGrid;
+	}
+
+	
 
 }
 
-/// <summary>
-/// deal with mouse button presses from the user
-/// </summary>
-/// <param name="t_event">mouse press event</param>
 void Game::processMouse(sf::Event t_event)
 {
 	if (sf::Event::MouseButtonReleased == t_event.type && sf::Mouse::Left == t_event.mouseButton.button)
@@ -164,35 +144,21 @@ void Game::processMouse(sf::Event t_event)
 
 }
 
-/// <summary>
-/// Update the game world
-/// </summary>
-/// <param name="t_deltaTime">time interval per frame</param>
 void Game::update(sf::Time t_deltaTime)
 {
-	//Clears previous frames of visualization to not have clutter. (And simulate animation)
 	m_window.clear();
 
-	//Draws all of the Boids out, and applies functions that are needed to update.
+
 	for (int i = 0; i < shapes.size(); i++)
 	{
-		m_window.draw(shapes[i]);
-
-		//Cout's removed due to slowdown and only needed for testing purposes
-		//cout << "Boid "<< i <<" Coordinates: (" << shapes[i].getPosition().x << ", " << shapes[i].getPosition().y << ")" << endl;
-		//cout << "Boid Code " << i << " Location: (" << flock.getBoid(i).location.x << ", " << flock.getBoid(i).location.y << ")" << endl;
-
-		//Matches up the location of the shape to the boid
 		shapes[i].setPosition(flock.getBoid(i).location.x, flock.getBoid(i).location.y);
 
-		// Calculates the angle where the velocity is pointing so that the triangle turns towards it.
 		float theta;
 		theta = flock.getBoid(i).angle(flock.getBoid(i).velocity);
 		shapes[i].setRotation(theta);
 
 	}
 
-	//Applies the three rules to each boid in the flock and changes them accordingly.
 	if (action == "flock")
 		flock.flocking();
 	else
@@ -207,12 +173,39 @@ void Game::update(sf::Time t_deltaTime)
 
 }
 
-/// <summary>
-/// draw the frame and then switch buffers
-/// </summary>
 void Game::render()
 {
-//	m_window.clear(sf::Color::Black);
+	for (int i = 0; i < shapes.size(); i++)
+	{
+		m_window.draw(shapes[i]);
+	}
+
+	if (showGrid)
+	{
+		for (int row = 0; row < ROWS; row++)
+		{
+			for (int col = 0; col < COLS; col++)
+			{
+				m_window.draw(cell[row][col]);
+			}
+		}
+	}
+
 	m_window.draw(m_actionMessage);
 	m_window.display();
+}
+
+void Game::SetupGrid()
+{
+	for (int row = 0; row < ROWS; row++)
+	{
+		for (int col = 0; col < COLS; col++)
+		{
+			cell[row][col].setSize(sf::Vector2f(cellSize, cellSize));
+			cell[row][col].setPosition(row * cellSize, col * cellSize);
+			cell[row][col].setFillColor(sf::Color::Transparent);
+			cell[row][col].setOutlineColor(sf::Color(255,255,255, 50));
+			cell[row][col].setOutlineThickness(2);
+		}
+	}
 }

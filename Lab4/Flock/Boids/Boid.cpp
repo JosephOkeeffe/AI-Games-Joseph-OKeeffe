@@ -211,17 +211,27 @@ void Boid::run(vector <Boid>& v)
 //breaking the laws.
 void Boid::flock(vector<Boid>& v) 
 {
-	Pvector sep = Separation(v);
-	Pvector ali = Alignment(v);
-	Pvector coh = Cohesion(v);
-	// Arbitrarily weight these forces
-	sep.mulScalar(1.5);
-	ali.mulScalar(1.0); // Might need to alter weights for different characteristics
-	coh.mulScalar(1.0);
-	// Add the force vectors to acceleration
-	applyForce(sep);
-	applyForce(ali);
-	applyForce(coh);
+	// optimisation
+	
+	Pvector sep,ali,coh;
+	if (clock.getElapsedTime().asSeconds() > 0.05)
+	{
+		sep = Separation(v);
+		ali = Alignment(v);
+		coh = Cohesion(v);
+
+		// Arbitrarily weight these forces
+		sep.mulScalar(1.5);
+		ali.mulScalar(1.0); // Might need to alter weights for different characteristics
+		coh.mulScalar(1.0);
+		// Add the force vectors to acceleration
+		applyForce(sep);
+		applyForce(ali);
+		applyForce(coh);
+		clock.restart();
+	}
+	
+
 }
 
 // Checks if boids go out of the window and if so, wraps them around to the other side.
@@ -244,35 +254,31 @@ float Boid::angle(Pvector& v)
 
 void Boid::swarm(vector <Boid>& v)
 {
-/*		Lenard-Jones Potential function
-			Vector R = me.position - you.position
-			Real D = R.magnitude()
-			Real U = -A / pow(D, N) + B / pow(D, M)
-			R.normalise()
-			force = force + R*U
-*/
+	float A = 40;  // Attraction
+	float B = 4000;  // Repulsion
+	float N = 1;  // Attenuation values
+	float M = 2;
+	Pvector sum(0,0);
 
-	float A = 1.0;  // Adjust this value for your specific requirements
-	float B = 1.0;  // Adjust this value for your specific requirements
-	float N = 2.0;  // Adjust this value for your specific requirements
-	float M = 6.0;  // Adjust this value for your specific requirements
+	for (int i = 0; i < v.size(); i++)
+	{
+		if (&v[i] != this)
+		{
+			Pvector	R(0, 0);
+			
+			R = R.subTwoVector(location, v[i].location);
+			float D = R.magnitude();
 
-	// Making new vector R
-	Pvector	R;
-	// Dont know what the target is meant to be but for now its just a new vector
-	Pvector	Target;
-	Target.set(500, 500);
-	// Trying to set R to the boid pos - target
-	R.set(v.front().location.subVector(Target));
-	// Getting magnitude of R
-	float D = R.magnitude();
-	// Getting U ?
-	float U = -A / std::pow(D, N) + B / std::pow(D, M);
-	// Normalising R
-	R.normalize();
-	// Getting the sum of R
-	Pvector sum(R.x, R.y);
-	// APplying the force to R
+			if (D > 0)
+			{
+				float U = (-A / powf(D, N)) + (B / powf(D, M));
+				R.normalize();
+				R = R * U;
+				sum.addVector(R);
+			}
+		
+		}
+	}
 	applyForce(sum);
 	update();
 	borders();
