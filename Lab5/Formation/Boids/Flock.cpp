@@ -1,5 +1,6 @@
 #include "Boid.h"
 #include "Flock.h"
+#include "game.h"
 
 using namespace std;
 
@@ -24,13 +25,14 @@ void Flock::addBoid(Boid b)
 
 // Runs the run function for every boid in the flock checking against the flock
 // itself. Which in turn applies all the rules to the flock.
-void Flock::flocking() 
+void Flock::flocking()
 {
 	for (int i = 0; i < flock.size(); i++)
 	{
 		flock[i].run(flock);
 	}
 }
+
 // Runs the swarm function for every boid in the flock checking against the flock
 // itself. Which in turn applies all the rules to the flock.
 void Flock::swarming()
@@ -41,7 +43,9 @@ void Flock::swarming()
 	}
 }
 
-void Flock::CustomFormation(int leader)
+//Runs the formation algorithm which updates the positions based on the position of the leader and 
+//relative position in the formation pattern of the other NPCs.
+void Flock::cFormation(int fLeader)
 {
 	float pi = 3.141592653589793;
 	int fSize = flock.size();
@@ -53,16 +57,14 @@ void Flock::CustomFormation(int leader)
 		int closeEnough = 10;
 		float angleAroundCircle = 0.0;
 		Pvector targetSlot(0, 0);
-		Boid target = flock[leader]; // Our designated leader
+		Boid target = flock[fLeader]; // Our designated leader
 
-		if (i == leader) 
-		{		//Deal with our leader here
+		if (i == fLeader) {		//Deal with our leader here
 			// Any changes to velocity will be done in the steering function
-			flock[i].update("custom");
-			flock[i].WrapAround();
+			flock[i].update("cFormation");
+			flock[i].borders();
 		}
-		else 
-		{    //Find our position in the circle
+		else {    //Find our position in the circle
 			angleAroundCircle = (float)i / (fSize - 1);
 			angleAroundCircle = angleAroundCircle * pi * 2;
 			float radius = npcRadius / sin(pi / (fSize));
@@ -74,74 +76,19 @@ void Flock::CustomFormation(int leader)
 			float D = sub.magnitude();
 			if (D > closeEnough)	// Are we close enough to our slot position, if so just match the leader's velocity.
 			{
-				//				std::cout << "NOT close enough" << std::endl;
+//				std::cout << "NOT close enough" << std::endl;
 				sum = sub;
 				sum.normalize();
 				sum.mulScalar(flock[i].maxSpeed);
 				flock[i].applyForce(sum);
-				flock[i].update("custom");
-				flock[i].WrapAround();
+				flock[i].update("cFormation");
+				flock[i].borders();
 			}
-			else
+			else 
 			{
-				flock[i].velocity = flock[leader].velocity; //Match the leader's velocity if we are close enough
-				flock[i].WrapAround();
+				flock[i].velocity = flock[fLeader].velocity; //Match the leader's velocity if we are close enough
+				flock[i].borders();
 				//				std::cout << "Close enough" << flock[fLeader].velocity.magnitude() << std::endl;
-			}
-		}
-	}
-}
-
-void Flock::LineFormation(int leader)
-{
-	float pi = 3.141592653589793;
-	int fSize = flock.size();
-	int npcRadius = 10;
-	int closeEnough = 10;
-
-	// Find the leader's position in the formation
-	Pvector leaderSlot(0, 0);
-	leaderSlot = flock[leader].location;
-
-	for (int i = 0; i < fSize; i++) 
-	{
-		Pvector sub(0, 0);
-		Pvector sum(0, 0);
-		float angleAroundCircle = 0.0;
-		Pvector targetSlot(0, 0);
-
-		if (i == leader) 
-		{
-			// Deal with our leader here
-			// Any changes to velocity will be done in the steering function
-			flock[i].update("custom");
-			flock[i].WrapAround();
-		}
-		else {
-			// Find the position in the line behind the leader
-			angleAroundCircle = (float)i / (fSize - 1);
-			angleAroundCircle = angleAroundCircle * pi * 2;
-			float radius = npcRadius * (i - leader);
-
-			targetSlot.x = leaderSlot.x - radius;
-			targetSlot.y = leaderSlot.y;
-
-			sub = sub.subTwoVector(targetSlot, flock[i].location);
-			float D = sub.magnitude();
-
-			if (D > closeEnough) 
-			{
-				sum = sub;
-				sum.normalize();
-				sum.mulScalar(flock[i].maxSpeed);
-				flock[i].applyForce(sum);
-				flock[i].update("custom");
-				flock[i].WrapAround();
-			}
-			else
-			{
-				flock[i].velocity = flock[leader].velocity;
-				flock[i].WrapAround();
 			}
 		}
 	}

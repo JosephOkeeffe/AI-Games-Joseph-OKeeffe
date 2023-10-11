@@ -9,7 +9,7 @@
 
 // Global Variables for borders()
 // desktopTemp gets screen resolution of PC running the program
-sf::VideoMode desktopTemp = sf::VideoMode::getDesktopMode(); 
+sf::VideoMode desktopTemp = sf::VideoMode::getDesktopMode();
 const int window_height = desktopTemp.height;
 const int window_width = desktopTemp.width;
 
@@ -24,21 +24,17 @@ using namespace std;
 // =============================================== //
 
 void Boid::accelerate(int power) {
-	if (power == 1) 
-	{//Accelerate.
-		//		acceleration.mulScalar(1.5);
-				// Update velocity
+	if (power == 1) {//Accelerate.
+//		acceleration.mulScalar(1.5);
+		// Update velocity
 		Pvector newVelocity = velocity;
 		// Limit speed
 		if (newVelocity.magnitude() <= maxSpeed)
-		{
-			velocity.mulScalar(1.5);
-		}
+			velocity.mulScalar(1.25);
 
 	}
-	else 
-	{//Decelerate.
-		//		acceleration.mulScalar(.5);
+	else {//Decelerate.
+//		acceleration.mulScalar(.5);
 		velocity.mulScalar(.75);
 	}
 	std::cout << "Acceleration = " << acceleration.magnitude() << std::endl;
@@ -48,15 +44,13 @@ void Boid::accelerate(int power) {
 
 void Boid::steer(int direction) {
 
-	if (direction == 1) 
-	{//Turn right.
+	if (direction == 1) {//Turn right.
 		orientation += 6.0;// / 180.0 * PI;
 	}
-	else 
-	{//Turn left.
+	else {//Turn left.
 		orientation -= 6.0;// / 180.0 * PI;
 	}
-	//	velocity.set(cos(orientation * (PI / 180)), sin(orientation * (PI / 180)));
+//	velocity.set(cos(orientation * (PI / 180)), sin(orientation * (PI / 180)));
 	sf::Vector2f tempVelocity = getVectorFromAngle(orientation);
 	float magnitude = velocity.magnitude();
 	velocity.set(tempVelocity.x, tempVelocity.y);
@@ -65,23 +59,19 @@ void Boid::steer(int direction) {
 
 float Boid::getNewOrientation() {
 
-	if (velocity.magnitude() > 0) 
-	{
+	if (velocity.magnitude() > 0) {
 		float rads = atan2(velocity.y, velocity.x); // atan2 returns radians
-		float newAngle = rads * 180 / PI;  
-		// Convert to degrees
+		float newAngle = rads * 180 / PI;           // Convert to degrees
 		return newAngle + 90;	// Becasue SFML orientation has 0 degrees pointing up, while normal trigonometry has 0 along the x axis.
 	}
 	else
-	{
 		return orientation;
-	}
 }
 
 sf::Vector2f Boid::getVectorFromAngle(float a)
 {
 	float rads = (a - 90) / 180.0 * PI; // Convert to radians. 
-	// First subtact 90 to move back to normal cordinate space (not SFML space) for COS and SIN to give us the corect values.
+										// First subtact 90 to move back to normal cordinate space (not SFML space) for COS and SIN to give us the corect values.
 	sf::Vector2f newVector = sf::Vector2f(cos(rads), sin(rads));
 	return newVector;
 }
@@ -98,9 +88,8 @@ Pvector Boid::Separation(vector<Boid>& boids)
 {
 	// If the boid we're looking at is a predator, do not run the separation
 	// algorithm
-	
+
 	// Distance of field of vision for separation between boids
-	// For simplicity we are not implementing a cone of vision here.
 	float desiredseparation = 20;
 
 	Pvector steer(0, 0);
@@ -110,45 +99,42 @@ Pvector Boid::Separation(vector<Boid>& boids)
 	{
 		// Calculate distance from current boid to boid we're looking at
 		float d = location.distance(boids[i].location);
-		if (d < neighbourDistance) //Only nearest neighbours
+		// If this is a fellow boid and it's too close, move away from it
+		if ((d > 0) && (d < desiredseparation))
 		{
-			// If this is a fellow boid and it's too close, move away from it
-			if ((d > 0) && (d < desiredseparation))
-			{
-				Pvector diff(0, 0);
-				diff = diff.subTwoVector(location, boids[i].location);
-				diff.normalize();
-				diff.divScalar(d);      // Weight by distance
-				steer.addVector(diff);
-				count++;
-			}
-			// If current boid is a predator and the boid we're looking at is also
-			// a predator, then separate only slightly 
-			if ((d > 0) && (d < desiredseparation) && predator == true && boids[i].predator == true)
-			{
-				Pvector pred2pred(0, 0);
-				pred2pred = pred2pred.subTwoVector(location, boids[i].location);
-				pred2pred.normalize();
-				pred2pred.divScalar(d);
-				steer.addVector(pred2pred);
-				count++;
-			}
-			// If current boid is not a predator, but the boid we're looking at is
-			// a predator, then create a large separation Pvector
-			else if ((d > 0) && (d < desiredseparation + 70) && boids[i].predator == true)
-			{
-				Pvector pred(0, 0);
-				pred = pred.subTwoVector(location, boids[i].location);
-				pred.mulScalar(900);
-				steer.addVector(pred);
-				count++;
-			}
+			Pvector diff(0, 0);
+			diff = diff.subTwoVector(location, boids[i].location);
+			diff.normalize();
+			diff.divScalar(d);      // Weight by distance
+			steer.addVector(diff);
+			count++;
+		}
+		// If current boid is a predator and the boid we're looking at is also
+		// a predator, then separate only slightly 
+		if ((d > 0) && (d < desiredseparation) && predator == true && boids[i].predator == true)
+		{
+			Pvector pred2pred(0, 0);
+			pred2pred = pred2pred.subTwoVector(location, boids[i].location);
+			pred2pred.normalize();
+			pred2pred.divScalar(d);
+			steer.addVector(pred2pred);
+			count++;
+		}
+		// If current boid is not a predator, but the boid we're looking at is
+		// a predator, then create a large separation Pvector
+		else if ((d > 0) && (d < desiredseparation + 70) && boids[i].predator == true)
+		{
+			Pvector pred(0, 0);
+			pred = pred.subTwoVector(location, boids[i].location);
+			pred.mulScalar(900);
+			steer.addVector(pred);
+			count++;
 		}
 	}
 	// Adds average difference of location to acceleration
 	if (count > 0)
 		steer.divScalar((float)count);
-	if (steer.magnitude() > 0) 
+	if (steer.magnitude() > 0)
 	{
 		// Steering = Desired - Velocity
 		steer.normalize();
@@ -168,14 +154,14 @@ Pvector Boid::Alignment(vector<Boid>& Boids)
 	// algorithm
 	//if (predator == true)
 	//	return Pvector(0,0);
-//	float neighbordist = 50;
+	float neighbordist = 50;
 
-	Pvector sum(0, 0);	
+	Pvector sum(0, 0);
 	int count = 0;
 	for (int i = 0; i < Boids.size(); i++)
 	{
 		float d = location.distance(Boids[i].location);
-		if ((d > 0) && (d < neighbourDistance)) // 0 < d < 50. Only nearest neighbours
+		if ((d > 0) && (d < neighbordist)) // 0 < d < 50
 		{
 			sum.addVector(Boids[i].velocity);
 			count++;
@@ -188,11 +174,12 @@ Pvector Boid::Alignment(vector<Boid>& Boids)
 		sum.normalize();	   		// Turn sum into a unit vector, and
 		sum.mulScalar(maxSpeed);    // Multiply by maxSpeed
 		// Steer = Desired - Velocity
-		Pvector steer; 
+		Pvector steer;
 		steer = steer.subTwoVector(sum, velocity); //sum = desired(average)  
 		steer.limit(maxForce);
 		return steer;
-	} else {
+	}
+	else {
 		Pvector temp(0, 0);
 		return temp;
 	}
@@ -207,14 +194,14 @@ Pvector Boid::Cohesion(vector<Boid>& Boids)
 	//if (predator == true)
 	//	return Pvector(0,0);
 
-//	float neighbordist = 50;
+	float neighbordist = 50;
 
-	Pvector sum(0, 0);	
+	Pvector sum(0, 0);
 	int count = 0;
 	for (int i = 0; i < Boids.size(); i++)
 	{
 		float d = location.distance(Boids[i].location);
-		if ((d > 0) && (d < neighbourDistance))
+		if ((d > 0) && (d < neighbordist))
 		{
 			sum.addVector(Boids[i].location);
 			count++;
@@ -224,8 +211,9 @@ Pvector Boid::Cohesion(vector<Boid>& Boids)
 	{
 		sum.divScalar(count);
 		return seek(sum);
-	} else {
-		Pvector temp(0,0);
+	}
+	else {
+		Pvector temp(0, 0);
 		return temp;
 	}
 }
@@ -249,21 +237,21 @@ Pvector Boid::seek(Pvector& v)
 //are given by the three laws.
 void Boid::update(string formation)
 {
-	if (formation == "custom")	// Need to treat the leader differently
+	
+	if (formation == "cFormation")	// Need to treat the leader differently
 	{
 		if (isLeader)
 		{
 			std::cout << "Leader velocity = " << velocity.x << ", " << velocity.y << std::endl;
 			// Update velocity
 			location.addVector(velocity);
-
 		}
 		else
 		{
 			// Update velocity
 			velocity.addVector(acceleration);
 			// Limit speed
-			velocity.limit(maxSpeed * 3);	// Without this higher speedup, the formation members were going too slow to cath the leader and get into formation.
+			velocity.limit(maxSpeed*3);	// Without this higher speedup, the formation members were going too slow to cath the leader and get into formation.
 			location.addVector(velocity);
 			// Reset accelertion to 0 each cycle
 			acceleration.mulScalar(0);
@@ -271,16 +259,17 @@ void Boid::update(string formation)
 	}
 	else
 	{
-		//To make the slow down not as abrupt
-		acceleration.mulScalar(.4);
-		// Update velocity
-		velocity.addVector(acceleration);
-		// Limit speed
-		velocity.limit(maxSpeed);
-		location.addVector(velocity);
-		// Reset accelertion to 0 each cycle
-		acceleration.mulScalar(0);
+			// Update velocity
+			velocity.addVector(acceleration);
+			// Limit speed
+			velocity.limit(maxSpeed);
+			location.addVector(velocity);
+			// Reset accelertion to 0 each cycle
+			acceleration.mulScalar(0);
 	}
+
+	orientation = getNewOrientation();
+
 }
 
 //Run runs flock on the flock of boids for each boid.
@@ -289,41 +278,31 @@ void Boid::update(string formation)
 void Boid::run(vector <Boid>& v)
 {
 	flock(v);
-	update("flock");
-	WrapAround();
+	update("Flock");
+	borders();
 }
 
 //Applies all three laws for the flock of boids and modifies to keep them from
 //breaking the laws.
-void Boid::flock(vector<Boid>& v) 
+void Boid::flock(vector<Boid>& v)
 {
-	// optimisation
-	
-	Pvector sep,ali,coh;
-	if (clock.getElapsedTime().asSeconds() > 0.05)
-	{
-		sep = Separation(v);
-		ali = Alignment(v);
-		coh = Cohesion(v);
-
-		// Arbitrarily weight these forces
-		sep.mulScalar(1.5);
-		ali.mulScalar(1.0); // Might need to alter weights for different characteristics
-		coh.mulScalar(1.0);
-		// Add the force vectors to acceleration
-		applyForce(sep);
-		applyForce(ali);
-		applyForce(coh);
-		clock.restart();
-	}
-	
-
+	Pvector sep = Separation(v);
+	Pvector ali = Alignment(v);
+	Pvector coh = Cohesion(v);
+	// Arbitrarily weight these forces
+	sep.mulScalar(1.5);
+	ali.mulScalar(1.0); // Might need to alter weights for different characteristics
+	coh.mulScalar(1.0);
+	// Add the force vectors to acceleration
+	applyForce(sep);
+	applyForce(ali);
+	applyForce(coh);
 }
 
 // Checks if boids go out of the window and if so, wraps them around to the other side.
-void Boid::WrapAround()
+void Boid::borders()
 {
-	if (location.x < 0) location.x = w_width; 
+	if (location.x < 0) location.x = w_width;
 	if (location.y < 0) location.y += w_height;
 	if (location.x > w_width) location.x = 0;
 	if (location.y > w_height) location.y = 0;
@@ -334,38 +313,55 @@ void Boid::WrapAround()
 float Boid::angle(Pvector& v)
 {
 	// From the definition of the dot product
-	float angle = (float)(atan2(v.x, -v.y) * 180 / PI);
+	float angle = (float)(atan2(v.x, -v.y) * 180 / PI);	// Return angle in Degrees
 	return angle;
 }
 
 void Boid::swarm(vector <Boid>& v)
 {
-	float A = 40;  // Attraction
-	float B = 4000;  // Repulsion
-	float N = 1;  // Attenuation values
-	float M = 2;
-	Pvector sum(0,0);
+	/*		Lenard-Jones Potential function
+	A = Attractive force
+	B = Repulsivive force
+	Vector R = me.position - you.position
+	Real D = R.magnitude()
+	Real U = -A / pow(D, N) + B / pow(D, M)
+	R.normalise()
+	force = force + R*U
+	*/
+	Pvector	R;
+	//int a = 100;
+	//int b = 7000;
+	//int n = 1;
+	//int m = 2;
+	int A = 100;
+	int B = 7000;
+	int N = 1;
+	int M = 2;
+	int count = 0;
+	float totalForce = 0;
+	Pvector sum(0, 0);
 
 	for (int i = 0; i < v.size(); i++)
 	{
-		if (&v[i] != this)
+		R = R.subTwoVector(location, v[i].location);
+		float D = R.magnitude();
+		if (D > 0) // make sure we are not comparing to ourselves.
 		{
-			Pvector	R(0, 0);
-			
-			R = R.subTwoVector(location, v[i].location);
-			float D = R.magnitude();
-
-			if (D > 0)
-			{
-				float U = (-A / powf(D, N)) + (B / powf(D, M));
-				R.normalize();
-				R = R * U;
-				sum.addVector(R);
-			}
-		
+			float U = -A / pow(D, N) + B / pow(D, M);
+			R.normalize();
+			R.mulScalar(U);
+			sum.addVector(R);
+			count++;
 		}
+
 	}
+	if (count > 0) //Get the average over all forces
+	{
+		sum.divScalar(count);
+	}
+
+	// Add the force vectors to acceleration
 	applyForce(sum);
-	update("swarm");
-	WrapAround();
+	update("Swarm");
+	borders();
 }

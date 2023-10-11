@@ -2,13 +2,14 @@
 #include <iostream>
 using namespace std;
 
-Game::Game()
+Game::Game() 
+
 {
 	window_height = desktop.height;
 	window_width = desktop.width;
 
 	//Having the style of "None" gives a false-fullscreen effect for easier closing and access.
-	m_window.create(sf::VideoMode(window_width - 100, window_height - 100, desktop.bitsPerPixel), "Flocking", sf::Style::None);
+	m_window.create(sf::VideoMode(window_width - 100, window_height - 100, desktop.bitsPerPixel), "Flocking");
 	m_window.setVerticalSyncEnabled(true);
 	m_exitGame = false; //when true game will exit
 
@@ -23,19 +24,14 @@ Game::Game()
 	else
 		std::cout << "successfully loaded ariblk.ttf font file" << std::endl;
 
-	SetupGrid();
-
 	for (int i = 0; i < MAX_BOIDS; i++) //Number of boids is hardcoded for testing pusposes.
 	{
 		//Boid b(rand() % window_width, rand() % window_height); //Starts the boid with a random position in the window.
 		Boid b(window_width / 3, window_height / 3); //Starts all boids in the center of the screen
-		if (i == leader)
-		{
+		if (i == leader) 
 			b.isLeader = true;
-		}
-		sf::CircleShape shape(8, 3); //Shape with a radius of 10 and 3 points (Making it a triangle)
+		sf::CircleShape shape(10, 3); //Shape with a radius of 10 and 3 points (Making it a triangle)
 
-		//Changing the Visual Properties of the shape
 		//shape.setPosition(b.location.x, b.location.y); //Sets position of shape to random location that boid was set to.
 		shape.setPosition(window_width, window_height); //Testing purposes, starts all shapes in the center of screen.
 		shape.setOutlineColor(sf::Color(0, 255, 0));
@@ -43,6 +39,7 @@ Game::Game()
 		shape.setOutlineColor(sf::Color::White);
 		shape.setOutlineThickness(1);
 		shape.setRadius(boidsSize);
+		shape.setOrigin(boidsSize / 2, boidsSize / 2);
 
 		//Adding the boid to the flock and adding the shapes to the vector<sf::CircleShape>
 		flock.addBoid(b);
@@ -88,14 +85,18 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
-		if (sf::Event::MouseButtonPressed == newEvent.type || sf::Event::MouseButtonReleased == newEvent.type) //user pressed a mouse button
+		if (sf::Event::MouseButtonPressed == newEvent.type || sf::Event::MouseButtonReleased == newEvent.type) //user pressed a key
 		{
 			processMouse(newEvent);
 		}
-		
 	}
 }
 
+
+/// <summary>
+/// deal with key presses from the user
+/// </summary>
+/// <param name="t_event">key press event</param>
 void Game::processKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
@@ -106,34 +107,20 @@ void Game::processKeys(sf::Event t_event)
 	if (sf::Keyboard::Down == t_event.key.code) { flock.getBoid(leader)->accelerate(-1); }
 	if (sf::Keyboard::Left == t_event.key.code) { flock.getBoid(leader)->steer(-1); }
 	if (sf::Keyboard::Right == t_event.key.code) { flock.getBoid(leader)->steer(1); }
+	else if (sf::Keyboard::C == t_event.key.code)
+		action = "cformation";
 	else if (sf::Keyboard::Space == t_event.key.code)
-	{
 		if (action == "flock")
-		{
 			action = "swarm";
-		}
 		else
-		{
 			action = "flock";
-		}
-	}
-	else if (sf::Keyboard::Num1 == t_event.key.code)
-	{
-		action = "custom";
-	}
-	else if (sf::Keyboard::Num2 == t_event.key.code)
-	{
-		action = "line";
-	}
-	else if (sf::Keyboard::G == t_event.key.code)
-	{
-		showGrid = !showGrid;
-	}
-
-	
 
 }
 
+/// <summary>
+/// deal with mouse button presses from the user
+/// </summary>
+/// <param name="t_event">mouse press event</param>
 void Game::processMouse(sf::Event t_event)
 {
 	if (sf::Event::MouseButtonReleased == t_event.type && sf::Mouse::Left == t_event.mouseButton.button)
@@ -159,41 +146,49 @@ void Game::processMouse(sf::Event t_event)
 
 }
 
+/// <summary>
+/// Update the game world
+/// </summary>
+/// <param name="t_deltaTime">time interval per frame</param>
 void Game::update(sf::Time t_deltaTime)
 {
+	//Clears previous frames of visualization to not have clutter. (And simulate animation)
 	m_window.clear();
 
-
+	//Draws all of the Boids out, and applies functions that are needed to update.
 	for (int i = 0; i < shapes.size(); i++)
 	{
+		m_window.draw(shapes[i]);
+
+		//Cout's removed due to slowdown and only needed for testing purposes
+		//cout << "Boid "<< i <<" Coordinates: (" << shapes[i].getPosition().x << ", " << shapes[i].getPosition().y << ")" << endl;
+		//cout << "Boid Code " << i << " Location: (" << flock.getBoid(i).location.x << ", " << flock.getBoid(i).location.y << ")" << endl;
+
+		//Matches up the location of the shape to the boid
 		shapes[i].setPosition(flock.getBoid(i)->location.x, flock.getBoid(i)->location.y);
 
+		// Calculates the angle where the velocity is pointing so that the triangle turns towards it.
 		float theta;
-		theta = flock.getBoid(i)->angle(flock.getBoid(i)->velocity);
-		shapes[i].setRotation(theta);
-
+		shapes[i].setRotation(flock.getBoid(i)->orientation);
+//		if (i==leader)
+//			cout << "Boid "<< i <<" Rotation: " << shapes[i].getRotation() << endl;
 	}
 
+	//Applies the three rules to each boid in the flock and changes them accordingly.
 	if (action == "flock")
 	{
 		flock.flocking();
+		shapes[leader].setFillColor(sf::Color::Green);
 	}
-	else if (action == "custom")
+	else if (action == "cformation")
 	{
-		flock.CustomFormation(leader);
-		shapes[leader].setFillColor(sf::Color::Magenta);
-		shapes[leader].setRadius(5);
-	}
-	else if (action == "line")
-	{
-		flock.LineFormation(leader);
-		shapes[leader].setFillColor(sf::Color::Magenta);
-		shapes[leader].setRadius(5);
+		flock.cFormation(leader);
+		shapes[leader].setFillColor(sf::Color::Red);
 	}
 	else
 	{
-
 		flock.swarming();
+		shapes[leader].setFillColor(sf::Color::Green);
 	}
 
 	if (m_exitGame)
@@ -202,42 +197,20 @@ void Game::update(sf::Time t_deltaTime)
 	}
 	if (m_actionMessage.getString() != action)
 		m_actionMessage.setString(action);
+	
+	// Debug for the leaders orientation
+	if (action == "cformation") 
+		m_actionMessage.setString(m_actionMessage.getString() + " - Leader: " + to_string(flock.getBoid(leader)->orientation));
+
 
 }
 
+/// <summary>
+/// draw the frame and then switch buffers
+/// </summary>
 void Game::render()
 {
-	for (int i = 0; i < shapes.size(); i++)
-	{
-		m_window.draw(shapes[i]);
-	}
-
-	if (showGrid)
-	{
-		for (int row = 0; row < ROWS; row++)
-		{
-			for (int col = 0; col < COLS; col++)
-			{
-				m_window.draw(cell[row][col]);
-			}
-		}
-	}
-
+//	m_window.clear(sf::Color::Black);	
 	m_window.draw(m_actionMessage);
 	m_window.display();
-}
-
-void Game::SetupGrid()
-{
-	for (int row = 0; row < ROWS; row++)
-	{
-		for (int col = 0; col < COLS; col++)
-		{
-			cell[row][col].setSize(sf::Vector2f(cellSize, cellSize));
-			cell[row][col].setPosition(row * cellSize, col * cellSize);
-			cell[row][col].setFillColor(sf::Color::Transparent);
-			cell[row][col].setOutlineColor(sf::Color(255,255,255, 50));
-			cell[row][col].setOutlineThickness(2);
-		}
-	}
 }
