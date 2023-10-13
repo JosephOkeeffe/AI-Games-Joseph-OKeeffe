@@ -54,6 +54,8 @@ void Flock::CustomFormation(int leader)
 		float angleAroundCircle = 0.0;
 		Pvector targetSlot(0, 0);
 		Boid target = flock[leader]; // Our designated leader
+		
+
 
 		if (i == leader) 
 		{		//Deal with our leader here
@@ -68,8 +70,8 @@ void Flock::CustomFormation(int leader)
 			float radius = npcRadius / sin(pi / (fSize));
 
 			targetSlot = target.location;
-			targetSlot.x = targetSlot.x + radius * cos(angleAroundCircle);
-			targetSlot.y = targetSlot.y + radius * sin(angleAroundCircle);
+			targetSlot.x = targetSlot.x - radius * cos(angleAroundCircle);
+			targetSlot.y = targetSlot.y - radius * sin(angleAroundCircle);
 			sub = sub.subTwoVector(targetSlot, flock[i].location);
 			float D = sub.magnitude();
 			if (D > closeEnough)	// Are we close enough to our slot position, if so just match the leader's velocity.
@@ -109,6 +111,10 @@ void Flock::LineFormation(int leader)
 		Pvector sum(0, 0);
 		float angleAroundCircle = 0.0;
 		Pvector targetSlot(0, 0);
+		sf::Vector2f leaderPos;
+		leaderPos.x = flock[leader].location.x;
+		leaderPos.y = flock[leader].location.x;
+
 
 		if (i == leader) 
 		{
@@ -117,7 +123,8 @@ void Flock::LineFormation(int leader)
 			flock[i].update("custom");
 			flock[i].WrapAround();
 		}
-		else {
+		else 
+		{
 			// Find the position in the line behind the leader
 			angleAroundCircle = (float)i / (fSize - 1);
 			angleAroundCircle = angleAroundCircle * pi * 2;
@@ -136,6 +143,7 @@ void Flock::LineFormation(int leader)
 				sum.mulScalar(flock[i].maxSpeed);
 				flock[i].applyForce(sum);
 				flock[i].update("custom");
+				
 				flock[i].WrapAround();
 			}
 			else
@@ -143,6 +151,12 @@ void Flock::LineFormation(int leader)
 				flock[i].velocity = flock[leader].velocity;
 				flock[i].WrapAround();
 			}
+			flock[i].transform.translate(leaderPos);
+			flock[i].transform.rotate(15, leaderPos);
 		}
+
+		//transform.translate(leaderPos);
+
+
 	}
 }

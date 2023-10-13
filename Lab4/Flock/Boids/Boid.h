@@ -22,6 +22,9 @@ public:
 	float maxForce;
 	int neighbourDistance = 75;
 
+	sf::Transform transform;
+
+
 	Boid() {}
 	Boid(float x, float y)
 	{

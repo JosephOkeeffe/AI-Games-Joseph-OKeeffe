@@ -209,7 +209,8 @@ void Game::render()
 {
 	for (int i = 0; i < shapes.size(); i++)
 	{
-		m_window.draw(shapes[i]);
+		m_window.draw(shapes[i], flock.transform);
+		
 	}
 
 	if (showGrid)

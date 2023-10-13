@@ -26,6 +26,7 @@ public:
 	void swarming();
 	void CustomFormation(int leader);
 	void LineFormation(int leader);
+	sf::Transform transform;
 
 
 };
