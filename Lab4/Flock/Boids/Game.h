@@ -53,11 +53,8 @@ private:
 	int cellSize = 100;
 	sf::RectangleShape cell[ROWS][COLS];
 	bool showGrid = false;
-	//
 
-	int MAX_BOIDS = 50; 
-	// 500 is optimal for swarming
-	// flocking can hanlde 1000
+	int MAX_BOIDS = 56; 
 
 	Flock flock;
 	vector<sf::CircleShape> shapes;

@@ -10,7 +10,7 @@ using namespace std;
 //Sets values of x and y for Pvector
 void Pvector::set(float i, float o)
 {
-	x = i;
+	x= i;
 	y = o;
 }
 
@@ -86,8 +86,6 @@ void Pvector::limit(double max)
 	if (size > max)
 	{
 		set(x / size, y / size); 
-//		normalize();
-//		set(x * max, y * max);
 	}
 }
 

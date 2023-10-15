@@ -21,6 +21,9 @@ public:
 	/// </summary>
 	void run();
 
+	int window_height;
+	int window_width;
+
 private:
 
 	void processEvents();
@@ -29,29 +32,34 @@ private:
 	void update(sf::Time t_deltaTime);
 	void render();
 
+	void SetupGrid();
+
 	sf::RenderWindow m_window; // main SFML window
 	//Gets the resolution, size, and bits per pixel for the screen of the PC that is running this program.
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::Font m_font;
-	int window_height;
-	int window_width;
 	sf::Text m_actionMessage; // text used for message on screen
 
 	bool m_exitGame; // control exiting game
 
 	float boidsSize = 3;
 	float enemySize = 10;
-	string action = "cformation";
-
-	int leader = 9; // The leader of the formation will be the boid in this slot
-
+	string action = "custom";
 	bool close = false;
 
-	//Create flock, vector of shapes, and initialize boids
+	// Grid
+	static const int ROWS = 38;
+	static const int COLS = 26;
+	int cellSize = 100;
+	sf::RectangleShape cell[ROWS][COLS];
+	bool showGrid = false;
+
+	int MAX_BOIDS = 56; 
+
 	Flock flock;
 	vector<sf::CircleShape> shapes;
 
-	int MAX_BOIDS = 50;
+	int leader = 0;
 };
 
 #endif // !GAME_HPP
