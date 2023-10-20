@@ -1,11 +1,12 @@
 #include "Game.h"
 #include <iostream>
+#include "Global.h"
 
 Game::Game() :
-	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "SFML Game" },
+	m_window{ sf::VideoMode{ Global::S_WIDTH, Global::S_HEIGHT, 32U }, "SFML Game" },
 	m_exitGame{false}
 {
-	setupFontAndText();
+	init();
 	setupSprite();
 }
 
@@ -46,6 +47,10 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
+		if (sf::Event::MouseButtonReleased == newEvent.type)
+		{
+			processMouse(newEvent);
+		}
 	}
 }
 
@@ -56,46 +61,95 @@ void Game::processKeys(sf::Event t_event)
 		m_exitGame = true;
 	}
 }
+void Game::processMouse(sf::Event t_event)
+{
+	if (sf::Mouse::Left == t_event.key.code)
+	{
+		
+		startPos = GetCurrentCell();
+
+		if (isStartTile)
+		{
+			sf::Vector2i oldStartPos = startPos;
+			tile[oldStartPos.x][oldStartPos.y].SetStart();
+		}
+		else
+		{
+			// reset color back
+			isStartTile = true;
+			tile[GetCurrentCell().x][GetCurrentCell().y].SetStart();
+		}
+		
+		
+		
+		
+		std::cout << "Start X:" << startPos.x << "\n";
+		std::cout << "Start Y:" << startPos.y << "\n";
+
+	}
+	if (sf::Mouse::Middle == t_event.key.code)
+	{
+		tile[GetCurrentCell().x][GetCurrentCell().y].SetObstacle();
+	}
+	if (sf::Mouse::Right == t_event.key.code)
+	{
+		isGoalTile = true;
+		tile[GetCurrentCell().x][GetCurrentCell().y].SetGoal();
+		goalPos = GetCurrentCell();
+		std::cout << "Goal X:" << goalPos.x << "\n";
+		std::cout << "Goal Y:" << goalPos.y << "\n";
+	}
+
+}
 
 void Game::update(sf::Time t_deltaTime)
 {
-	if (m_exitGame)
+	//if (m_exitGame){m_window.close();}
+	//for (int row = 0; row < ROWS; row++)
+	//{
+	//	for (int col = 0; col < COLS; col++)
+	//	{
+	//		tile[row][col].GetTilePosition(m_window);
+	//	}
+	//}
+}
+
+void Game::init()
+{
+	for (int row = 0; row < ROWS; row++)
 	{
-		m_window.close();
+		for (int col = 0; col < COLS; col++)
+		{
+			tile[row][col].Init(sf::Vector2f(row * cellSize, col * cellSize));
+		}
 	}
+	
 }
 
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
-	m_window.draw(m_welcomeMessage);
-	m_window.draw(m_logoSprite);
-	m_window.display();
-}
+	m_window.clear(sf::Color::Black);
 
-void Game::setupFontAndText()
-{
-	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
+	for (int row = 0; row < ROWS; row++)
 	{
-		std::cout << "problem loading arial black font" << std::endl;
+		for (int col = 0; col < COLS; col++)
+		{
+			tile[row][col].Render(m_window);
+		}
 	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80U);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
+	m_window.display();
+
 }
 
+sf::Vector2i Game::GetCurrentCell()
+{
+	sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
+	mousePos /= cellSize;
+
+	return mousePos;
+}
 
 void Game::setupSprite()
 {
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
-	{
-		std::cout << "problem loading logo" << std::endl;
-	}
-	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
 }
+

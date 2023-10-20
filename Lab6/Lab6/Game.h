@@ -3,6 +3,8 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include "Grid.h"
+#include "Tile.h"
 
 class Game
 {
@@ -15,19 +17,30 @@ private:
 
 	void processEvents();
 	void processKeys(sf::Event t_event);
+	void processMouse(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
+	void init();
 	void render();
+
+	sf::Vector2i GetCurrentCell();
+
 	
-	void setupFontAndText();
 	void setupSprite();
 
 	sf::RenderWindow m_window; 
-	sf::Font m_ArialBlackfont; 
-	sf::Text m_welcomeMessage; 
-	sf::Texture m_logoTexture; 
-	sf::Sprite m_logoSprite;
 	bool m_exitGame;
 
+	//Grid grid;
+	static const int ROWS = 50;
+	static const int COLS = 50;
+	int cellSize = 26;
+	Tile tile[ROWS][COLS];
+
+	bool isStartTile = false;
+	bool isGoalTile = false;
+
+	sf::Vector2i startPos;
+	sf::Vector2i goalPos;
 };
 
 #endif
