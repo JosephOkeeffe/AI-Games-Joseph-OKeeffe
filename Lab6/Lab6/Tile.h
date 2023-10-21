@@ -4,17 +4,17 @@ class Tile
 {
 public:
 
-
 	void Init(sf::Vector2f& position);
 	void Render(sf::RenderWindow& window);
 	void SetStart();
 	void SetGoal();
 	void SetObstacle();
-
+	void Reset();
+	void CheckStatus();
+	void UpdateCost();
 
 	sf::RectangleShape tile;
-	int gridCellWidth = 26;
-	int cost;
+	int cost = 0;
 	int integrationField; // cost + distance
 	sf::Vector2f floField;
 
@@ -22,6 +22,8 @@ public:
 	bool isGoalTile = false;
 	bool isObstacleTile = false;
 
-	//sf::Text costDisplay; // show costs on screen
+	sf::Font font;
+	sf::Text text;
+
 };
 

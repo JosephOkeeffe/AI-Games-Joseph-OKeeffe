@@ -3,8 +3,8 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Grid.h"
 #include "Tile.h"
+#include "Global.h"
 
 class Game
 {
@@ -23,24 +23,22 @@ private:
 	void render();
 
 	sf::Vector2i GetCurrentCell();
-
-	
 	void setupSprite();
+	void BushFire();
+	std::vector<sf::Vector2i> FindPath();
 
 	sf::RenderWindow m_window; 
 	bool m_exitGame;
 
-	//Grid grid;
-	static const int ROWS = 50;
-	static const int COLS = 50;
-	int cellSize = 26;
-	Tile tile[ROWS][COLS];
+	Tile tile[Global::ROWS_COLUMNS][Global::ROWS_COLUMNS];
 
 	bool isStartTile = false;
 	bool isGoalTile = false;
 
+	sf::Vector2i previousCellPos;
+	sf::Vector2i currentCellPos;
 	sf::Vector2i startPos;
-	sf::Vector2i goalPos;
+	sf::Vector2i goalPos{ 1, 1 };
 };
 
 #endif
