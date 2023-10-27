@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Global.h"
 
-void Tile::Init(sf::Vector2f& position)
+void Tile::Init(sf::Vector2f& position, sf::Font& font)
 {
 	tile.setFillColor(sf::Color::Transparent);
 	tile.setSize(sf::Vector2f(Global::CELL_SIZE, Global::CELL_SIZE));
@@ -10,14 +10,12 @@ void Tile::Init(sf::Vector2f& position)
 	tile.setOutlineColor(sf::Color(255,255,255, 100));
 	tile.setPosition(position);
 
-	if (!font.loadFromFile("./ASSETS/FONTS/ariblk.ttf")) {
-		std::cout << "ajnd \n";
-	}
+	
 	text.setFont(font);
 	text.setFillColor(sf::Color::White);
-	text.setCharacterSize(Global::CELL_SIZE / 4);
+	text.setCharacterSize(Global::CELL_SIZE / 2);
 	text.setString(std::to_string(cost));
-	text.setPosition(tile.getPosition().x + (tile.getSize().x / 4), tile.getPosition().y + (tile.getSize().y / 2));
+	text.setPosition(tile.getPosition().x + (tile.getSize().x / 4.5), tile.getPosition().y + (tile.getSize().y / 3));
 	text.setOutlineThickness(1);
 	text.setOutlineColor(sf::Color::Black);
 }

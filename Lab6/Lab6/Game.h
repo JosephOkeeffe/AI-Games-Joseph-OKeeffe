@@ -21,6 +21,7 @@ private:
 	void update(sf::Time t_deltaTime);
 	void init();
 	void render();
+	void initTiles();
 
 	sf::Vector2i GetCurrentCell();
 	void setupSprite();
@@ -30,7 +31,11 @@ private:
 	sf::RenderWindow m_window; 
 	bool m_exitGame;
 
-	Tile tile[Global::ROWS_COLUMNS][Global::ROWS_COLUMNS];
+	//Tile tiles[Global::ROWS_COLUMNS][Global::ROWS_COLUMNS];
+	Tile** tiles;
+
+	sf::Font font;
+
 
 	bool isStartTile = false;
 	bool isGoalTile = false;

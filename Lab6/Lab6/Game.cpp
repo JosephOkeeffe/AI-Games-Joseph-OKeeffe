@@ -78,13 +78,13 @@ void Game::processMouse(sf::Event t_event)
 		
 		if (isStartTile)
 		{
-			tile[previousCellPos.x][previousCellPos.y].Reset();
-			tile[GetCurrentCell().x][GetCurrentCell().y].SetStart();
+			tiles[previousCellPos.x][previousCellPos.y].Reset();
+			tiles[GetCurrentCell().x][GetCurrentCell().y].SetStart();
 		}
 		else
 		{
 			isStartTile = true;
-			tile[currentCellPos.x][currentCellPos.y].SetStart();
+			tiles[currentCellPos.x][currentCellPos.y].SetStart();
 		}
 		startPos = currentCellPos;
 		
@@ -92,7 +92,7 @@ void Game::processMouse(sf::Event t_event)
 
 	if (sf::Mouse::Middle == t_event.key.code)
 	{
-		tile[GetCurrentCell().x][GetCurrentCell().y].SetObstacle();
+		tiles[GetCurrentCell().x][GetCurrentCell().y].SetObstacle();
 	}
 	if (sf::Mouse::Right == t_event.key.code)
 	{
@@ -100,7 +100,7 @@ void Game::processMouse(sf::Event t_event)
 		{
 			isGoalTile = true;
 			goalPos = GetCurrentCell();
-			tile[GetCurrentCell().x][GetCurrentCell().y].SetGoal();
+			tiles[GetCurrentCell().x][GetCurrentCell().y].SetGoal();
 
 			BushFire();
 		}
@@ -137,14 +137,17 @@ void Game::update(sf::Time t_deltaTime)
 
 void Game::init()
 {
-	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
-	{
-		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
-		{
-			tile[row][col].Init(sf::Vector2f(row * Global::CELL_SIZE, col * Global::CELL_SIZE));
-		}
-	}
+	font.loadFromFile("./ASSETS/FONTS/ariblk.ttf");
 	
+	
+	tiles = new Tile * [Global::ROWS_COLUMNS];
+
+	for (int i = 0; i < Global::ROWS_COLUMNS; i++)
+	{
+		tiles[i] = new Tile[Global::ROWS_COLUMNS];
+		
+	}
+	initTiles();
 }
 
 void Game::render()
@@ -155,11 +158,22 @@ void Game::render()
 	{
 		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 		{
-			tile[row][col].Render(m_window);
+			tiles[row][col].Render(m_window);
 		}
 	}
 	m_window.display();
 
+}
+
+void Game::initTiles()
+{
+	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+	{
+		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+		{
+			tiles[row][col].Init(sf::Vector2f(row * Global::CELL_SIZE, col * Global::CELL_SIZE), font);
+		}
+	}
 }
 
 sf::Vector2i Game::GetCurrentCell()
@@ -184,21 +198,21 @@ void Game::BushFire()
     {
         for (int y = 0; y < Global::ROWS_COLUMNS; y++)
         {
-            tile[x][y].integrationField = INT_MAX;
+            tiles[x][y].integrationField = INT_MAX;
         }
     }
 
     std::queue<sf::Vector2i> queue;
     queue.push(goalPos);
 
-	tile[goalPos.x][goalPos.y].cost = 0;
-    tile[goalPos.x][goalPos.y].integrationField = 0;
+	tiles[goalPos.x][goalPos.y].cost = 0;
+    tiles[goalPos.x][goalPos.y].integrationField = 0;
 
     while (!queue.empty())
     {
         sf::Vector2i currentPos = queue.front();
         queue.pop();
-        Tile& currentTile = tile[currentPos.x][currentPos.y];
+        Tile& currentTile = tiles[currentPos.x][currentPos.y];
 
         for (int rows = -1; rows <= 1; rows++)
         {
@@ -210,7 +224,7 @@ void Game::BushFire()
                 if (newX >= 0 && newX < Global::ROWS_COLUMNS 
 				&& newY >= 0 && newY < Global::ROWS_COLUMNS)
                 {
-                    Tile& neighborTile = tile[newX][newY];
+                    Tile& neighborTile = tiles[newX][newY];
 					neighborTile.UpdateCost();
 
                     int newIntegrationField = currentTile.integrationField + 1;

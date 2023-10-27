@@ -4,7 +4,7 @@ class Tile
 {
 public:
 
-	void Init(sf::Vector2f& position);
+	void Init(sf::Vector2f& position, sf::Font& font);
 	void Render(sf::RenderWindow& window);
 	void SetStart();
 	void SetGoal();
