@@ -4,10 +4,10 @@
 
 void Tile::Init(sf::Vector2f& position, sf::Font& font)
 {
-	tile.setFillColor(sf::Color::Transparent);
+	tile.setFillColor(sf::Color::Blue);
 	tile.setSize(sf::Vector2f(Global::CELL_SIZE, Global::CELL_SIZE));
 	tile.setOutlineThickness(0.5f);
-	tile.setOutlineColor(sf::Color(255,255,255, 100));
+	tile.setOutlineColor(sf::Color(0,0,0, 255));
 	tile.setPosition(position);
 
 	
@@ -23,7 +23,19 @@ void Tile::Init(sf::Vector2f& position, sf::Font& font)
 void Tile::Render(sf::RenderWindow& window)
 {
 	window.draw(tile);
-	window.draw(text);
+	
+	if (!isObstacleTile)
+	{
+		if (drawCost)
+		{
+			window.draw(text);
+		}
+		else
+		{
+			window.draw(line, 2, sf::Lines);
+		}
+	}
+
 }
 
 void Tile::SetStart()
@@ -66,17 +78,13 @@ void Tile::CheckStatus()
 	}
 	else if (isObstacleTile)
 	{
-		cost = 9999;
-		tile.setFillColor(sf::Color::White);
+		cost = 99;
+		tile.setFillColor(sf::Color::Black);
 		UpdateCost();
 	}
 	else if (isGoalTile)
 	{
 		tile.setFillColor(sf::Color::Red);
-	}
-	else
-	{
-		tile.setFillColor(sf::Color::Transparent);
 	}
 }
 

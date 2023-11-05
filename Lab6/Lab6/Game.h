@@ -22,10 +22,13 @@ private:
 	void init();
 	void render();
 	void initTiles();
+	void UpdateText();
+
 
 	sf::Vector2i GetCurrentCell();
 	void setupSprite();
 	void BushFire();
+	void CalculateFloField();
 	std::vector<sf::Vector2i> FindPath();
 
 	sf::RenderWindow m_window; 
@@ -36,14 +39,21 @@ private:
 
 	sf::Font font;
 
+	sf::Text startPosText;
+	sf::Text goalPosText;
+	sf::Text distanceText;
+
 
 	bool isStartTile = false;
 	bool isGoalTile = false;
 
 	sf::Vector2i previousCellPos;
 	sf::Vector2i currentCellPos;
-	sf::Vector2i startPos;
-	sf::Vector2i goalPos{ 1, 1 };
+	sf::Vector2i startPos{ 0, 0 };
+	sf::Vector2i goalPos{ 0, 0 };
+
+	std::vector<sf::Vector2i> path;
+
 };
 
 #endif

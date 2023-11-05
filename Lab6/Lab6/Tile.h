@@ -22,8 +22,12 @@ public:
 	bool isGoalTile = false;
 	bool isObstacleTile = false;
 
+	bool drawCost = true;
+
 	sf::Font font;
 	sf::Text text;
+
+	sf::Vertex line[2];
 
 };
 
