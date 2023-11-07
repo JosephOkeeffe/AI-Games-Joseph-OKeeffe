@@ -63,11 +63,40 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Num1 == t_event.key.code)
 	{
+		std::cout << "Displaying Cost \n";
+
 		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
 		{
 			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 			{
-				tiles[row][col].drawCost = !tiles[row][col].drawCost;
+				tiles[row][col].TurnOnCost();
+
+			}
+		}
+	}
+	if (sf::Keyboard::Num2 == t_event.key.code)
+	{
+		std::cout << "Displaying Integration \n";
+		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+		{
+			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+			{
+				tiles[row][col].TurnOnIntegration();
+				
+
+			}
+		}
+	}
+	if (sf::Keyboard::Num3 == t_event.key.code)
+	{
+		std::cout << "Displaying Lines \n";
+
+		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+		{
+			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+			{
+				tiles[row][col].TurnOnLines();
+
 			}
 		}
 	}
@@ -118,7 +147,8 @@ void Game::processMouse(sf::Event t_event)
 			tiles[GetCurrentCell().x][GetCurrentCell().y].SetGoal();
 			UpdateText();
 		
-			//BushFire();
+			BushFire();
+			CalculateFloField();
 		}
 	}
 
@@ -140,26 +170,23 @@ void Game::init()
 	startPosText.setFont(font);
 	startPosText.setFillColor(sf::Color::Green);
 	startPosText.setCharacterSize(35);
-	startPosText.setPosition(20, Global::S_HEIGHT * 0.2);
+	startPosText.setPosition(20, Global::S_HEIGHT * 0.01);
 	startPosText.setOutlineThickness(1);
 	startPosText.setOutlineColor(sf::Color::Black);
 
 	goalPosText.setFont(font);
 	goalPosText.setFillColor(sf::Color::Red);
 	goalPosText.setCharacterSize(35);
-	goalPosText.setPosition(Global::S_WIDTH - (goalPosText.getLocalBounds().width * 1.1), Global::S_HEIGHT * 0.2);
+	goalPosText.setPosition(Global::S_WIDTH - (goalPosText.getLocalBounds().width * 1.2), Global::S_HEIGHT * 0.01);
 	goalPosText.setOutlineThickness(1);
 	goalPosText.setOutlineColor(sf::Color::Black);
 
 	distanceText.setFont(font);
 	distanceText.setFillColor(sf::Color::Yellow);
 	distanceText.setCharacterSize(35);
-	distanceText.setPosition((Global::S_WIDTH / 2) - (distanceText.getLocalBounds().width / 2), Global::S_HEIGHT * 0.2);
+	distanceText.setPosition((Global::S_WIDTH / 2) - (distanceText.getLocalBounds().width / 2), Global::S_HEIGHT * 0.01);
 	distanceText.setOutlineThickness(1);
 	distanceText.setOutlineColor(sf::Color::Black);
-
-
-	
 	
 	tiles = new Tile * [Global::ROWS_COLUMNS];
 
@@ -173,7 +200,7 @@ void Game::init()
 
 void Game::render()
 {
-	m_window.clear(sf::Color::Black);
+	m_window.clear(sf::Color::Blue);
 
 	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
 	{
@@ -212,8 +239,7 @@ void Game::UpdateText()
 	int distanceY = std::abs(startPos.y - goalPos.y);
 	distanceText.setString("Distance: (" + std::to_string(distanceX) + ", " + std::to_string(distanceY) + ")");
 
-	goalPosText.setPosition(Global::S_WIDTH - (goalPosText.getLocalBounds().width * 1.1), Global::S_HEIGHT * 0.2);
-
+	//goalPosText.setPosition(Global::S_WIDTH - (goalPosText.getLocalBounds().width * 1.1), Global::S_HEIGHT * 0.2);
 }
 
 sf::Vector2i Game::GetCurrentCell()
@@ -227,15 +253,13 @@ void Game::setupSprite()
 {
 }
 
-
-
 void Game::BushFire()
 {
 	for (int x = 0; x < Global::ROWS_COLUMNS; x++)
 	{
 		for (int y = 0; y < Global::ROWS_COLUMNS; y++)
 		{
-			tiles[x][y].integrationField = INT_MAX;
+			tiles[x][y].cost = INT_MAX;
 		}
 	}
 
@@ -265,37 +289,32 @@ void Game::BushFire()
 				{
 					// Getting neighbour tile
 					Tile& neighbourTile = tiles[newX][newY];
-					neighbourTile.UpdateCost();
+					neighbourTile.UpdateTextOnScreen();
 
-					// Getting the int field
-					int newIntegrationField = currentTile.integrationField + 1; // distance + cost
-					
-					if (newIntegrationField < neighbourTile.integrationField)
+					int newCost = currentTile.cost + 1; 
+
+					if (newCost < neighbourTile.cost)
 					{
-						neighbourTile.integrationField = newIntegrationField;
-						neighbourTile.cost = newIntegrationField;
+						neighbourTile.cost = newCost;
 
 						if (!neighbourTile.isObstacleTile)
 						{
-							neighbourTile.UpdateCost();
-							neighbourTile.cost = newIntegrationField;
+							neighbourTile.UpdateTextOnScreen();
 
-							// Calculate the new floField for neighborTile.
-							/*neighbourTile.floField = sf::Vector2f(goalPos.x - newX, goalPos.y - newY);
-							float length = std::sqrt(neighbourTile.floField.x * neighbourTile.floField.x + neighbourTile.floField.y * neighbourTile.floField.y);
+							// Calculate direct distance to the goal
+							int dx = std::abs(newX - goalPos.x);
+							int dy = std::abs(newY - goalPos.y);
+							int directDistance = dx + dy;
 
-							if (length > 0)
-							{
-								neighbourTile.floField /= length;
-							}*/
+							// Calculate integrationField
+							neighbourTile.integrationField = directDistance + neighbourTile.cost;
 
 							queue.push(sf::Vector2i(newX, newY));
 						}
 						else
 						{
-							neighbourTile.cost = 999;
+							neighbourTile.cost = 999; 
 						}
-
 					}
 				}
 			}
@@ -305,16 +324,30 @@ void Game::BushFire()
 
 void Game::CalculateFloField()
 {
-	
-	//neighborTile.floField = sf::Vector2f(goalPos.x - newX, goalPos.y - newY);
+	if (!isGoalTile) 
+	{
+		return;
+	}	
 
-	//float length = std::sqrt(neighborTile.floField.x * neighborTile.floField.x + neighborTile.floField.y * neighborTile.floField.y);
-	//if (length > 0)
-	//{
-	//	neighborTile.floField /= length;
-	//}
-	
+	for (int x = 0; x < Global::ROWS_COLUMNS; x++)
+	{
+		for (int y = 0; y < Global::ROWS_COLUMNS; y++)
+		{
+			Tile& currentTile = tiles[x][y];
+
+			sf::Vector2f floField = static_cast<sf::Vector2f>(goalPos) - currentTile.tile.getPosition();
+
+			float length = std::sqrt(floField.x * floField.x + floField.y * floField.y);
+
+			if (length > 0)
+			{
+				floField /= length;
+			}
+			currentTile.floField = floField;
+		}
+	}
 }
+
 
 
 std::vector<sf::Vector2i> Game::FindPath()
@@ -323,7 +356,6 @@ std::vector<sf::Vector2i> Game::FindPath()
 	{
 		return path; 
 	}
-
 
 	sf::Vector2i currentPosition = startPos;
 

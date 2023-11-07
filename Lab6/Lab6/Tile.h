@@ -11,7 +11,11 @@ public:
 	void SetObstacle();
 	void Reset();
 	void CheckStatus();
-	void UpdateCost();
+	void UpdateTextOnScreen();
+
+	void TurnOnCost();
+	void TurnOnIntegration();
+	void TurnOnLines();
 
 	sf::RectangleShape tile;
 	int cost = 0;
@@ -22,7 +26,9 @@ public:
 	bool isGoalTile = false;
 	bool isObstacleTile = false;
 
-	bool drawCost = true;
+	bool drawingLines = false;
+	bool drawCost = false;
+	bool drawIntegrationField = false;
 
 	sf::Font font;
 	sf::Text text;
