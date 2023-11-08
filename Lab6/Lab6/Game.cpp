@@ -102,7 +102,7 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Space == t_event.key.code)
 	{
-		//FindPath();
+		FindPath();
 		/*for each (sf::Vector2i position in  FindPath())
 		{
 			tiles[position.x][position.y];
@@ -301,9 +301,15 @@ void Game::BushFire()
 						{
 							neighbourTile.UpdateTextOnScreen();
 
-							// Calculate direct distance to the goal
-							int dx = std::abs(newX - goalPos.x);
-							int dy = std::abs(newY - goalPos.y);
+							// Calculate direct distance to the goal using actual vector positions
+							sf::Vector2f goalPosition = tiles[goalPos.x][goalPos.y].tile.getPosition();
+							sf::Vector2f currentPosition = tiles[currentPos.x][currentPos.y].tile.getPosition();
+
+							int dx = std::abs(currentPosition.x - goalPosition.x);
+							int dy = std::abs(currentPosition.y - goalPosition.y);
+
+					/*		int dx = std::abs(newX - goalPos.x);
+							int dy = std::abs(newY - goalPos.y);*/
 							int directDistance = dx + dy;
 
 							// Calculate integrationField
@@ -324,67 +330,115 @@ void Game::BushFire()
 
 void Game::CalculateFloField()
 {
-	if (!isGoalTile) 
+	if (!tiles[goalPos.x][goalPos.y].isGoalTile)
 	{
 		return;
-	}	
+	}
 
 	for (int x = 0; x < Global::ROWS_COLUMNS; x++)
 	{
 		for (int y = 0; y < Global::ROWS_COLUMNS; y++)
 		{
 			Tile& currentTile = tiles[x][y];
+			sf::Vector2f floField(0.0f, 0.0f); // Initialize the vector field to (0,0).
 
-			sf::Vector2f floField = static_cast<sf::Vector2f>(goalPos) - currentTile.tile.getPosition();
-
-			float length = std::sqrt(floField.x * floField.x + floField.y * floField.y);
-
-			if (length > 0)
+			if (!currentTile.isObstacleTile)
 			{
-				floField /= length;
+				int lowestIntegrationField = currentTile.integrationField;
+
+				// Iterate through the neighbors to find the lowest integration field.
+				for (int rows = -1; rows <= 1; rows++)
+				{
+					for (int cols = -1; cols <= 1; cols++)
+					{
+						int newX = x + rows;
+						int newY = y + cols;
+
+						if (newX >= 0 && newX < Global::ROWS_COLUMNS && newY >= 0 && newY < Global::ROWS_COLUMNS)
+						{
+							const Tile& neighborTile = tiles[newX][newY];
+							if (neighborTile.integrationField < lowestIntegrationField)
+							{
+								lowestIntegrationField = neighborTile.integrationField;
+								// Calculate the vector pointing from the center of the current tile to the neighbor tile.
+								floField = sf::Vector2f(static_cast<float>(newX - x), static_cast<float>(newY - y));
+							}
+						}
+					}
+				}
+
+				// Normalize the vector.
+				float length = std::sqrt(floField.x * floField.x + floField.y * floField.y);
+				if (length > 0)
+				{
+					floField /= length;
+				}
+
+				currentTile.floField = floField;
 			}
-			currentTile.floField = floField;
 		}
 	}
 }
 
 
 
-std::vector<sf::Vector2i> Game::FindPath()
+
+#include <vector>
+
+void Game::FindPath()
 {
-	if (!isStartTile || !isGoalTile)
+	// Create a vector to store the path.
+	std::vector<sf::Vector2i> path;
+
+	sf::Vector2i currentPos = startPos;
+
+	while (currentPos != goalPos)
 	{
-		return path; 
-	}
+		// Find the neighboring tile with the smallest FloField vector.
+		Tile& currentTile = tiles[currentPos.x][currentPos.y];
+		sf::Vector2f minFloField = currentTile.floField;
+		sf::Vector2i nextPos;
 
-	sf::Vector2i currentPosition = startPos;
-
-	while (currentPosition != goalPos)
-	{
-		Tile& currentTile = tiles[currentPosition.x][currentPosition.y];
-		sf::Vector2f direction = currentTile.floField;
-
-		sf::Vector2i nextPosition(static_cast<int>(currentPosition.x + direction.x), static_cast<int>(currentPosition.y + direction.y));
-
-
-		if (nextPosition.x >= 0 && nextPosition.x < Global::ROWS_COLUMNS &&
-			nextPosition.y >= 0 && nextPosition.y < Global::ROWS_COLUMNS)
+		for (int rows = -1; rows <= 1; rows++)
 		{
-			std::cout << "Path X: " << currentPosition.x << "\n";
-			std::cout << "Path Y: " << currentPosition.y << "\n";
-			tiles[currentPosition.x][currentPosition.y].tile.setFillColor(sf::Color::Yellow);
-			path.push_back(currentPosition);
-			currentPosition = nextPosition;
+			for (int cols = -1; cols <= 1; cols++)
+			{
+				int newX = currentPos.x + rows;
+				int newY = currentPos.y + cols;
+
+				if (newX >= 0 && newX < Global::ROWS_COLUMNS 
+					&& newY >= 0 && newY < Global::ROWS_COLUMNS)
+				{
+					Tile& neighborTile = tiles[newX][newY];
+					if (neighborTile.floField.x < minFloField.x ||
+						(neighborTile.floField.x == minFloField.x && neighborTile.floField.y < minFloField.y))
+					{
+						minFloField = neighborTile.floField;
+						nextPos = sf::Vector2i(newX, newY);
+					}
+				}
+			}
 		}
-		else
+
+		if (minFloField == sf::Vector2f(0.0f, 0.0f))
 		{
-			path.clear();
+			// No valid path found.
 			break;
 		}
+
+		// Update the current position and add it to the path.
+		currentPos = nextPos;
+		path.push_back(currentPos);
+		tiles[currentPos.x][currentPos.y].isStartTile = true;
 	}
 
-	return path;
+	// Update the path visualization.
+	for (const sf::Vector2i& pos : path)
+	{
+		tiles[pos.x][pos.y].UpdateTextOnScreen();
+	}
 }
+
 
 
 

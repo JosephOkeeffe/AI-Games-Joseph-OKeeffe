@@ -85,6 +85,10 @@ void Tile::CheckStatus()
 	{
 		tile.setFillColor(sf::Color::Red);
 	}
+	else if (isPathTile)
+	{
+		tile.setFillColor(sf::Color::Yellow);
+	}
 	else
 	{
 		tile.setFillColor(sf::Color::Transparent);

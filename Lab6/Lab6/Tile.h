@@ -25,6 +25,7 @@ public:
 	bool isStartTile = false;
 	bool isGoalTile = false;
 	bool isObstacleTile = false;
+	bool isPathTile = false;
 
 	bool drawingLines = false;
 	bool drawCost = false;

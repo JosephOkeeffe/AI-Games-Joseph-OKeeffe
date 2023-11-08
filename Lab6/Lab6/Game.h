@@ -29,7 +29,7 @@ private:
 	void setupSprite();
 	void BushFire();
 	void CalculateFloField();
-	std::vector<sf::Vector2i> FindPath();
+	void FindPath();
 
 	sf::RenderWindow m_window; 
 	bool m_exitGame;
