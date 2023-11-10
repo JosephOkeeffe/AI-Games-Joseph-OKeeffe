@@ -34,6 +34,8 @@ void Tile::Render(sf::RenderWindow& window)
 			window.draw(line, 2, sf::Lines);
 		}
 	}
+	
+	
 
 }
 
@@ -91,7 +93,7 @@ void Tile::CheckStatus()
 	}
 	else
 	{
-		tile.setFillColor(sf::Color::Transparent);
+		tile.setFillColor(currentColour);
 	}
 	UpdateTextOnScreen();
 }

@@ -36,5 +36,7 @@ public:
 
 	sf::Vertex line[2];
 
+	sf::Color currentColour = sf::Color::Blue;
+
 };
 

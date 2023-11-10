@@ -8,7 +8,6 @@ Game::Game() :
 	m_exitGame{false}
 {
 	init();
-	setupSprite();
 }
 
 Game::~Game()
@@ -100,25 +99,25 @@ void Game::processKeys(sf::Event t_event)
 			}
 		}
 	}
-	if (sf::Keyboard::Space == t_event.key.code)
-	{
-		FindPath();
-		/*for each (sf::Vector2i position in  FindPath())
-		{
-			tiles[position.x][position.y];
-			tiles[position.x][position.y].tile.setFillColor(sf::Color::Yellow);
-		}*/
-	}
 }
 void Game::processMouse(sf::Event t_event)
 {
+	SetStart(t_event);
+	SetObstacle(t_event);
+	SetGoal(t_event);
+}
+
+void Game::SetStart(sf::Event t_event)
+{
 	if (sf::Mouse::Left == t_event.key.code)
 	{
+		currentPathIndex = 0;
+
 		if (GetCurrentCell().x == goalPos.x && GetCurrentCell().y == goalPos.y && isGoalTile) { return; }
 
 		previousCellPos = currentCellPos;
 		currentCellPos = GetCurrentCell();
-		
+
 		if (isStartTile)
 		{
 			tiles[previousCellPos.x][previousCellPos.y].Reset();
@@ -131,13 +130,34 @@ void Game::processMouse(sf::Event t_event)
 		}
 		startPos = currentCellPos;
 		UpdateText();
-		
-	}
+		circle.setPosition(tiles[startPos.x][startPos.y].tile.getPosition().x + (circle.getRadius()), tiles[startPos.x][startPos.y].tile.getPosition().y + (circle.getRadius()));
 
+		if (isGoalTile)
+		{
+			FindPath();
+		}
+	}
+}
+
+void Game::SetObstacle(sf::Event t_event)
+{
 	if (sf::Mouse::Middle == t_event.key.code)
 	{
+
 		tiles[GetCurrentCell().x][GetCurrentCell().y].SetObstacle();
+		tiles[GetCurrentCell().x][GetCurrentCell().y].cost = 999;
+		tiles[GetCurrentCell().x][GetCurrentCell().y].integrationField = 999;
+		if (isGoalTile && isStartTile)
+		{
+			BushFire();
+			CalculateFloField();
+			FindPath();
+		}
 	}
+}
+
+void Game::SetGoal(sf::Event t_event)
+{
 	if (sf::Mouse::Right == t_event.key.code)
 	{
 		if (!isGoalTile)
@@ -146,12 +166,13 @@ void Game::processMouse(sf::Event t_event)
 			goalPos = GetCurrentCell();
 			tiles[GetCurrentCell().x][GetCurrentCell().y].SetGoal();
 			UpdateText();
-		
+
 			BushFire();
 			CalculateFloField();
+			UpdateColor();
+			FindPath();
 		}
 	}
-
 }
 
 void Game::update(sf::Time t_deltaTime)
@@ -159,13 +180,21 @@ void Game::update(sf::Time t_deltaTime)
 	if (m_exitGame){m_window.close();}
 	if (!isStartTile || !isGoalTile) { return; }
 
+	MoveCircle();
+
 }
 
 void Game::init()
 {
 	font.loadFromFile("./ASSETS/FONTS/ariblk.ttf");
 
+	elapsed = timer.getElapsedTime();
 	UpdateText();
+
+	circle.setRadius(10);
+	circle.setFillColor(sf::Color::Magenta);
+	circle.setOutlineThickness(1);
+	circle.setOutlineColor(sf::Color::Black);
 
 	startPosText.setFont(font);
 	startPosText.setFillColor(sf::Color::Green);
@@ -200,20 +229,21 @@ void Game::init()
 
 void Game::render()
 {
-	m_window.clear(sf::Color::Blue);
+	m_window.clear(sf::Color(0,0,255, 100));
 
 	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
 	{
 		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 		{
 			tiles[row][col].line[0] = tiles[row][col].tile.getPosition() + sf::Vector2f(Global::CELL_SIZE / 2, Global::CELL_SIZE / 2);
-			tiles[row][col].line[1] = tiles[row][col].tile.getPosition() + sf::Vector2f(Global::CELL_SIZE / 2, Global::CELL_SIZE / 2) + tiles[row][col].floField * 20.0f;
+			tiles[row][col].line[1] = tiles[row][col].tile.getPosition() + sf::Vector2f(Global::CELL_SIZE / 2, Global::CELL_SIZE / 2) + tiles[row][col].floField * static_cast<float>(Global::CELL_SIZE * 1.5);
 			tiles[row][col].line[0].color = sf::Color::Black;
-			tiles[row][col].line[1].color = sf::Color::White;
+			tiles[row][col].line[1].color = sf::Color::Red;
 			tiles[row][col].Render(m_window);
 		}
 	}
 
+	m_window.draw(circle);
 	m_window.draw(startPosText);
 	m_window.draw(goalPosText);
 	m_window.draw(distanceText);
@@ -239,7 +269,47 @@ void Game::UpdateText()
 	int distanceY = std::abs(startPos.y - goalPos.y);
 	distanceText.setString("Distance: (" + std::to_string(distanceX) + ", " + std::to_string(distanceY) + ")");
 
-	//goalPosText.setPosition(Global::S_WIDTH - (goalPosText.getLocalBounds().width * 1.1), Global::S_HEIGHT * 0.2);
+}
+
+void Game::MoveCircle()
+{
+	elapsed = timer.getElapsedTime();
+
+	if (elapsed.asSeconds() >= moveInterval)
+	{
+		timer.restart(); 
+
+		if (currentPathIndex < path.size()) 
+		{
+			sf::Vector2i nextPosition = path[currentPathIndex];
+			tiles[nextPosition.x][nextPosition.y].tile.getPosition();
+			
+			circle.setPosition(tiles[nextPosition.x][nextPosition.y].tile.getPosition().x + (circle.getRadius()), tiles[nextPosition.x][nextPosition.y].tile.getPosition().y + (circle.getRadius()));
+			currentPathIndex++;
+		}
+	}
+}
+
+sf::Color Game::GradientColour(int x)
+{
+	sf::Uint8 grad = static_cast<sf::Uint8>((255 * x) / 60);
+	sf::Color gradientColor = sf::Color(grad, grad, grad); // Creating a color with varying red component
+
+	return gradientColor;
+}
+
+void Game::UpdateColor()
+{
+	for (int x = 0; x < Global::ROWS_COLUMNS; x++)
+	{
+		for (int y = 0; y < Global::ROWS_COLUMNS; y++)
+		{
+			Tile& currentTile = tiles[x][y];
+			currentTile.currentColour = GradientColour(currentTile.cost);
+			currentTile.tile.setFillColor(GradientColour(currentTile.cost));
+			currentTile.CheckStatus();
+		}
+	}
 }
 
 sf::Vector2i Game::GetCurrentCell()
@@ -247,10 +317,6 @@ sf::Vector2i Game::GetCurrentCell()
 	sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
 	mousePos /= Global::CELL_SIZE;
 	return mousePos;
-}
-
-void Game::setupSprite()
-{
 }
 
 void Game::BushFire()
@@ -266,7 +332,6 @@ void Game::BushFire()
 	std::queue<sf::Vector2i> queue;
 	queue.push(goalPos);
 
-	// The goal is set to 0
 	tiles[goalPos.x][goalPos.y].cost = 0;
 	tiles[goalPos.x][goalPos.y].integrationField = 0;
 
@@ -274,7 +339,6 @@ void Game::BushFire()
 	{
 		sf::Vector2i currentPos = queue.front();
 		queue.pop();
-		// Getting the current tile
 		Tile& currentTile = tiles[currentPos.x][currentPos.y];
 
 		for (int rows = -1; rows <= 1; rows++)
@@ -287,7 +351,6 @@ void Game::BushFire()
 				if (newX >= 0 && newX < Global::ROWS_COLUMNS
 					&& newY >= 0 && newY < Global::ROWS_COLUMNS)
 				{
-					// Getting neighbour tile
 					Tile& neighbourTile = tiles[newX][newY];
 					neighbourTile.UpdateTextOnScreen();
 
@@ -301,30 +364,25 @@ void Game::BushFire()
 						{
 							neighbourTile.UpdateTextOnScreen();
 
-							// Calculate direct distance to the goal using actual vector positions
 							sf::Vector2f goalPosition = tiles[goalPos.x][goalPos.y].tile.getPosition();
 							sf::Vector2f currentPosition = tiles[currentPos.x][currentPos.y].tile.getPosition();
 
 							int dx = std::abs(currentPosition.x - goalPosition.x);
 							int dy = std::abs(currentPosition.y - goalPosition.y);
 
-					/*		int dx = std::abs(newX - goalPos.x);
-							int dy = std::abs(newY - goalPos.y);*/
+		
 							int directDistance = dx + dy;
 
-							// Calculate integrationField
 							neighbourTile.integrationField = directDistance + neighbourTile.cost;
 
 							queue.push(sf::Vector2i(newX, newY));
 						}
-						else
-						{
-							neighbourTile.cost = 999; 
-						}
 					}
 				}
+
 			}
 		}
+
 	}
 }
 
@@ -340,13 +398,12 @@ void Game::CalculateFloField()
 		for (int y = 0; y < Global::ROWS_COLUMNS; y++)
 		{
 			Tile& currentTile = tiles[x][y];
-			sf::Vector2f floField(0.0f, 0.0f); // Initialize the vector field to (0,0).
+			sf::Vector2f floField(0.0f, 0.0f);
 
 			if (!currentTile.isObstacleTile)
 			{
 				int lowestIntegrationField = currentTile.integrationField;
 
-				// Iterate through the neighbors to find the lowest integration field.
 				for (int rows = -1; rows <= 1; rows++)
 				{
 					for (int cols = -1; cols <= 1; cols++)
@@ -360,82 +417,46 @@ void Game::CalculateFloField()
 							if (neighborTile.integrationField < lowestIntegrationField)
 							{
 								lowestIntegrationField = neighborTile.integrationField;
-								// Calculate the vector pointing from the center of the current tile to the neighbor tile.
 								floField = sf::Vector2f(static_cast<float>(newX - x), static_cast<float>(newY - y));
 							}
 						}
 					}
 				}
-
-				// Normalize the vector.
-				float length = std::sqrt(floField.x * floField.x + floField.y * floField.y);
-				if (length > 0)
-				{
-					floField /= length;
-				}
-
 				currentTile.floField = floField;
 			}
 		}
 	}
 }
 
-
-
-
-#include <vector>
-
 void Game::FindPath()
 {
-	// Create a vector to store the path.
-	std::vector<sf::Vector2i> path;
-
-	sf::Vector2i currentPos = startPos;
-
-	while (currentPos != goalPos)
+	for (sf::Vector2i x : path)
 	{
-		// Find the neighboring tile with the smallest FloField vector.
-		Tile& currentTile = tiles[currentPos.x][currentPos.y];
-		sf::Vector2f minFloField = currentTile.floField;
-		sf::Vector2i nextPos;
-
-		for (int rows = -1; rows <= 1; rows++)
-		{
-			for (int cols = -1; cols <= 1; cols++)
-			{
-				int newX = currentPos.x + rows;
-				int newY = currentPos.y + cols;
-
-				if (newX >= 0 && newX < Global::ROWS_COLUMNS 
-					&& newY >= 0 && newY < Global::ROWS_COLUMNS)
-				{
-					Tile& neighborTile = tiles[newX][newY];
-					if (neighborTile.floField.x < minFloField.x ||
-						(neighborTile.floField.x == minFloField.x && neighborTile.floField.y < minFloField.y))
-					{
-						minFloField = neighborTile.floField;
-						nextPos = sf::Vector2i(newX, newY);
-					}
-				}
-			}
-		}
-
-		if (minFloField == sf::Vector2f(0.0f, 0.0f))
-		{
-			// No valid path found.
-			break;
-		}
-
-		// Update the current position and add it to the path.
-		currentPos = nextPos;
-		path.push_back(currentPos);
-		tiles[currentPos.x][currentPos.y].isStartTile = true;
+		tiles[x.x][x.y].tile.setFillColor(tiles[x.x][x.y].currentColour);
+		UpdateColor();
 	}
 
-	// Update the path visualization.
-	for (const sf::Vector2i& pos : path)
+	sf::Vector2i currentPos = startPos;
+	path.clear();
+
+	if (isStartTile)
 	{
-		tiles[pos.x][pos.y].UpdateTextOnScreen();
+
+
+		while (currentPos != goalPos)
+		{
+			Tile& currentTile = tiles[currentPos.x][currentPos.y];
+			if (!currentTile.isObstacleTile)
+			{
+				sf::Vector2f temp = currentTile.floField;
+				currentPos.x += temp.x;
+				currentPos.y += temp.y;
+
+				tiles[currentPos.x][currentPos.y].tile.setFillColor(sf::Color::Yellow);
+				path.push_back(currentPos);
+			}
+		}
+		tiles[goalPos.x][goalPos.y].tile.setFillColor(sf::Color::Red);
 	}
 }
 

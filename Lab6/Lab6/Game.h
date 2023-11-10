@@ -18,15 +18,20 @@ private:
 	void processEvents();
 	void processKeys(sf::Event t_event);
 	void processMouse(sf::Event t_event);
+	void SetStart(sf::Event t_event);
+	void SetObstacle(sf::Event t_event);
+	void SetGoal(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
 	void init();
 	void render();
 	void initTiles();
 	void UpdateText();
 
+	void MoveCircle();
+	sf::Color GradientColour(int x);
+	void UpdateColor();
 
 	sf::Vector2i GetCurrentCell();
-	void setupSprite();
 	void BushFire();
 	void CalculateFloField();
 	void FindPath();
@@ -53,6 +58,13 @@ private:
 	sf::Vector2i goalPos{ 0, 0 };
 
 	std::vector<sf::Vector2i> path;
+
+	sf::CircleShape circle;
+
+	int currentPathIndex = 0; 
+	sf::Clock timer;
+	float moveInterval = 1.0f;
+	sf::Time elapsed;
 
 };
 
