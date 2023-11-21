@@ -64,18 +64,29 @@ public:
 	void SetShape();
 	void SetColor();
 
+
+
+	bool isUsed = false;
 	bool isPlayer = false;
 	bool isAI = false;
-	void SetRandomTile();
-	
+	void SetRandomPiece();
+	void SetPiece(int piece);
+	void SelectTile();
+	void Reset();
+	Piece GetPiece();
+	void SetUsed();
+	bool GetUsed();
 
-	Piece currentPiece;
+	
 
 	sf::RectangleShape tile;
 
 	int shapeSides = 0;
 	sf::Color shapeColor;
 	sf::CircleShape shape{25};
+
+private:
+	Piece currentPiece;
 
 };
 

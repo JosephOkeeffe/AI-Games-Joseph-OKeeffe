@@ -1,13 +1,14 @@
 
 #include "Game.h"
 #include <iostream>
+#include <random>
 
 Game::Game() :
 	m_window{ sf::VideoMode{ Global::S_WIDTH, Global::S_HEIGHT + 100, 32U }, "Qwirkle" },
 	m_exitGame{false}
 {
 	srand(time(nullptr));
-	initTiles();
+	init();
 
 }
 
@@ -63,14 +64,7 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Space == t_event.key.code)
 	{
-		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
-		{
-			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
-			{
-				tiles[row][col].currentPiece = Piece::CP;
-				tiles[row][col].CheckPiece();
-			}
-		}
+		TileCount();
 	}
 }
 
@@ -78,16 +72,20 @@ void Game::ProcessMouseDown(sf::Event t_event)
 {
 	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
 
+	
+
 	if (sf::Mouse::Left == t_event.key.code)
 	{
-		for (int col = 0; col < 6; col++)
+		for (int i = 0; i < 6; i++)
 		{
-			sf::FloatRect bounds = playerTiles[0][col].shape.getGlobalBounds();
+			sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
 
 			if (bounds.contains(mousePos))
 			{
-				playerTiles[0][col].tile.setFillColor(sf::Color::Yellow);
-				selectedPiece = playerTiles[0][col].currentPiece;
+				playerTiles[selected].Reset();
+				playerTiles[i].SelectTile();
+				selected = i;
+				selectedPiece = playerTiles[i].GetPiece();
 			}
 		}
 
@@ -95,13 +93,18 @@ void Game::ProcessMouseDown(sf::Event t_event)
 		{
 			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 			{
-				sf::FloatRect bounds = tiles[row][col].shape.getGlobalBounds();
+				sf::FloatRect bounds = board[row][col].shape.getGlobalBounds();
 
 				if (bounds.contains(mousePos))
 				{
-					tiles[row][col].currentPiece = selectedPiece;
+					board[row][col].SetPiece(selectedPiece);
 					selectedPiece = NONE;
-					tiles[row][col].CheckPiece();
+					// Update piece on board
+					board[row][col].CheckPiece();
+					//
+					playerTiles[selected].SetUsed();
+					playerTiles[selected].SetPiece(GetActiveTilePool());
+					//playerTiles[selected].Reset();
 				}
 			}
 		}
@@ -115,9 +118,6 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
-
-	
-
 }
 
 void Game::render()
@@ -128,67 +128,124 @@ void Game::render()
 	{
 		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 		{
-			tiles[row][col].Render(m_window);
+			board[row][col].Render(m_window);
 		}
 	}
 
-	for (int col = 0; col < 6; col++)
+	for (int i = 0; i < 6; i++) // Draw only 6
 	{
-		playerTiles[0][col].Render(m_window);
+		playerTiles[i].Render(m_window);
 	}
 
-	for (int col = 0; col < 6; col++)
-	{
-		aiTiles[0][col].Render(m_window);
-	}
+	//for (int i = 0; i < 6; i++) // 
+	//{
+	//	aiTiles[i].Render(m_window);
+	//}
 	m_window.display();
 }
 
-void Game::initTiles()
+void Game::init()
 {
-	tiles = new Tile * [Global::ROWS_COLUMNS];
+	InitBoard();
+	SetupTilePool();
+	SetupPlayerTiles();
+	SetupAITiles();
+}
+
+void Game::InitBoard()
+{
+	board = new Tile * [Global::ROWS_COLUMNS];
 
 	for (int i = 0; i < Global::ROWS_COLUMNS; i++)
 	{
-		tiles[i] = new Tile[Global::ROWS_COLUMNS];
-
+		board[i] = new Tile[Global::ROWS_COLUMNS];
 	}
 
 	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
 	{
 		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 		{
-			tiles[row][col].Init(sf::Vector2f(row * Global::CELL_SIZE, col * Global::CELL_SIZE));
+			board[row][col].Init(sf::Vector2f(row * Global::CELL_SIZE, col * Global::CELL_SIZE));
+		}
+	}
+}
+
+void Game::SetupTilePool()
+{
+	for (int i = 0; i < 36; i++)
+	{
+		tilePool1[i].Init(sf::Vector2f(999, 999));
+		tilePool1[i].SetPiece(i);
+	}
+	for (int i = 0; i < 36; i++)
+	{
+		tilePool2[i].Init(sf::Vector2f(999, 999));
+		tilePool2[i].SetPiece(i);
+	}
+	for (int i = 0; i < 36; i++)
+	{
+		tilePool3[i].Init(sf::Vector2f(999, 999));
+		tilePool3[i].SetPiece(i);
+	}
+
+	std::copy(tilePool1, tilePool1 + 36, totalTilePool);
+	std::copy(tilePool2, tilePool2 + 36, totalTilePool + 36);
+	std::copy(tilePool3, tilePool3 + 36, totalTilePool + 72);
+
+	std::shuffle(totalTilePool, totalTilePool + 108, std::default_random_engine());
+
+}
+
+void Game::SetupPlayerTiles()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		playerTiles[i].Init(sf::Vector2f((i * Global::CELL_SIZE) + 75, 1520));
+		if (!totalTilePool[i].GetUsed())
+		{
+			playerTiles[i].SetPiece(totalTilePool[i].GetPiece());
+			totalTilePool[i].SetUsed();
+		}
+	}
+}
+
+void Game::SetupAITiles()
+{
+	//for (int i = 7; i < 12; i++)
+	//{
+	//	aiTiles[i].Init(sf::Vector2f((i * Global::CELL_SIZE) + Global::S_WIDTH - 525, 1520));
+	//	if (!totalTilePool[i].GetUsed())
+	//	{
+	//		aiTiles[i].SetPiece(totalTilePool[i].GetPiece()); // Start from index 6 to avoid duplicates
+	//		totalTilePool[i].SetUsed();
+	//	}
+	//}
+}
+
+int Game::GetActiveTilePool()
+{
+	int random = rand() % 108;
+
+	if (!totalTilePool[random].isUsed)
+	{
+		totalTilePool[random].SetUsed();
+		return random;
+	}
+}
+
+int Game::TileCount()
+{
+	int count = 0;
+	for each (Tile temp in totalTilePool)
+	{
+		if (!temp.GetUsed())
+		{
+			count++;
 		}
 	}
 
-	playerTiles = new Tile * [1];
-
-	for (int i = 0; i < 1; i++)
-	{
-		playerTiles[i] = new Tile[6];
-
-	}
-
-	for (int col = 0; col < 6; col++)
-	{
-		playerTiles[0][col].Init(sf::Vector2f((col * Global::CELL_SIZE) + 75, 1520)); 
-		playerTiles[0][col].SetRandomTile();
-	}
-
-	aiTiles = new Tile * [1];
-
-	for (int i = 0; i < 1; i++)
-	{
-		aiTiles[i] = new Tile[6];
-
-	}
-
-	for (int col = 0; col < 6; col++)
-	{
-		aiTiles[0][col].Init(sf::Vector2f((col * Global::CELL_SIZE) + Global::S_WIDTH - 525, 1520));
-		aiTiles[0][col].SetRandomTile();
-	}
+	std::cout << "Total Tile Count: " << count << "\n";
+	return count;
 }
 
 

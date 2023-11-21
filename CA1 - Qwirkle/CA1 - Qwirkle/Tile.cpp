@@ -17,6 +17,8 @@ void Tile::Init(sf::Vector2f& position)
 	currentPiece = NONE;
 	shape.setOrigin(shape.getRadius(), shape.getRadius());
 	shape.setPosition(position.x + Global::CELL_SIZE / 2, position.y + Global::CELL_SIZE / 2);
+	shape.setOutlineThickness(2);
+	shape.setOutlineColor(sf::Color::Black);
 
 	CheckPiece();
 }
@@ -39,16 +41,15 @@ void Tile::SetShape()
 
 	if (currentPiece >= 0 && currentPiece < 6)
 	{
-		shape.rotate(45);
+		shape.setRotation(45);
 	}
 	else
 	{
-		shape.rotate(0);
+		shape.setRotation(0);
 	}
 
 	if (currentPiece >= 0 && currentPiece < 6) 
 	{
-		//shape.rotate(45);
 		shapeSides = 4;  // Square
 	}
 	else if (currentPiece >= 6 && currentPiece < 12) 
@@ -91,12 +92,44 @@ void Tile::SetColor()
 	shape.setFillColor(shapeColor);
 }
 
-void Tile::SetRandomTile()
+void Tile::SetRandomPiece()
 {
 	
 	int random = rand() % 36;
 	currentPiece = static_cast<Piece>(random);
 	CheckPiece();
 	
+}
+
+void Tile::SetPiece(int piece)
+{
+	currentPiece = static_cast<Piece>(piece);
+	CheckPiece();
+}
+
+void Tile::SelectTile()
+{
+	tile.setFillColor(sf::Color(255, 99, 71, 200));
+}
+
+void Tile::Reset()
+{
+	tile.setFillColor(sf::Color::Black);
+}
+
+Piece Tile::GetPiece()
+{
+	return currentPiece;
+}
+
+void Tile::SetUsed()
+{
+	currentPiece = NONE;
+	isUsed = true;
+}
+
+bool Tile::GetUsed()
+{
+	return isUsed;
 }
 
