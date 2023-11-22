@@ -28,11 +28,16 @@ private:
 	void SetupAITiles();
 	int GetActiveTilePool();
 	int TileCount();
+	void OutputTilePool();
+	void OutputPlayerTile();
+	void OutputAITiles();
 
 	sf::RenderWindow m_window; 
 	sf::Font m_ArialBlackfont;
 
 	Tile** board;
+	sf::RectangleShape bagRect;
+	bool isBagOpen = false;
 
 	Tile tilePool1[36]; // 108 (36 x 3)
 	Tile tilePool2[36];
@@ -51,9 +56,9 @@ private:
 	//std::vector<Tile> playerTiles;
 	//std::vector<Tile> aiTiles;
 
-	Piece selectedPiece = NONE;
+	Piece selectedPiece;
 
-	int selected = 0;
+	int selectedTile = 0;
 	bool m_exitGame; 
 
 

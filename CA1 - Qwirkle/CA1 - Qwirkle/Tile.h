@@ -4,49 +4,47 @@
 
 enum Piece
 {
-	SR,
-	SG,
-	SB,
-	SY,
-	SP,
-	SW,
+	SR, //0 - SQUARE
+	SG, //1
+	SB, //2
+	SY, //3
+	SP, //4
+	SW, //5
 
-	CR,
-	CG,
-	CB,
-	CY,
-	CP,
-	CW,
-
-	TR,
-	TG,
-	TB,
-	TY,
-	TP,
-	TW,
-
-	DR,
-	DG,
-	DB,
-	DY,
-	DP,
-	DW,
-
-	HR,
-	HG,
-	HB,
-	HY,
-	HP,
-	HW,
-
-	OR,
-	OG,
-	OB,
-	OY,
-	OP,
-	OW,
-
-	NONE
+	CR,	//6 - CIRCLE
+	CG,	//7
+	CB,	//8
+	CY,	//9
+	CP,	//10
+	CW,	//11
+		
+	TR,	//12 - TRIANGLE
+	TG,	//13
+	TB,	//14
+	TY,	//15
+	TP,	//16
+	TW,	//17
+		
+	DR,	//18 - DIAMOND
+	DG,	//19
+	DB,	//20
+	DY,	//21
+	DP,	//22
+	DW,	//23
+		
+	HR,	//24 - HEXAGON
+	HG,	//25
+	HB,	//26
+	HY,	//27
+	HP,	//28
+	HW,	//29
+		
+	OR,	//30 - OCTAGON
+	OG,	//31
+	OB,	//32
+	OY,	//33
+	OP,	//34
+	OW	//35
 };
 
 class Tile
@@ -64,18 +62,32 @@ public:
 	void SetShape();
 	void SetColor();
 
-
-
-	bool isUsed = false;
-	bool isPlayer = false;
-	bool isAI = false;
-	void SetRandomPiece();
 	void SetPiece(int piece);
 	void SelectTile();
-	void Reset();
-	Piece GetPiece();
+	void DeselectTile();
+	Piece GetCurrentPiece();
 	void SetUsed();
 	bool GetUsed();
+
+	void CheckCurrentPieceSize(int piece);
+
+
+
+
+	std::string tileName;
+	std::string tileColor;
+	std::string tileShape;
+	// Player / AI tiles
+	bool isSelected = false;
+	// Tile Pool
+	bool isUsed = false;
+	// Board
+	bool isPlaced = false;
+
+	bool isPlayer = false;
+	bool isAI = false;
+
+
 
 	
 
