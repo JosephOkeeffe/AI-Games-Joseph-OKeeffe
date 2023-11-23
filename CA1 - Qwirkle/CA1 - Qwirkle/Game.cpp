@@ -64,7 +64,7 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Space == t_event.key.code)
 	{
-		TileCount();
+	
 	}
 	if (sf::Keyboard::Num1 == t_event.key.code)
 	{
@@ -86,63 +86,13 @@ void Game::processKeys(sf::Event t_event)
 
 void Game::ProcessMouseDown(sf::Event t_event)
 {
-	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
 
-	
 
 	if (sf::Mouse::Left == t_event.key.code)
 	{
-
-		// PLAYER TILES
-		for (int i = 0; i < 6; i++)
-		{
-			sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
-
-			if (bounds.contains(mousePos))
-			{
-				// Delsecect old tile
-				playerTiles[selectedTile].DeselectTile();
-				// Select new tile
-				playerTiles[i].SelectTile();
-				// Get a new selected tile
-				selectedTile = i;
-				// Get the shape / piece from the tile you selected
-				selectedPiece = playerTiles[i].GetCurrentPiece();
-			}
-		}
-
-		//  BOARD
-		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
-		{
-			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
-			{
-				sf::FloatRect bounds = board[row][col].shape.getGlobalBounds();
-
-				if (bounds.contains(mousePos))
-				{
-					if (playerTiles[selectedTile].isSelected && !board[row][col].isPlaced)
-					{
-						// Change piece on board to the same value as the selected piece
-						board[row][col].SetPiece(selectedPiece);
-						// selectedPiece = NONE;
-						// Update piece on board
-						board[row][col].CheckPiece();
-						// Deselecting the tile
-						playerTiles[selectedTile].DeselectTile();
-						// Getting random number from the active pool
-						int randomTileFromTilePool = GetActiveTilePool();
-						// Refilling the players tile with the random piece
-						playerTiles[selectedTile].SetPiece(randomTileFromTilePool);
-						// Removing the tile from the tile pool
-						totalTilePool[randomTileFromTilePool].SetUsed();
-						//playerTiles[selectedTile].SetUsed();
-
-						std::cout << "You have placed : " << board[row][col].tileName << "\n";
-
-					}
-				}
-			}
-		}
+		SelectPlayerTile();
+		PlaceTileOnBoard();
+		
 	}
 	
 }
@@ -166,8 +116,6 @@ void Game::render()
 			board[row][col].Render(m_window);
 		}
 	}
-
-	
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -197,6 +145,7 @@ void Game::init()
 	SetupTilePool();
 	SetupPlayerTiles();
 	SetupAITiles();
+	StartGame();
 }
 
 void Game::InitBoard()
@@ -380,5 +329,152 @@ void Game::OutputAITiles()
 		std::cout << "Tile Piece: " << tile.GetCurrentPiece() << "\n";
 
 	}
+}
+
+void Game::StartGame()
+{
+	if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
+	{
+		std::cout << "Player goes first \n";
+	}
+	else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
+	{
+		std::cout << "AI goes first \n";
+	}
+	else
+	{
+		int random = rand() % 2;
+
+		std::cout << "Draw, random time.... \n";
+		if (random == 0)
+		{
+			std::cout << "Player goes first \n";
+		}
+		else
+		{
+			std::cout << "AI goes first \n";
+		}
+	}
+}
+
+int Game::CheckWhoGoesFirst(Tile t_tiles[6])
+{
+	std::map<std::string, int> shapeCount;
+	std::map<std::string, int> colorCount;
+
+	int maxS = 0;
+	for (int i = 0; i < 6; i++)
+	{
+		shapeCount[t_tiles[i].tileShape]++;
+		colorCount[t_tiles[i].tileColor]++;
+	}
+
+	std::string maxShape;
+	int maxShapeCount = 0;
+	for (const auto& pair : shapeCount)
+	{
+		if (pair.second > maxShapeCount)
+		{
+			maxShape = pair.first;
+			maxShapeCount = pair.second;
+		}
+	}
+
+	std::string maxColor;
+	int maxColorCount = 0;
+	for (const auto& pair : colorCount)
+	{
+		if (pair.second > maxColorCount)
+		{
+			maxColor = pair.first;
+			maxColorCount = pair.second;
+		}
+	}
+
+	if (maxShapeCount > maxColorCount)
+	{
+		//std::cout << "The tile with the most common shape is: " << maxShape << " (" << maxShapeCount << " occurrences)\n";
+		return maxShapeCount;
+	}
+	else if (maxColorCount > 0)
+	{
+		//std::cout << "The tile with the most common color is: " << maxColor << " (" << maxColorCount << " occurrences)\n";
+		return maxColorCount;
+
+	}
+}
+
+void Game::SelectPlayerTile()
+{
+	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+
+	for (int i = 0; i < 6; i++)
+	{
+		sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
+
+		if (bounds.contains(mousePos))
+		{
+			// Delsecect old tile
+			playerTiles[selectedTile].DeselectTile();
+			// Select new tile
+			playerTiles[i].SelectTile();
+			// Get a new selected tile
+			selectedTile = i;
+			// Get the shape / piece from the tile you selected
+			selectedPiece = playerTiles[i].GetCurrentPiece();
+		}
+	}
+}
+
+void Game::PlaceTileOnBoard()
+{
+	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+
+	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+	{
+		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+		{
+			sf::FloatRect bounds = board[row][col].shape.getGlobalBounds();
+
+			if (bounds.contains(mousePos))
+			{
+				if (playerTiles[selectedTile].isSelected && !board[row][col].isPlaced)
+				{
+					// Change piece on board to the same value as the selected piece
+					board[row][col].SetPiece(selectedPiece);
+					// Update piece on board
+					board[row][col].CheckPiece();
+					// Deselecting the tile
+					playerTiles[selectedTile].DeselectTile();
+					// Getting random number from the active pool
+					int randomTileFromTilePool = GetActiveTilePool();
+					// Refilling the players tile with the random piece
+					playerTiles[selectedTile].SetPiece(randomTileFromTilePool);
+					// Removing the tile from the tile pool
+					totalTilePool[randomTileFromTilePool].SetUsed();
+					//playerTiles[selectedTile].SetUsed();
+
+					std::cout << "You have placed : " << board[row][col].tileName << "\n";
+
+				}
+			}
+		}
+	}
+}
+
+void Game::CheckNeighbours(int row, int col)
+{
+	for (int i = row - 1; i <= row + 1; ++i)
+	{
+		for (int j = col - 1; j <= col + 1; ++j)
+		{
+
+		}
+	}
+}
+
+void Game::PlacingRules()
+{
+	
 }
 

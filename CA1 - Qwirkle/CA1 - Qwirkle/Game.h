@@ -32,6 +32,15 @@ private:
 	void OutputPlayerTile();
 	void OutputAITiles();
 
+	void StartGame();
+	int CheckWhoGoesFirst(Tile tile[6]);
+
+	void SelectPlayerTile();
+	void PlaceTileOnBoard();
+	void CheckNeighbours(int row, int col);
+	void PlacingRules();
+
+
 	sf::RenderWindow m_window; 
 	sf::Font m_ArialBlackfont;
 
