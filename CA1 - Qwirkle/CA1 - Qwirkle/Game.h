@@ -37,7 +37,7 @@ private:
 
 	void SelectPlayerTile();
 	void PlaceTileOnBoard();
-	void CheckNeighbours(int row, int col);
+	bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
 	void PlacingRules();
 
 
@@ -57,6 +57,8 @@ private:
 	Tile playerTiles[6]; // 6
 	Tile aiTiles[6]; // 6
 
+	Color turnColor;
+	Shape turnShape;
 	//std::vector<Tile> tilePool1;
 	//std::vector<Tile> tilePool2;
 	//std::vector<Tile> tilePool3;
@@ -67,6 +69,7 @@ private:
 
 	Piece selectedPiece;
 
+	bool isFirstTurn = true;
 	int selectedTile = 0;
 	bool m_exitGame; 
 

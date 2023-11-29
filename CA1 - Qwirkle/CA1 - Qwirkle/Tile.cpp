@@ -24,7 +24,7 @@ void Tile::Init(sf::Vector2f& position)
 	tileColor = "None";
 	
 
-	CheckPiece();
+	CheckPiece(GetCurrentPiece());
 }
 
 void Tile::Render(sf::RenderWindow& window)
@@ -36,19 +36,19 @@ void Tile::Render(sf::RenderWindow& window)
 	}
 }
 
-void Tile::CheckPiece()
+void Tile::CheckPiece(Piece piece)
 {
-	SetShape();
-	SetColor();
+	SetShape(piece);
+	SetColor(piece);
 	tileName = tileShape + " " + tileColor;
 	
 }
 
-void Tile::SetShape()
+void Tile::SetShape(Piece piece)
 {
- 	CheckCurrentPieceSize(currentPiece);
+ 	CheckCurrentPieceSize(piece);
 
-	if (currentPiece >= 0 && currentPiece < 6)
+	if (piece >= 0 && piece < 6)
 	{
 		shape.setRotation(45);
 	}
@@ -57,38 +57,45 @@ void Tile::SetShape()
 		shape.setRotation(0);
 	}
 
-	if (currentPiece >= 0 && currentPiece < 6) 
+	if (piece >= 0 && piece < 6)
 	{
+		currentShape = SQUARE;
 		tileShape = "Square";
 		shapeSides = 4;  // Square
 	}
-	else if (currentPiece >= 6 && currentPiece < 12) 
+	else if (piece >= 6 && piece < 12)
 	{
+		currentShape = CIRCLE;
 		tileShape = "Circle";
 		shapeSides = 100;  // Circle
 	}
-	else if (currentPiece >= 12 && currentPiece < 18) 
+	else if (piece >= 12 && piece < 18)
 	{
+		currentShape = TRIANGLE;
 		tileShape = "Triangle";
 		shapeSides = 3;  // Triangle
 	}
-	else if (currentPiece >= 18 && currentPiece < 24) 
+	else if (piece >= 18 && piece < 24)
 	{
+		currentShape = DIAMOND;
 		tileShape = "Diamond";
 		shapeSides = 4;  // Diamond
 	}
-	else if (currentPiece >= 24 && currentPiece < 30) 
+	else if (piece >= 24 && piece < 30)
 	{
+		currentShape = HEXAGON;
 		tileShape = "Hexagon";
 		shapeSides = 6;  // Hexagon
 	}
-	else if (currentPiece >= 30 && currentPiece < 36) 
+	else if (piece >= 30 && piece < 36)
 	{
+		currentShape = OCTAGON;
 		tileShape = "Octagon";
 		shapeSides = 8;  // Octagon
 	}
 	else
 	{
+		currentShape = NO_SHAPE;
 		tileShape = "Used";
 		shapeSides = 0;
 	}
@@ -96,29 +103,36 @@ void Tile::SetShape()
 	shape.setPointCount(shapeSides);
 }
 
-void Tile::SetColor()
+void Tile::SetColor(Piece piece)
 {
-	switch (currentPiece % 6)
+	switch (piece % 6)
 	{
 	case 0: shapeColor = sf::Color::Red; 
+		currentColor = RED;
 		tileColor = "Red";
 		break;
-	case 1: shapeColor = sf::Color::Green; 
+	case 1: shapeColor = sf::Color::Green;
+		currentColor = GREEN;
 		tileColor = "Green";
 		break;
 	case 2: shapeColor = sf::Color::Blue;
+		currentColor = BLUE;
 		tileColor = "Blue";
 		break;
 	case 3: shapeColor = sf::Color::Yellow;
+		currentColor = YELLOW;
 		tileColor = "Yellow";
 		break;
 	case 4: shapeColor = sf::Color::Magenta; 
+		currentColor = PINK;
 		tileColor = "Pink";
 		break;
 	case 5: shapeColor = sf::Color::White; 
+		currentColor = WHITE;
 		tileColor = "White";
 		break;
 	default: shapeColor = sf::Color::Transparent; 
+		currentColor = NO_COLOR;
 		tileColor = "None";
 		break;
 	}
@@ -129,9 +143,9 @@ void Tile::SetColor()
 void Tile::SetPiece(int piece)
 {
 	currentPiece = static_cast<Piece>(piece);
-	CheckCurrentPieceSize(currentPiece);
+	CheckCurrentPieceSize(GetCurrentPiece());
 	isPlaced = true;
-	CheckPiece();
+	CheckPiece(GetCurrentPiece());
 }
 
 void Tile::SelectTile()
@@ -151,10 +165,20 @@ Piece Tile::GetCurrentPiece()
 	return currentPiece;
 }
 
+Color Tile::GetCurrentColor()
+{
+	return currentColor;
+}
+
+Shape Tile::GetCurrentShape()
+{
+	return currentShape;
+}
+
 void Tile::SetUsed()
 {
 	isUsed = true;
-	CheckPiece();
+	CheckPiece(GetCurrentPiece());
 }
 
 bool Tile::GetUsed()
@@ -170,7 +194,7 @@ void Tile::CheckCurrentPieceSize(int piece)
 		tooBig = piece;
 		tooBig -= 36;
 		currentPiece = static_cast<Piece>(tooBig);
-		CheckCurrentPieceSize(currentPiece);
+		CheckCurrentPieceSize(GetCurrentPiece());
 	}
 }
 

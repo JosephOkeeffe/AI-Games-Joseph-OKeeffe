@@ -47,30 +47,54 @@ enum Piece
 	OW	//35
 };
 
+enum Color
+{
+	NO_COLOR,
+	RED,
+	GREEN,
+	BLUE,
+	YELLOW,
+	PINK,
+	WHITE
+};
+enum Shape
+{
+	NO_SHAPE,
+	SQUARE,
+	CIRCLE,
+	TRIANGLE,
+	DIAMOND,
+	HEXAGON,
+	OCTAGON
+};
+
 class Tile
 {
 public:
+
+
+
 
 	Tile();
 	void Init(sf::Vector2f& position);
 	void Render(sf::RenderWindow& window);
 
+	void CheckPiece(Piece piece);
 
-	void CheckPiece();
 
-
-	void SetShape();
-	void SetColor();
+	void SetShape(Piece piece);
+	void SetColor(Piece piece);
 
 	void SetPiece(int piece);
 	void SelectTile();
 	void DeselectTile();
 	Piece GetCurrentPiece();
+	Color GetCurrentColor();
+	Shape GetCurrentShape();
 	void SetUsed();
 	bool GetUsed();
 
 	void CheckCurrentPieceSize(int piece);
-
 
 
 
@@ -87,10 +111,6 @@ public:
 	bool isPlayer = false;
 	bool isAI = false;
 
-
-
-	
-
 	sf::RectangleShape tile;
 
 	int shapeSides = 0;
@@ -99,6 +119,8 @@ public:
 
 private:
 	Piece currentPiece;
+	Color currentColor;
+	Shape currentShape;
 
 };
 
