@@ -68,16 +68,16 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Num1 == t_event.key.code)
 	{
-		OutputTilePool();
+		NextTurn();
 	}
-	if (sf::Keyboard::Num2 == t_event.key.code)
-	{
-		OutputPlayerTile();
-	}
-	if (sf::Keyboard::Num3 == t_event.key.code)
-	{
-		OutputAITiles();
-	}
+	//if (sf::Keyboard::Num2 == t_event.key.code)
+	//{
+	//	OutputPlayerTile();
+	//}
+	//if (sf::Keyboard::Num3 == t_event.key.code)
+	//{
+	//	OutputAITiles();
+	//}
 	if (sf::Keyboard::B == t_event.key.code)
 	{
 		isBagOpen = !isBagOpen;
@@ -412,15 +412,18 @@ void Game::SelectPlayerTile()
 
 		if (bounds.contains(mousePos))
 		{
-			// Delsecect old tile
-			playerTiles[selectedTile].DeselectTile();
-			// Select new tile
-			playerTiles[i].SelectTile();
-			// Get a new selected tile
-			selectedTile = i;
-			// Get the shape / piece from the tile you selected
-			selectedPiece = playerTiles[i].GetCurrentPiece();
-			playerTiles[i].CheckPiece(selectedPiece);
+			if (!playerTiles[i].GetUsed())
+			{
+				// Delsecect old tile
+				playerTiles[selectedTile].DeselectTile();
+				// Select new tile
+				playerTiles[i].SelectTile();
+				// Get a new selected tile
+				selectedTile = i;
+				// Get the shape / piece from the tile you selected
+				selectedPiece = playerTiles[i].GetCurrentPiece();
+				playerTiles[i].CheckPiece(selectedPiece);
+			}
 		}
 	}
 }
@@ -439,31 +442,43 @@ void Game::PlaceTileOnBoard()
 			{
 				if (playerTiles[selectedTile].isSelected && !board[row][col].isPlaced)
 				{
-					// Change piece on board to the same value as the selected piece
 					if (CheckIfTileIsTouchingTileOfSameColourOrShape(row, col))
 					{
-						isFirstTurn = false;
-						board[row][col].SetPiece(selectedPiece);
-						// Update piece on board
-						board[row][col].CheckPiece(board[row][col].GetCurrentPiece());
-						// Deselecting the tile
-						playerTiles[selectedTile].DeselectTile();
-						// Getting random number from the active pool
-						int randomTileFromTilePool = GetActiveTilePool();
-						// Refilling the players tile with the random piece
-						playerTiles[selectedTile].SetPiece(randomTileFromTilePool);
-						// Removing the tile from the tile pool
-						totalTilePool[randomTileFromTilePool].SetUsed();
-						//playerTiles[selectedTile].SetUsed();
+						CheckTurnShapeAndColor();
+						if (CheckTilesAreBeingPlacedInSameLine() == row || CheckTilesAreBeingPlacedInSameLine() == col || SameLineVector.size() < 2)
+						{
+							if (playerTiles[selectedTile].GetCurrentColor() == turnColor && isColorTurn|| playerTiles[selectedTile].GetCurrentShape() == turnShape && isShapeTurn || turnTiles.size() < 2)
+							{
+								isFirstTurn = false;
 
-						std::cout << "You have placed : " << board[row][col].tileName << "\n";
+								board[row][col].SetPiece(selectedPiece);
+
+								SetTurnColourAndShape(playerTiles[selectedTile].GetCurrentColor(), playerTiles[selectedTile].GetCurrentShape());
+								SameLineVector.push_back({ row,col });
+								turnTiles.push_back(playerTiles[selectedTile]);
+								// Deselecting the tile
+								playerTiles[selectedTile].DeselectTile();
+								playerTiles[selectedTile].SetUsed();
+								std::cout << "You have placed : " << board[row][col].tileName << "\n";
+							}
+						}
 					}
 
 				}
 			}
+
 		}
 	}
 }
+
+
+
+void Game::PlacingRules()
+{
+	
+}
+
+
 
 bool Game::CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col)
 {
@@ -475,7 +490,15 @@ bool Game::CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col)
 		{
 			for (int j = col - 1; j <= col + 1; ++j)
 			{
-				if (i == row && j == col){continue;}
+				if (i == row && j == col) { continue; }
+
+				if (board[i][j].GetCurrentColor() == playerTiles[selectedTile].GetCurrentColor() && board[i][j].GetCurrentShape() == playerTiles[selectedTile].GetCurrentShape())
+				{
+					SameLineVector.push_back({ i,j });
+					canPlaceTile = false;
+					std::cout << "Cannot place exact same tile type beside each other \n";
+					return canPlaceTile;
+				}
 
 				if (i >= 0 && i < Global::ROWS_COLUMNS && j >= 0 && j < Global::ROWS_COLUMNS && (i == row || j == col))
 				{
@@ -486,6 +509,13 @@ bool Game::CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col)
 						return canPlaceTile;
 					}
 				}
+				else
+				{
+					std::cout << "These tiles arent matching by Color or Shape\n";
+				}
+				
+				
+				
 			}
 		}
 	}
@@ -497,8 +527,96 @@ bool Game::CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col)
 	return canPlaceTile;
 }
 
-void Game::PlacingRules()
+int Game::CheckTilesAreBeingPlacedInSameLine()
 {
+	if (SameLineVector.size() < 2) return -1;
 	
+	sf::Vector2i firstPos = SameLineVector[0];
+	sf::Vector2i secondPos = SameLineVector[1];
+
+	int currentLine = 0;
+	if (firstPos.x == secondPos.x)
+	{
+		std::cout << "You have started placing tiles across so you cant place them down\n";
+		currentLine = firstPos.x;
+	}
+	else if (firstPos.y == secondPos.y)
+	{
+		std::cout << "You have started placing tiles down so you cant place them across\n";
+		currentLine = firstPos.y;
+	}
+	return currentLine;
+}
+
+void Game::CheckTurnShapeAndColor()
+{
+	if (turnTiles.size() < 2) return;
+
+	int colorCounter = 0;
+	int shapeCounter = 0;
+	for each (auto tile in turnTiles)
+	{
+		if (tile.GetCurrentColor() == turnColor) 
+		{
+			colorCounter++;
+		}
+		if (tile.GetCurrentShape() == turnShape)
+		{
+			shapeCounter++;
+		}
+	}
+
+	if (colorCounter > shapeCounter)
+	{
+		std::cout << "Can't place matching Shapes as you have matched Colors this turn \n";
+		isColorTurn = true;
+		isShapeTurn = false;
+	}
+	else
+	{
+		std::cout << "Can't place matching Colors as you have matched Shapes this turn \n";
+		isColorTurn = false;
+		isShapeTurn = true;
+	}
+}
+
+void Game::SetTurnColourAndShape(Color color, Shape shape)
+{
+	if (turnColor == NO_COLOR)
+	{
+		turnColor = color;
+	}
+	if (turnShape == NO_SHAPE)
+	{
+		turnShape = shape;
+	}
+}
+
+void Game::NextTurn()
+{
+	RefillPlayerAndAITiles();
+	SameLineVector.clear();
+	turnTiles.clear();
+	isColorTurn = false;
+	isShapeTurn = false;
+	turnColor = NO_COLOR;
+	turnShape = NO_SHAPE;
+	currentTurn++;
+}
+
+void Game::RefillPlayerAndAITiles()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		if (playerTiles[i].GetUsed())
+		{
+			playerTiles[i].ResetTile();
+			int randomTileFromTilePool = GetActiveTilePool();
+			// Refilling the players tile with the random piece
+			playerTiles[i].SetPiece(randomTileFromTilePool);
+			// Removing the tile from the tile pool
+			totalTilePool[randomTileFromTilePool].SetUsed();
+		}
+	}
 }
 

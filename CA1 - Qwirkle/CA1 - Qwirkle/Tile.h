@@ -93,6 +93,7 @@ public:
 	Shape GetCurrentShape();
 	void SetUsed();
 	bool GetUsed();
+	void ResetTile();
 
 	void CheckCurrentPieceSize(int piece);
 

@@ -186,6 +186,11 @@ bool Tile::GetUsed()
 	return isUsed;
 }
 
+void Tile::ResetTile()
+{
+	isUsed = false;
+}
+
 void Tile::CheckCurrentPieceSize(int piece)
 {
 	if (piece >= 36)

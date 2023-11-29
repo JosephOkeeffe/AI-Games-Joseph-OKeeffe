@@ -37,8 +37,17 @@ private:
 
 	void SelectPlayerTile();
 	void PlaceTileOnBoard();
-	bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
 	void PlacingRules();
+
+	void NextTurn();
+	void RefillPlayerAndAITiles();
+	// Rules
+	bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
+	int CheckTilesAreBeingPlacedInSameLine();
+	void CheckTurnShapeAndColor();
+	void SetTurnColourAndShape(Color color, Shape shape);
+
+	int currentTurn = 1;
 
 
 	sf::RenderWindow m_window; 
@@ -57,9 +66,7 @@ private:
 	Tile playerTiles[6]; // 6
 	Tile aiTiles[6]; // 6
 
-	Color turnColor;
-	Shape turnShape;
-	//std::vector<Tile> tilePool1;
+
 	//std::vector<Tile> tilePool2;
 	//std::vector<Tile> tilePool3;
 	//std::vector<Tile> totalTilePool;
@@ -68,6 +75,14 @@ private:
 	//std::vector<Tile> aiTiles;
 
 	Piece selectedPiece;
+
+	// Turns
+	std::vector<sf::Vector2i> SameLineVector;
+	std::vector<Tile> turnTiles;
+	Color turnColor;
+	Shape turnShape;
+	bool isColorTurn = false;
+	bool isShapeTurn = false;
 
 	bool isFirstTurn = true;
 	int selectedTile = 0;
