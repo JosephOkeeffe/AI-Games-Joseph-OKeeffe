@@ -42,9 +42,16 @@ private:
 	void NextTurn();
 	void RefillPlayerAndAITiles();
 	// Rules
-	bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
-	int CheckTilesAreBeingPlacedInSameLine();
-	void CheckTurnShapeAndColor();
+	bool isValidPlacement = false;
+
+	std::vector<Tile> CheckValidNeighbours(int row, int col);
+	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
+	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
+	//bool CheckColourAndShape();
+
+	//bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
+	//int CheckTilesAreBeingPlacedInSameLine();
+	//void CheckTurnShapeAndColor();
 	void SetTurnColourAndShape(Color color, Shape shape);
 
 	int currentTurn = 1;
@@ -60,6 +67,7 @@ private:
 	Tile tilePool1[36]; // 108 (36 x 3)
 	Tile tilePool2[36];
 	Tile tilePool3[36];
+	
 
 	Tile totalTilePool[108];
 
@@ -74,7 +82,7 @@ private:
 	//std::vector<Tile> playerTiles;
 	//std::vector<Tile> aiTiles;
 
-	Piece selectedPiece;
+	Piece currentSelectedPiece;
 
 	// Turns
 	std::vector<sf::Vector2i> SameLineVector;
