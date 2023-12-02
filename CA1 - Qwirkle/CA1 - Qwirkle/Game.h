@@ -48,7 +48,7 @@ private:
 	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
 	bool CheckTilesAreBeingPlacedInSameLine(Tile playerTile, Tile validTile);
-	bool Game::IsInSameLine(Tile playerTile, Tile validTile);
+	bool CheckNieghbourIsInLine(int row, int col);
 
 	//bool CheckColourAndShape();
 
@@ -71,21 +71,12 @@ private:
 	
 
 	Tile totalTilePool[108];
-	Tile playerTiles[6]; // 6
-	Tile aiTiles[6]; // 6
-
-
-	//std::vector<Tile> tilePool2;
-	//std::vector<Tile> tilePool3;
-	//std::vector<Tile> totalTilePool;
-
-	//std::vector<Tile> playerTiles;
-	//std::vector<Tile> aiTiles;
+	Tile playerTiles[6];
+	Tile aiTiles[6]; 
 
 	Piece currentSelectedPiece;
 
-	sf::Vector2i firstPosInTile;
-	sf::Vector2i secondPosInTile;
+	sf::Vector2i previousPlacedTile;
 
 	// Turns
 	Color turnColor;
@@ -96,7 +87,6 @@ private:
 	sf::Vector2i currentCellPos;
 	std::vector<Tile> lineTiles;
 
-	//bool firstMoveInTurn = true;
 	bool isFirstMoveOfGame = true;
 	int selectedTile = 0;
 	bool m_exitGame; 
