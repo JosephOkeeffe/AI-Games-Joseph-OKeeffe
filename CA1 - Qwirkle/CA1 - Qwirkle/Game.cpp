@@ -25,12 +25,11 @@ void Game::run()
 	sf::Time timePerFrame = sf::seconds(1.0f / fps); // 60 fps
 	while (m_window.isOpen())
 	{
-		processEvents(); // as many as possible
+		//processEvents(); // as many as possible
 		timeSinceLastUpdate += clock.restart();
 		while (timeSinceLastUpdate > timePerFrame)
 		{
 			timeSinceLastUpdate -= timePerFrame;
-			processEvents(); // at least 60 fps
 			update(timePerFrame); //60 fps
 		}
 		render(); // as many as possible
@@ -49,7 +48,7 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
-		if (sf::Event::MouseButtonPressed == newEvent.type)
+		if (sf::Event::MouseButtonPressed == newEvent.type && isPlayerTurn)
 		{
 			ProcessMouseDown(newEvent);
 		}
@@ -70,14 +69,6 @@ void Game::processKeys(sf::Event t_event)
 	{
 		NextTurn();
 	}
-	//if (sf::Keyboard::Num2 == t_event.key.code)
-	//{
-	//	OutputPlayerTile();
-	//}
-	//if (sf::Keyboard::Num3 == t_event.key.code)
-	//{
-	//	OutputAITiles();
-	//}
 	if (sf::Keyboard::B == t_event.key.code)
 	{
 		isBagOpen = !isBagOpen;
@@ -97,10 +88,29 @@ void Game::ProcessMouseDown(sf::Event t_event)
 
 void Game::update(sf::Time t_deltaTime)
 {
-	if (m_exitGame)
+	if (m_exitGame)	{m_window.close();}
+
+	processEvents();
+
+	
+
+	if (!isPlayerTurn) // AI  Turn
 	{
-		m_window.close();
+		if (aiTimer.asSeconds() == 0) { aiClock.restart(); }
+		aiTimer = aiClock.getElapsedTime();
+		sf::Vector2i move = MakeAiMove();
+		AiPlaceTileOnBoard(move);
+		// 
+		if (aiTimer.asSeconds() >= 2)
+		{
+			std::cout << "Players Turn!\n";
+			NextTurn();
+		}
+		
 	}
+
+	
+	
 }
 
 void Game::render()
@@ -167,7 +177,6 @@ void Game::InitBoard()
 
 void Game::SetupTilePool()
 {
-	// Initialize tilePool2
 	for (int i = 0; i < 36; i++)
 	{
 		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
@@ -177,7 +186,6 @@ void Game::SetupTilePool()
 		tilePool1[i].SetPiece(i);
 	}
 
-	// Initialize tilePool2
 	for (int i = 0; i < 36; i++)
 	{
 		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
@@ -187,7 +195,6 @@ void Game::SetupTilePool()
 		tilePool2[i].SetPiece(i);
 	}
 
-	// Initialize tilePool3
 	for (int i = 0; i < 36; i++)
 	{
 		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
@@ -236,7 +243,6 @@ void Game::SetupAITiles()
 			count++;
 		}
 	}
-	
 }
 
 int Game::GetActiveTilePool()
@@ -333,10 +339,12 @@ void Game::StartGame()
 {
 	if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
 	{
+		isPlayerTurn = true;
 		std::cout << "Player goes first \n";
 	}
 	else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
 	{
+		isPlayerTurn = false;
 		std::cout << "AI goes first \n";
 	}
 	else
@@ -346,10 +354,12 @@ void Game::StartGame()
 		std::cout << "Draw, random time.... \n";
 		if (random == 0)
 		{
+			isPlayerTurn = true;
 			std::cout << "Player goes first \n";
 		}
 		else
 		{
+			isPlayerTurn = false;
 			std::cout << "AI goes first \n";
 		}
 	}
@@ -487,6 +497,7 @@ void Game::NextTurn()
 	turnColor = NO_COLOR;
 	turnShape = NO_SHAPE;
 	currentTurn++;
+	isPlayerTurn = !isPlayerTurn;
 }
 
 void Game::RefillPlayerAndAITiles()
@@ -503,13 +514,34 @@ void Game::RefillPlayerAndAITiles()
 			totalTilePool[randomTileFromTilePool].SetUsed();
 		}
 	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (aiTiles[i].GetUsed())
+		{
+			aiTiles[i].ResetTile();
+			int randomTileFromTilePool = GetActiveTilePool();
+			// Refilling the players tile with the random piece
+			aiTiles[i].SetPiece(randomTileFromTilePool);
+			// Removing the tile from the tile pool
+			totalTilePool[randomTileFromTilePool].SetUsed();
+		}
+	}
+}
+
+sf::Vector2i Game::GetTileCell(Tile tile)
+{
+	sf::Vector2i tilePos;
+
+	tilePos.x = tile.tile.getPosition().x / Global::CELL_SIZE;
+	tilePos.y = tile.tile.getPosition().y / Global::CELL_SIZE;
+	return tilePos;
 }
 
 std::vector<Tile> Game::CheckValidNeighbours(int row, int col)
 {
 	std::vector<Tile> neighbourTiles;
 	std::vector<Tile> validNeighbourTiles;
-
 	
 	for (int i = row - 1; i <= row + 1; ++i)
 	{
@@ -532,7 +564,6 @@ std::vector<Tile> Game::CheckValidNeighbours(int row, int col)
 			validNeighbourTiles.push_back(tile);
 		}
 	}
-
 
 	return validNeighbourTiles;
 }
@@ -563,9 +594,7 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 	playerCell.x = 	currentCellPos.x;
 	playerCell.y = currentCellPos.y;
 
-	sf::Vector2i validTileCell;
-	validTileCell.x = validTile.tile.getPosition().x / Global::CELL_SIZE;
-	validTileCell.y = validTile.tile.getPosition().y / Global::CELL_SIZE;
+	sf::Vector2i validTileCell = GetTileCell(validTile);
 
 	int leftOfValidTile = validTileCell.x - 1;
 	int rightOfValidTile = validTileCell.x + 1;
@@ -742,8 +771,8 @@ bool Game::CheckNieghbourIsInLine(int row, int col)
 
 	for each (auto tile in CheckValidNeighbours(row, col))
 	{
-		validTileCell.x = tile.tile.getPosition().x / Global::CELL_SIZE;
-		validTileCell.y = tile.tile.getPosition().y / Global::CELL_SIZE;
+
+		validTileCell = GetTileCell(tile);
 		if (validTileCell.x + 1 == currentCellPos.x)
 		{
 			isValid = false;
@@ -766,5 +795,104 @@ bool Game::CheckNieghbourIsInLine(int row, int col)
 		}
 	}
 	return isValid;
+}
+
+///////////////
+///////////////
+///////////////
+
+sf::Vector2i Game::MakeAiMove()
+{
+	sf::Vector2i movePos;
+
+	movePos = GetAiMove();
+
+	if (movePos.x == -1)
+	{
+		std::cout << "No valid move, skipping turn \n";
+	}
+
+	return movePos;
+}
+
+sf::Vector2i Game::GetAiMove()
+{
+	sf::Vector2i movePos;
+	sf::Vector2i foundPiece;
+	std::vector<Tile> neighbourTiles;
+
+	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+	{
+		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+		{
+			if (board[row][col].GetCurrentColor() != NO_COLOR)
+			{
+				foundPiece = { row, col };
+				neighbourTiles = GetAiNeighbours(row, col);
+				for each (Tile neighbour in neighbourTiles)
+				{
+					if (neighbour.GetCurrentColor() == NO_COLOR) 
+					{
+						
+						movePos = GetTileCell(neighbour);
+					}
+				}
+				//CheckValuesOfNeighbours(neighbourTiles);
+			}
+		}
+
+	}
+
+	//movePos = { 5, 5 };
+	return movePos;
+}
+
+void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
+{
+	currentCellPos = boardPos;
+	int row = boardPos.x;
+	int col = boardPos.y;
+
+	aiCurrentPiece = aiTiles[0].GetCurrentPiece();
+	// Do more stuff,
+	
+	if (!aiTiles[0].GetUsed())
+	{
+		board[row][col].SetPiece(aiCurrentPiece);
+
+	}
+	aiTiles[0].SetUsed();
+
+}
+
+std::vector<Tile> Game::GetAiNeighbours(int row, int col)
+{
+	std::vector<Tile> neighbourTiles;
+
+	for (int i = row - 1; i <= row + 1; ++i)
+	{
+		for (int j = col - 1; j <= col + 1; ++j)
+		{
+			if ((i == row && j == col) || (i != row && j != col)) { continue; }
+
+			if (i >= 0 && i < Global::ROWS_COLUMNS
+				&& j >= 0 && j < Global::ROWS_COLUMNS)
+			{
+				neighbourTiles.push_back(board[i][j]);
+			}
+		}
+	}
+	return neighbourTiles;
+}
+
+void Game::CheckValuesOfNeighbours(std::vector<Tile> neighbours)
+{
+	for each (Tile neighbour in neighbours)
+	{
+		if (neighbour.GetCurrentColor() == NO_COLOR) 
+		{
+			aiCanPlaceTile = true;
+		}
+	}
 }
 

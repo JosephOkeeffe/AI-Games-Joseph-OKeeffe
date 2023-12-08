@@ -37,24 +37,28 @@ private:
 
 	void SelectPlayerTile();
 	void PlaceTileOnBoard();
-	void PlacingRules();
 
 	void NextTurn();
 	void RefillPlayerAndAITiles();
+
+	sf::Vector2i GetTileCell(Tile tile);
 	// Rules
 	bool isValidPlacement = false;
 
 	std::vector<Tile> CheckValidNeighbours(int row, int col);
 	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
-	bool CheckTilesAreBeingPlacedInSameLine(Tile playerTile, Tile validTile);
 	bool CheckNieghbourIsInLine(int row, int col);
-
-	//bool CheckColourAndShape();
-
-	//bool CheckIfTileIsTouchingTileOfSameColourOrShape(int row, int col);
-	//void CheckTurnShapeAndColor();
 	void SetTurnColourAndShape(Color color, Shape shape);
+
+	// AI
+	bool aiCanPlaceTile = false;
+
+	sf::Vector2i MakeAiMove();
+	sf::Vector2i GetAiMove();
+	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
+	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
+	void CheckValuesOfNeighbours(std::vector<Tile> neighbours);
 
 	int currentTurn = 1;
 
@@ -89,7 +93,14 @@ private:
 
 	bool isFirstMoveOfGame = true;
 	int selectedTile = 0;
-	bool m_exitGame; 
+	bool m_exitGame;  
+	// AI
+	bool isPlayerTurn = true;
+	Piece aiCurrentPiece;
+
+	sf::Clock aiClock;
+	sf::Time aiTimer;
+
 
 
 
