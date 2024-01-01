@@ -6,6 +6,8 @@
 #include "Tile.h"
 #include "Global.h"
 
+#define _Output_To_Screen(x) std::cout << x << "\n";
+
 class Game
 {
 public:
@@ -25,12 +27,10 @@ private:
 	void InitBoard();
 	void SetupTilePool();
 	void SetupPlayerTiles();
+	void SetupSprites();
 	void SetupAITiles();
 	int GetActiveTilePool();
 	int TileCount();
-	void OutputTilePool();
-	void OutputPlayerTile();
-	void OutputAITiles();
 
 	void StartGame();
 	int CheckWhoGoesFirst(Tile tile[6]);
@@ -48,17 +48,20 @@ private:
 	std::vector<Tile> CheckValidNeighbours(int row, int col);
 	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
-	bool CheckNieghbourIsInLine(int row, int col);
+	bool CheckNeighbourIsInLine(int row, int col);
 	void SetTurnColourAndShape(Color color, Shape shape);
+	void ShufflePlayerTiles();
+	bool CheckAllTilesInLine(Tile playerTile);
 
 	// AI
 	bool aiCanPlaceTile = false;
 
+	void SortAiTurn();
 	sf::Vector2i MakeAiMove();
 	sf::Vector2i GetAiMove();
 	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
 	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
-	void CheckValuesOfNeighbours(std::vector<Tile> neighbours);
+	bool CheckValidTileOrShapeAi(std::vector<Tile> neighbours);
 
 	int currentTurn = 1;
 
@@ -78,31 +81,49 @@ private:
 	Tile playerTiles[6];
 	Tile aiTiles[6]; 
 
-	Piece currentSelectedPiece;
 
-	sf::Vector2i previousPlacedTile;
 
 	// Turns
 	Color turnColor;
 	Shape turnShape;
 	bool isColorTurn = false;
 	bool isShapeTurn = false;
-
-	sf::Vector2i currentCellPos;
-	std::vector<Tile> lineTiles;
-
 	bool isFirstMoveOfGame = true;
+
+
+	// Player
+	Piece currentSelectedPiece;
+	sf::Vector2i currentCellPos;
+	std::vector<Tile> linesPlacedInTurn;
+	std::vector<Tile> tilesInCurrentLine;
 	int selectedTile = 0;
+	sf::Vector2i previousPlacedTile;
+	int movesInTurnCount = 0;
+	Tile firstTilePlacedInTurn;
+	//std::vector<int> playerTileIdsForBag;
+	int playerTileIdsForBag[6];
+
+
 	bool m_exitGame;  
 	// AI
 	bool isPlayerTurn = true;
 	Piece aiCurrentPiece;
+	int aiSelectedTile = 0;
+	int aiTileIdsForBag[6];
+	
 
 	sf::Clock aiClock;
 	sf::Time aiTimer;
 
+	sf::Texture shuffleTexture;
+	sf::Texture endTurnTexture;
+	sf::Sprite playerShuffleButton;
+	sf::Sprite endTurnButton;
 
-
+	int playerScore = 0;
+	int scoreForCurrentTurn = 0;
+	sf::Font font;
+	sf::Text playerScoreText;
 
 };
 

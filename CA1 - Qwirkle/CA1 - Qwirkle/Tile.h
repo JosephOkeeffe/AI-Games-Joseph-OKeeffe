@@ -49,7 +49,7 @@ enum Piece
 
 enum Color
 {
-	NO_COLOR,
+	EMPTY_C,
 	RED,
 	GREEN,
 	BLUE,
@@ -59,7 +59,7 @@ enum Color
 };
 enum Shape
 {
-	NO_SHAPE,
+	EMPTY_S,
 	SQUARE,
 	CIRCLE,
 	TRIANGLE,

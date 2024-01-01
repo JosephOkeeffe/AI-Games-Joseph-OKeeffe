@@ -95,7 +95,7 @@ void Tile::SetShape(Piece piece)
 	}
 	else
 	{
-		currentShape = NO_SHAPE;
+		currentShape = EMPTY_S;
 		tileShape = "Used";
 		shapeSides = 0;
 	}
@@ -132,7 +132,7 @@ void Tile::SetColor(Piece piece)
 		tileColor = "White";
 		break;
 	default: shapeColor = sf::Color::Transparent; 
-		currentColor = NO_COLOR;
+		currentColor = EMPTY_C;
 		tileColor = "None";
 		break;
 	}

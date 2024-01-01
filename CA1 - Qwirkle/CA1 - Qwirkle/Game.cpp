@@ -69,6 +69,10 @@ void Game::processKeys(sf::Event t_event)
 	{
 		NextTurn();
 	}
+	if (sf::Keyboard::Num2 == t_event.key.code)
+	{
+		ShufflePlayerTiles();
+	}
 	if (sf::Keyboard::B == t_event.key.code)
 	{
 		isBagOpen = !isBagOpen;
@@ -82,6 +86,12 @@ void Game::ProcessMouseDown(sf::Event t_event)
 		SelectPlayerTile();
 		PlaceTileOnBoard();
 		
+		if (isPlayerTurn)
+		{
+			sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+			if (playerShuffleButton.getGlobalBounds().contains(mousePos)){ ShufflePlayerTiles(); }
+			if (endTurnButton.getGlobalBounds().contains(mousePos)){ NextTurn(); }
+		}
 	}
 	
 }
@@ -91,26 +101,7 @@ void Game::update(sf::Time t_deltaTime)
 	if (m_exitGame)	{m_window.close();}
 
 	processEvents();
-
-	
-
-	if (!isPlayerTurn) // AI  Turn
-	{
-		if (aiTimer.asSeconds() == 0) { aiClock.restart(); }
-		aiTimer = aiClock.getElapsedTime();
-		sf::Vector2i move = MakeAiMove();
-		AiPlaceTileOnBoard(move);
-		// 
-		if (aiTimer.asSeconds() >= 2)
-		{
-			std::cout << "Players Turn!\n";
-			NextTurn();
-		}
-		
-	}
-
-	
-	
+	SortAiTurn();
 }
 
 void Game::render()
@@ -143,6 +134,10 @@ void Game::render()
 			totalTilePool[i].Render(m_window);
 		}
 	}
+
+	m_window.draw(playerShuffleButton);
+	m_window.draw(endTurnButton);
+	m_window.draw(playerScoreText);
 	m_window.display();
 }
 
@@ -153,6 +148,7 @@ void Game::init()
 	SetupTilePool();
 	SetupPlayerTiles();
 	SetupAITiles();
+	SetupSprites();
 	StartGame();
 }
 
@@ -179,7 +175,7 @@ void Game::SetupTilePool()
 {
 	for (int i = 0; i < 36; i++)
 	{
-		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
+		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_WIDTH * 0.35;
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE;
 
 		tilePool1[i].Init(sf::Vector2f(xPosition, yPosition));
@@ -188,7 +184,7 @@ void Game::SetupTilePool()
 
 	for (int i = 0; i < 36; i++)
 	{
-		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
+		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_WIDTH * 0.35;
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE + Global::CELL_SIZE * 6;
 
 		tilePool2[i].Init(sf::Vector2f(xPosition, yPosition));
@@ -197,7 +193,7 @@ void Game::SetupTilePool()
 
 	for (int i = 0; i < 36; i++)
 	{
-		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_HEIGHT * 0.35;
+		float xPosition = (i % 6) * Global::CELL_SIZE + Global::S_WIDTH * 0.35;
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE + Global::CELL_SIZE * 12;
 
 		tilePool3[i].Init(sf::Vector2f(xPosition, yPosition));
@@ -245,6 +241,28 @@ void Game::SetupAITiles()
 	}
 }
 
+
+void Game::SetupSprites()
+{
+	shuffleTexture.loadFromFile("ASSETS\\IMAGES\\shuffle.png");
+	endTurnTexture.loadFromFile("ASSETS\\IMAGES\\turn.png");
+	font.loadFromFile("ASSETS\\FONTS\\ariblk.ttf");
+
+	playerShuffleButton.setTexture(shuffleTexture);
+	playerShuffleButton.setScale(0.2, 0.2);
+	playerShuffleButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y);	
+	
+	endTurnButton.setTexture(endTurnTexture);
+	endTurnButton.setScale(0.2, 0.2);
+	endTurnButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y + 45);
+
+	playerScoreText.setFont(font);
+	playerScoreText.setString(std::to_string(playerScore));
+	playerScoreText.setCharacterSize(26);
+	playerScoreText.setPosition(Global::S_WIDTH * 0.41, playerTiles[0].tile.getPosition().y + 5);
+
+}
+
 int Game::GetActiveTilePool()
 {
 	int random = rand() % 108;
@@ -286,81 +304,33 @@ int Game::TileCount()
 	std::cout << "Total Tile Count: " << count << "\n";
 	return count;
 }
-void Game::OutputTilePool()
-{
-	std::cout << "-------------------------------------------" << "\n";
-	std::cout << "Tile Pool" << "\n";
-	std::cout << "-------------------------------------------" << "\n";
-
-	for each (Tile tile in totalTilePool)
-	{
-		if (!tile.GetUsed())
-		{
-			std::cout << "Tile Type: " << tile.tileName << "\n";
-
-		}
-		else
-		{
-			std::cout << "Tile Type: " << tile.tileName << " -- USED" << "\n";
-		}
-		std::cout << "Tile Piece: " << tile.GetCurrentPiece() << "\n";
-	}
-}
-
-void Game::OutputPlayerTile()
-{
-	std::cout << "-------------------------------------------" << "\n";
-	std::cout << "Player Tiles" << "\n";
-	std::cout << "-------------------------------------------" << "\n";
-
-	for each (Tile tile in playerTiles)
-	{
-		std::cout << "Tile Type: " << tile.tileName << "\n";
-		std::cout << "Tile Piece: " << tile.GetCurrentPiece() << "\n";
-
-	}
-}
-
-void Game::OutputAITiles()
-{
-	std::cout << "-------------------------------------------" << "\n";
-	std::cout << "AI Tiles" << "\n";
-	std::cout << "-------------------------------------------" << "\n";
-
-	for each (Tile tile in aiTiles)
-	{
-		std::cout << "Tile Type: " << tile.tileName << "\n";
-		std::cout << "Tile Piece: " << tile.GetCurrentPiece() << "\n";
-
-	}
-}
 
 void Game::StartGame()
 {
 	if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
 	{
 		isPlayerTurn = true;
-		std::cout << "Player goes first \n";
+		_Output_To_Screen("Player goes first");
 	}
 	else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
 	{
 		isPlayerTurn = false;
-		std::cout << "AI goes first \n";
+		_Output_To_Screen("AI goes first");
 	}
 	else
 	{
 		int random = rand() % 2;
 
-		std::cout << "Draw, random time.... \n";
+		_Output_To_Screen("Draw, random time....");
 		if (random == 0)
 		{
 			isPlayerTurn = true;
-			std::cout << "Player goes first \n";
+			_Output_To_Screen("Player goes first");
 		}
 		else
 		{
 			isPlayerTurn = false;
-			std::cout << "AI goes first \n";
+			_Output_To_Screen("AI goes first");
 		}
 	}
 }
@@ -459,13 +429,20 @@ void Game::PlaceTileOnBoard()
 				if (isValidPlacement || isFirstMoveOfGame)
 				{
 					isFirstMoveOfGame = false;
+					
+					
 					previousPlacedTile = { row, col };
-					lineTiles.push_back(playerTiles[selectedTile]);
+					linesPlacedInTurn.push_back(playerTiles[selectedTile]);
 					board[row][col].SetPiece(currentSelectedPiece);
 					SetTurnColourAndShape(playerTiles[selectedTile].GetCurrentColor(), playerTiles[selectedTile].GetCurrentShape());
 					playerTiles[selectedTile].DeselectTile();
 					playerTiles[selectedTile].SetUsed();
 					std::cout << "You have placed : " << board[row][col].tileName << "\n";
+					if (movesInTurnCount == 0)
+					{
+						firstTilePlacedInTurn = board[row][col];
+					}
+					movesInTurnCount++;
 
 				}
 			}
@@ -474,13 +451,24 @@ void Game::PlaceTileOnBoard()
 	}
 }
 
+void Game::ShufflePlayerTiles()
+{
+	for (int i = 0; i < 6; i++)
+	{
+
+		totalTilePool[playerTileIdsForBag[i]].ResetTile();
+		playerTiles[i].SetUsed();
+	}
+	RefillPlayerAndAITiles();
+}
+
 void Game::SetTurnColourAndShape(Color color, Shape shape)
 {
-	if (turnColor == NO_COLOR)
+	if (turnColor == EMPTY_C)
 	{
 		turnColor = color;
 	}
-	if (turnShape == NO_SHAPE)
+	if (turnShape == EMPTY_S)
 	{
 		turnShape = shape;
 	}
@@ -491,11 +479,12 @@ void Game::NextTurn()
 	RefillPlayerAndAITiles();
 	//SameLineVector.clear();
 	//firstMoveInTurn = true;
-	lineTiles.clear();
+	linesPlacedInTurn.clear();
+	movesInTurnCount = 0;
 	isColorTurn = false;
 	isShapeTurn = false;
-	turnColor = NO_COLOR;
-	turnShape = NO_SHAPE;
+	turnColor = EMPTY_C;
+	turnShape = EMPTY_S;
 	currentTurn++;
 	isPlayerTurn = !isPlayerTurn;
 }
@@ -512,6 +501,7 @@ void Game::RefillPlayerAndAITiles()
 			playerTiles[i].SetPiece(randomTileFromTilePool);
 			// Removing the tile from the tile pool
 			totalTilePool[randomTileFromTilePool].SetUsed();
+			playerTileIdsForBag[i] = randomTileFromTilePool;
 		}
 	}
 
@@ -525,6 +515,7 @@ void Game::RefillPlayerAndAITiles()
 			aiTiles[i].SetPiece(randomTileFromTilePool);
 			// Removing the tile from the tile pool
 			totalTilePool[randomTileFromTilePool].SetUsed();
+			aiTileIdsForBag[i] = randomTileFromTilePool;
 		}
 	}
 }
@@ -542,15 +533,15 @@ std::vector<Tile> Game::CheckValidNeighbours(int row, int col)
 {
 	std::vector<Tile> neighbourTiles;
 	std::vector<Tile> validNeighbourTiles;
-	
+
 	for (int i = row - 1; i <= row + 1; ++i)
 	{
 		for (int j = col - 1; j <= col + 1; ++j)
 		{
 			if ((i == row && j == col) || (i != row && j != col)) { continue; }
 
-			if (i >= 0 && i < Global::ROWS_COLUMNS 
-			 && j >= 0 && j < Global::ROWS_COLUMNS)
+			if (i >= 0 && i < Global::ROWS_COLUMNS
+				&& j >= 0 && j < Global::ROWS_COLUMNS)
 			{
 				neighbourTiles.push_back(board[i][j]);
 			}
@@ -559,7 +550,7 @@ std::vector<Tile> Game::CheckValidNeighbours(int row, int col)
 
 	for each (auto tile in neighbourTiles)
 	{
-		if (tile.GetCurrentColor() != NO_COLOR || tile.GetCurrentShape() != NO_SHAPE)
+		if (tile.GetCurrentColor() != EMPTY_C || tile.GetCurrentShape() != EMPTY_S)
 		{
 			validNeighbourTiles.push_back(tile);
 		}
@@ -571,17 +562,18 @@ std::vector<Tile> Game::CheckValidNeighbours(int row, int col)
 bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours)
 {
 	bool isValid = false;
-	Tile tempPlayerTile = playerTiles[selectedTile];
+	Tile selectedPlayerTile = playerTiles[selectedTile];
 
 	for each (auto tile in validNeighbours)
 	{
-		if (playerTiles[selectedTile].GetCurrentColor() == tile.GetCurrentColor() || playerTiles[selectedTile].GetCurrentShape() == tile.GetCurrentShape())
+		if (selectedPlayerTile.GetCurrentColor() == tile.GetCurrentColor() || selectedPlayerTile.GetCurrentShape() == tile.GetCurrentShape())
 		{
-			isValid = CheckFurtherInLine(playerTiles[selectedTile], tile);
+			isValid = CheckFurtherInLine(selectedPlayerTile, tile);
 		}
 		else
 		{
 			isValid = false;
+			return isValid;
 		}
 	}
 	return isValid;
@@ -591,179 +583,199 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 {
 	bool isValid = false;
 	sf::Vector2i playerCell;
-	playerCell.x = 	currentCellPos.x;
+	playerCell.x = currentCellPos.x;
 	playerCell.y = currentCellPos.y;
 
 	sf::Vector2i validTileCell = GetTileCell(validTile);
+	if (movesInTurnCount >= 1 && currentTurn > 1)
+	{
+		validTileCell = GetTileCell(firstTilePlacedInTurn);
+	}
 
 	int leftOfValidTile = validTileCell.x - 1;
 	int rightOfValidTile = validTileCell.x + 1;
 	int aboveValidTile = validTileCell.y - 1;
 	int belowValidTile = validTileCell.y + 1;
 
-	if (currentTurn > 1)
-	{
-		lineTiles.push_back(validTile);
-	}
+	leftOfValidTile = (leftOfValidTile < 0) ? 0 : leftOfValidTile;
+	rightOfValidTile = (rightOfValidTile > Global::ROWS_COLUMNS) ? Global::ROWS_COLUMNS : rightOfValidTile;
+	aboveValidTile = (aboveValidTile < 0) ? 0 : aboveValidTile;
+	belowValidTile = (belowValidTile > Global::ROWS_COLUMNS) ? Global::ROWS_COLUMNS : belowValidTile;
 
 	if (playerCell.x == validTileCell.x)
 	{
-		std::cout << "Checking in VERTICAL line\n";
+		_Output_To_Screen("Tiles are on the same COLUMN");
+
 		if (validTileCell.y < playerCell.y)
 		{
-			if (aboveValidTile >= 0)
+			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
+			for (int i = 0; board[validTileCell.x][validTileCell.y - i].GetCurrentColor() != EMPTY_C; i++)
 			{
-				if (board[validTileCell.x][aboveValidTile].GetCurrentColor() == playerTile.GetCurrentColor())
+				validTileCell.y = (validTileCell.y - 1 < 0) ? 0 : validTileCell.y;
+				
+				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
+				if (board[validTileCell.x][validTileCell.y - i].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
-					std::cout << "Color is the same one to the ABOVE \n";
-					isValid = true;
-				}
-				else if (board[validTileCell.x][aboveValidTile].GetCurrentColor() == NO_COLOR)
-				{
-					isValid = true;
- 					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
+					_Output_To_Screen("Cant place two of the same tiles in the same line");
 
+					isValid = false;
+					return isValid;
+				}
+				else
+				{
+					if (board[validTileCell.x][validTileCell.y -i].GetCurrentColor() == playerTile.GetCurrentColor())
+					{
+						_Output_To_Screen("Tile color matches the tile ABOVE");
+						isValid = true;
+						tilesInCurrentLine.push_back(board[validTileCell.x][validTileCell.y]);
 					}
-				}
-				else if (board[validTileCell.x][aboveValidTile].GetCurrentShape() == playerTile.GetCurrentShape())
-				{
-					std::cout << "Shape is the same one as ABOVE \n";
-					isValid = true;
-				}
-				else if (board[validTileCell.x][aboveValidTile].GetCurrentShape() == NO_SHAPE)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
+					else if (board[validTileCell.x][validTileCell.y -i].GetCurrentShape() == playerTile.GetCurrentShape())
+					{
+						_Output_To_Screen(" Tile shape matches the tile ABOVE");
+						isValid = true;
+						tilesInCurrentLine.push_back(board[validTileCell.x][validTileCell.y]);
+					}
+					else
 					{
 						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
 					}
 				}
 			}
+			 if (board[validTileCell.x][aboveValidTile].GetCurrentShape() == EMPTY_S ||
+				board[validTileCell.x][aboveValidTile].GetCurrentColor() == EMPTY_C)
+			{
+				isValid = true;
+				if (linesPlacedInTurn.size() >= 2)
+				{
+					isValid = false;
+					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
+				}
+			}
+
 		}
 		else if (validTileCell.y > playerCell.y)
 		{
-			if (belowValidTile <= Global::ROWS_COLUMNS)
+			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
+			for (int i = 0; board[validTileCell.x][validTileCell.y + i].GetCurrentColor() != EMPTY_C; i++)
 			{
-				if (board[validTileCell.x][belowValidTile].GetCurrentColor() == playerTile.GetCurrentColor())
+				validTileCell.y = (validTileCell.y + 1 > Global::ROWS_COLUMNS) ? Global::ROWS_COLUMNS : validTileCell.y;
+				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
+				if (board[validTileCell.x][validTileCell.y + i].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
-					std::cout << "Color is the same one to the BELOW \n";
-					isValid = true;
-				}
-				else if (board[validTileCell.x][belowValidTile].GetCurrentColor() == NO_COLOR)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
+					_Output_To_Screen("Cant place two of the same tiles in the same line");
 
+					isValid = false;
+					return isValid;
+				}
+				else
+				{
+					if (board[validTileCell.x][validTileCell.y + i].GetCurrentColor() == playerTile.GetCurrentColor())
+					{
+						_Output_To_Screen("Tile color matches the tile BELOW");
+						isValid = true;
+						tilesInCurrentLine.push_back(board[validTileCell.x][validTileCell.y]);
 					}
-				}
-				else if (board[validTileCell.x][belowValidTile].GetCurrentShape() == playerTile.GetCurrentShape())
-				{
-					std::cout << "Shape is the same one BELOW \n";
-					isValid = true;
-				}
-				else if (board[validTileCell.x][belowValidTile].GetCurrentShape() == NO_SHAPE)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
+					else if (board[validTileCell.x][validTileCell.y + i].GetCurrentShape() == playerTile.GetCurrentShape())
+					{
+						_Output_To_Screen(" Tile shape matches the tile BELOW");
+						isValid = true;
+						tilesInCurrentLine.push_back(board[validTileCell.x][validTileCell.y]);
+					}
+					else
 					{
 						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
-
 					}
 				}
 			}
+			if (board[validTileCell.x][belowValidTile].GetCurrentShape() == EMPTY_S ||
+				board[validTileCell.x][belowValidTile].GetCurrentColor() == EMPTY_C)
+			{
+				isValid = true;
+				if (linesPlacedInTurn.size() >= 2)
+				{
+					isValid = false;
+					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
 
-			
+				}
+			}
 		}
-		
 	}
+	// DO THIS TOMORROW!!! 
+	//
+	// 02/01/2024 - COPY FROM ABOVE - THEN, ADD THEM TO VECTOR / ARRAY AND START GIVING POINTS
+	//
 	if (playerCell.y == validTileCell.y)
 	{
-		std::cout << "Checking in HORIZONTAL line\n";
+		_Output_To_Screen("Tiles are on the same ROW");
 		if (validTileCell.x < playerCell.x)
 		{
-			if (leftOfValidTile >= 0)
+
+			if (board[leftOfValidTile][validTileCell.y].GetCurrentColor() == playerTile.GetCurrentColor())
 			{
-				if (board[leftOfValidTile][validTileCell.y].GetCurrentColor() == playerTile.GetCurrentColor())
+				_Output_To_Screen("Tile color matches the tile to the LEFT");
+				isValid = true;
+			}
+			else if (board[leftOfValidTile][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
+			{
+				_Output_To_Screen("Tile shape matches the tile to the LEFT");
+				isValid = true;
+			}
+			else if (board[leftOfValidTile][validTileCell.y].GetCurrentShape() == EMPTY_S ||
+				board[leftOfValidTile][validTileCell.y].GetCurrentColor() == EMPTY_C)
+			{
+				isValid = true;
+				if (linesPlacedInTurn.size() >= 2)
 				{
-					std::cout << "Color is the same one to the Left \n";
-					isValid = true;
-				}
-				else if (board[leftOfValidTile][validTileCell.y].GetCurrentColor() == NO_COLOR)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
+					isValid = false;
+					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
 
-					}
-				}
-				else if (board[leftOfValidTile][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
-				{
-					std::cout << "Shape is the same one to the Left \n";
-					isValid = true;
-				}
-				else if (board[leftOfValidTile][validTileCell.y].GetCurrentShape() == NO_SHAPE)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
-
-					}
 				}
 			}
 		}
 		else if (validTileCell.x > playerCell.x)
 		{
-			if (rightOfValidTile <= Global::ROWS_COLUMNS)
+			if (board[rightOfValidTile][validTileCell.y].GetCurrentColor() == playerTile.GetCurrentColor())
 			{
-				if (board[rightOfValidTile][validTileCell.y].GetCurrentColor() == playerTile.GetCurrentColor())
+				_Output_To_Screen("Tile color matches the tile to the RIGHT");
+				isValid = true;
+			}
+			else if (board[rightOfValidTile][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
+			{
+				_Output_To_Screen("Tile shape matches the tile to the RIGHT");
+				isValid = true;
+			}
+			else if (board[rightOfValidTile][validTileCell.y].GetCurrentShape() == EMPTY_S ||
+				board[rightOfValidTile][validTileCell.y].GetCurrentColor() == EMPTY_C)
+			{
+				isValid = true;
+				if (linesPlacedInTurn.size() >= 2)
 				{
-					std::cout << "Color is the same one to the right \n";
-					isValid = true;
-				}
-				else if (board[rightOfValidTile][validTileCell.y].GetCurrentColor() == NO_COLOR)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
-					}
-				}
-				else if (board[rightOfValidTile][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
-				{
-					std::cout << "Shape is the same one to the right \n";
-					isValid = true;
-				}
-				else if (board[rightOfValidTile][validTileCell.y].GetCurrentShape() == NO_SHAPE)
-				{
-					isValid = true;
-					if (lineTiles.size() >= 2)
-					{
-						isValid = false;
-						isValid = CheckNieghbourIsInLine(playerCell.x, playerCell.y);
+					isValid = false;
+					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
 
-					}
 				}
 			}
 		}
-
 	}
+
+	if (movesInTurnCount > 0)
+	{
+		linesPlacedInTurn.push_back(validTile);
+	}
+
 	return isValid;
 }
 
-bool Game::CheckNieghbourIsInLine(int row, int col)
+bool Game::CheckAllTilesInLine(Tile playerTile)
+{
+	bool isValid = true;
+
+
+
+	return isValid;
+}
+
+bool Game::CheckNeighbourIsInLine(int row, int col)
 {
 	bool isValid = true;
 
@@ -801,23 +813,42 @@ bool Game::CheckNieghbourIsInLine(int row, int col)
 ///////////////
 ///////////////
 
-sf::Vector2i Game::MakeAiMove()
-{
-	sf::Vector2i movePos;
-
-	movePos = GetAiMove();
-
-	if (movePos.x == -1)
+void Game::SortAiTurn()
+{	
+	if (!isPlayerTurn) // AI  Turn
 	{
-		std::cout << "No valid move, skipping turn \n";
-	}
+		if (aiTimer.asSeconds() == 0) { aiClock.restart();}
+		aiTimer = aiClock.getElapsedTime();
+		sf::Vector2i move = MakeAiMove();
 
-	return movePos;
+		if (isFirstMoveOfGame)
+		{
+			move = { rand() % Global::ROWS_COLUMNS,rand() % Global::ROWS_COLUMNS};
+			
+		}
+
+		if (move.x == -1)
+		{
+			_Output_To_Screen("AI has no valid move: skipping turn")
+			NextTurn();
+			return;
+		}
+		else{AiPlaceTileOnBoard(move);}
+		// 
+		if (aiTimer.asSeconds() >= 2)
+		{
+			_Output_To_Screen("Players Turn!")
+			NextTurn();
+		}
+
+		isFirstMoveOfGame = false;
+
+	}
 }
 
 sf::Vector2i Game::GetAiMove()
 {
-	sf::Vector2i movePos;
+	sf::Vector2i movePos = { -1, -1 };
 	sf::Vector2i foundPiece;
 	std::vector<Tile> neighbourTiles;
 
@@ -825,44 +856,31 @@ sf::Vector2i Game::GetAiMove()
 	{
 		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
 		{
-			if (board[row][col].GetCurrentColor() != NO_COLOR)
+			// FINDS FIRST PIECE ON BOARD THAT ISNT BLANK
+			if (board[row][col].GetCurrentColor() != EMPTY_C)
 			{
 				foundPiece = { row, col };
+				// GETS NEIGHBOURS OF THE FIRST PIECE IT FINDS
 				neighbourTiles = GetAiNeighbours(row, col);
+				// CHECKS TO SEE IF THEY ARE EMPTY SO A TILE CAN BE PLACED IN IT
 				for each (Tile neighbour in neighbourTiles)
 				{
-					if (neighbour.GetCurrentColor() == NO_COLOR) 
+					if (neighbour.GetCurrentColor() == EMPTY_C)
 					{
-						
-						movePos = GetTileCell(neighbour);
+						sf::Vector2i neigbourPos = GetTileCell(neighbour);
+
+						if (CheckValidTileOrShapeAi(GetAiNeighbours(neigbourPos.x, neigbourPos.y)))
+						{
+							movePos = GetTileCell(neighbour);
+							break;
+						}
 					}
 				}
-				//CheckValuesOfNeighbours(neighbourTiles);
 			}
 		}
 
 	}
-
-	//movePos = { 5, 5 };
 	return movePos;
-}
-
-void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
-{
-	currentCellPos = boardPos;
-	int row = boardPos.x;
-	int col = boardPos.y;
-
-	aiCurrentPiece = aiTiles[0].GetCurrentPiece();
-	// Do more stuff,
-	
-	if (!aiTiles[0].GetUsed())
-	{
-		board[row][col].SetPiece(aiCurrentPiece);
-
-	}
-	aiTiles[0].SetUsed();
-
 }
 
 std::vector<Tile> Game::GetAiNeighbours(int row, int col)
@@ -885,14 +903,66 @@ std::vector<Tile> Game::GetAiNeighbours(int row, int col)
 	return neighbourTiles;
 }
 
-void Game::CheckValuesOfNeighbours(std::vector<Tile> neighbours)
+bool Game::CheckValidTileOrShapeAi(std::vector<Tile> neighbours)
 {
+
 	for each (Tile neighbour in neighbours)
 	{
-		if (neighbour.GetCurrentColor() == NO_COLOR) 
+		for (int i = 0; i < 6; i++)
 		{
-			aiCanPlaceTile = true;
+			if (aiTiles[i].GetCurrentColor() == neighbour.GetCurrentColor())
+			{
+				aiCurrentPiece = aiTiles[i].GetCurrentPiece();
+				aiSelectedTile = i;
+				return true;
+			}
+			else if (aiTiles[i].GetCurrentShape() == neighbour.GetCurrentShape())
+			{
+				aiCurrentPiece = aiTiles[i].GetCurrentPiece();
+				aiSelectedTile = i;
+				return true;
+			}
 		}
 	}
+	return false;
 }
+
+sf::Vector2i Game::MakeAiMove()
+{
+	sf::Vector2i movePos;
+
+	movePos = GetAiMove();
+
+
+
+	return movePos;
+}
+
+
+
+
+void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
+{
+	currentCellPos = boardPos;
+	int row = boardPos.x;
+	int col = boardPos.y;
+
+	//
+	// Do more stuff,
+
+	if (isFirstMoveOfGame)
+	{
+		aiCurrentPiece = aiTiles[0].GetCurrentPiece();
+		board[row][col].SetPiece(aiCurrentPiece);
+	}
+	else if (!aiTiles[aiSelectedTile].GetUsed())
+	{
+		board[row][col].SetPiece(aiCurrentPiece);
+
+	}
+	aiTiles[aiSelectedTile].SetUsed();
+
+}
+
+
 
