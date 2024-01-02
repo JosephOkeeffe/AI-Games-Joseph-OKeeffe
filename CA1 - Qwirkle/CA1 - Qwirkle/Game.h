@@ -51,7 +51,11 @@ private:
 	bool CheckNeighbourIsInLine(int row, int col);
 	void SetTurnColourAndShape(Color color, Shape shape);
 	void ShufflePlayerTiles();
-	bool CheckAllTilesInLine(Tile playerTile);
+	int CheckIfPlacingInSameLine(int row, int col);
+	sf::Vector2i sameLineVector;
+	int currentLineNumber;
+	bool isSameColumn = false;
+	bool isSameRow = false;
 
 	// AI
 	bool aiCanPlaceTile = false;
@@ -94,7 +98,7 @@ private:
 	// Player
 	Piece currentSelectedPiece;
 	sf::Vector2i currentCellPos;
-	std::vector<Tile> linesPlacedInTurn;
+	//std::vector<Tile> linesPlacedInTurn;
 	std::vector<Tile> tilesInCurrentLine;
 	int selectedTile = 0;
 	sf::Vector2i previousPlacedTile;
