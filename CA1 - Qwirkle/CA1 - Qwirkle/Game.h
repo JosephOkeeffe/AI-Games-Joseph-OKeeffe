@@ -98,8 +98,8 @@ private:
 	// Player
 	Piece currentSelectedPiece;
 	sf::Vector2i currentCellPos;
-	//std::vector<Tile> linesPlacedInTurn;
-	std::vector<Tile> tilesInCurrentLine;
+	//std::vector<Tile> tilesInCurrentLine;
+	Tile tilesInCurrentLineForScore[6];
 	int selectedTile = 0;
 	sf::Vector2i previousPlacedTile;
 	int movesInTurnCount = 0;
@@ -124,6 +124,8 @@ private:
 	sf::Sprite playerShuffleButton;
 	sf::Sprite endTurnButton;
 
+
+	int AddScoresForTurn();
 	int playerScore = 0;
 	int scoreForCurrentTurn = 0;
 	sf::Font font;

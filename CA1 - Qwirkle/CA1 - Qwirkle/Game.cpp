@@ -100,6 +100,7 @@ void Game::update(sf::Time t_deltaTime)
 {
 	if (m_exitGame)	{m_window.close();}
 
+	playerScoreText.setString(std::to_string(playerScore));
 	processEvents();
 	SortAiTurn();
 }
@@ -425,7 +426,6 @@ void Game::PlaceTileOnBoard()
 				std::cout << "Row: " << row << ", " << col << "\n";
 
 				isValidPlacement = CheckValidTileColorOrShape(CheckValidNeighbours(row, col));
-				/*if (isValidPlacement) { isValidPlacement = CheckIfPlacingInSameLine(row, col); }*/
 				if (isValidPlacement && movesInTurnCount != 0)
 				{
 					if (row == CheckIfPlacingInSameLine(row, col) || col == CheckIfPlacingInSameLine(row, col))
@@ -440,7 +440,6 @@ void Game::PlaceTileOnBoard()
 
 				if (isValidPlacement || isFirstMoveOfGame)
 				{
-					
 
 					previousPlacedTile = { row, col };
 					//linesPlacedInTurn.push_back(playerTiles[selectedTile]);
@@ -449,6 +448,7 @@ void Game::PlaceTileOnBoard()
 					playerTiles[selectedTile].DeselectTile();
 					playerTiles[selectedTile].SetUsed();
 					std::cout << "You have placed : " << board[row][col].tileName << "\n";
+					board[row][col].tile.setFillColor(sf::Color::Red);
 					if (movesInTurnCount == 0 && isFirstMoveOfGame)
 					{
 						firstTilePlacedInTurn = board[row][col];
@@ -463,8 +463,7 @@ void Game::PlaceTileOnBoard()
 						sameLineVector = { row, col };
 					}
 					movesInTurnCount++;
-
-					if (isFirstMoveOfGame) { tilesInCurrentLine.push_back(board[row][col]); }
+			
 					isFirstMoveOfGame = false;
 
 				}
@@ -498,11 +497,14 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 
 void Game::ShufflePlayerTiles()
 {
+	playerScore /= 2;
+
 	for (int i = 0; i < 6; i++)
 	{
-
+		
 		totalTilePool[playerTileIdsForBag[i]].ResetTile();
 		playerTiles[i].SetUsed();
+		playerTiles[i].DeselectTile();
 	}
 	RefillPlayerAndAITiles();
 }
@@ -525,6 +527,8 @@ void Game::NextTurn()
 	//SameLineVector.clear();
 	//firstMoveInTurn = true;
 	//linesPlacedInTurn.clear();
+	if(isPlayerTurn){ playerScore += AddScoresForTurn(); }
+	
 	movesInTurnCount = 0;
 	isColorTurn = false;
 	isShapeTurn = false;
@@ -650,12 +654,13 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		if (validTileCell.y < playerCell.y)
 		{
 			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
-			for (int i = 0; board[validTileCell.x][validTileCell.y - i].GetCurrentColor() != EMPTY_C; i++)
+			for (int i = 0; validTileCell.y - i >= 0 && board[validTileCell.x][validTileCell.y - i].GetCurrentColor() != EMPTY_C; i++)
 			{
 				//validTileCell.y = (validTileCell.y - i < 0) ? 0 : validTileCell.y;
+				int tilesInLineCount = validTileCell.y - i;
 				
 				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
-				if (board[validTileCell.x][validTileCell.y - i].GetCurrentPiece() == playerTile.GetCurrentPiece())
+				if (board[validTileCell.x][tilesInLineCount].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
 					_Output_To_Screen("Cant place two of the same tiles in the same line");
 
@@ -664,17 +669,17 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 				}
 				else
 				{
-					if (board[validTileCell.x][validTileCell.y -i].GetCurrentColor() == playerTile.GetCurrentColor())
+					if (board[validTileCell.x][tilesInLineCount].GetCurrentColor() == playerTile.GetCurrentColor())
 					{
 						_Output_To_Screen("Tile color matches the tile ABOVE");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile); // WRONG, NEEDS TO GET EVERY TILE IN THAT LINE
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x][tilesInLineCount]);
 					}
-					else if (board[validTileCell.x][validTileCell.y -i].GetCurrentShape() == playerTile.GetCurrentShape())
+					else if (board[validTileCell.x][tilesInLineCount].GetCurrentShape() == playerTile.GetCurrentShape())
 					{
 						_Output_To_Screen(" Tile shape matches the tile ABOVE");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x][tilesInLineCount]);
 					}
 					else
 					{
@@ -687,20 +692,14 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 				board[validTileCell.x][aboveValidTile].GetCurrentColor() == EMPTY_C)
 			{
 				isValid = true;
-			/*	if (linesPlacedInTurn.size() >= 2)
-				{
-					isValid = false;
-					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
-				}*/
 			}
 
 		}
 		else if (validTileCell.y > playerCell.y)
 		{
 			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
-			for (int i = 0; board[validTileCell.x][validTileCell.y + i].GetCurrentColor() != EMPTY_C; i++)
+			for (int i = 0; validTileCell.y + i < Global::ROWS_COLUMNS && board[validTileCell.x][validTileCell.y + i].GetCurrentColor() != EMPTY_C; i++)
 			{
-				//validTileCell.y = (validTileCell.y + i > Global::ROWS_COLUMNS) ? Global::ROWS_COLUMNS : validTileCell.y;
 				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x][validTileCell.y + i].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
@@ -715,13 +714,13 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 					{
 						_Output_To_Screen("Tile color matches the tile BELOW");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x][validTileCell.y + i]);
 					}
 					else if (board[validTileCell.x][validTileCell.y + i].GetCurrentShape() == playerTile.GetCurrentShape())
 					{
 						_Output_To_Screen(" Tile shape matches the tile BELOW");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x][validTileCell.y + i]);
 					}
 					else
 					{
@@ -735,12 +734,6 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 				board[validTileCell.x][belowValidTile].GetCurrentColor() == EMPTY_C)
 			{
 				isValid = true;
-				/*if (linesPlacedInTurn.size() >= 2)
-				{
-					isValid = false;
-					isValid = CheckNeighbourIsInLine(playerCell.x, playerCell.y);
-
-				}*/
 			}
 		}
 	}
@@ -750,9 +743,8 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		if (validTileCell.x < playerCell.x)
 		{
 			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
-			for (int i = 0; board[validTileCell.x - i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
+			for (int i = 0; validTileCell.x - i >= 0 && board[validTileCell.x - i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
 			{
-				//validTileCell.x = (validTileCell.x - 1 < 0) ? 0 : validTileCell.x;
 				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x - i][validTileCell.y].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
@@ -767,13 +759,13 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 					{
 						_Output_To_Screen("Tile color matches the tile to the LEFT");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x - i][validTileCell.y]);
 					}
 					else if (board[validTileCell.x - i][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
 					{
 						_Output_To_Screen(" Tile shape matches the tile to the RIGHT");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x - i][validTileCell.y]);
 					}
 					else
 					{
@@ -785,10 +777,8 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		}
 		else if (validTileCell.x > playerCell.x)
 		{
-			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
-			for (int i = 0; board[validTileCell.x + i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
+			for (int i = 0; validTileCell.x + i < Global::ROWS_COLUMNS && board[validTileCell.x + i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
 			{
-				//validTileCell.x = (validTileCell.x + i > Global::ROWS_COLUMNS) ? Global::ROWS_COLUMNS : validTileCell.x;
 				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x + i][validTileCell.y].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
@@ -803,13 +793,13 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 					{
 						_Output_To_Screen("Tile color matches the tile to the LEFT");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x + i][validTileCell.y]);
 					}
 					else if (board[validTileCell.x + i][validTileCell.y].GetCurrentShape() == playerTile.GetCurrentShape())
 					{
 						_Output_To_Screen(" Tile shape matches the tile to the RIGHT");
 						isValid = true;
-						tilesInCurrentLine.push_back(playerTile);
+						tilesInCurrentLineForScore[i] = (board[validTileCell.x + i][validTileCell.y]);
 					}
 					else
 					{
@@ -822,45 +812,6 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		}
 	}
 
-	/*if (movesInTurnCount > 0)
-	{
-		linesPlacedInTurn.push_back(validTile);
-	}*/
-
-	return isValid;
-}
-
-bool Game::CheckNeighbourIsInLine(int row, int col)
-{
-	bool isValid = true;
-
-	sf::Vector2i validTileCell;
-
-	for each (auto tile in CheckValidNeighbours(row, col))
-	{
-
-		validTileCell = GetTileCell(tile);
-		if (validTileCell.x + 1 == currentCellPos.x)
-		{
-			isValid = false;
-			return isValid;
-		}
-		else if (validTileCell.x - 1 == currentCellPos.x)
-		{
-			isValid = false;
-			return isValid;
-		}
-		if (validTileCell.y + 1 == currentCellPos.y)
-		{
-			isValid = false;
-			return isValid;
-		}
-		else if (validTileCell.y - 1 == currentCellPos.y)
-		{
-			isValid = false;
-			return isValid;
-		}
-	}
 	return isValid;
 }
 
@@ -980,6 +931,21 @@ bool Game::CheckValidTileOrShapeAi(std::vector<Tile> neighbours)
 		}
 	}
 	return false;
+}
+
+int Game::AddScoresForTurn()
+{
+	int score = 1;
+
+	for each (Tile tile in tilesInCurrentLineForScore)
+	{
+		if (tile.GetCurrentColor() != EMPTY_C)
+		{
+			score++;
+		}
+	}
+
+	return score;
 }
 
 sf::Vector2i Game::MakeAiMove()
