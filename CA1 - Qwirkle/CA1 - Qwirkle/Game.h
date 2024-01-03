@@ -41,17 +41,19 @@ private:
 	void NextTurn();
 	void RefillPlayerAndAITiles();
 
-	sf::Vector2i GetTileCell(Tile tile);
+	sf::Vector2i GetCellPosFromTile(Tile tile);
+	std::vector<sf::Vector2i> GetCellPosFromTileList(std::vector<Tile> tiles);
 	// Rules
 	bool isValidPlacement = false;
 
-	std::vector<Tile> CheckValidNeighbours(int row, int col);
+	std::vector<Tile> GetValidNeighbours(int row, int col);
 	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
-	bool CheckNeighbourIsInLine(int row, int col);
 	void SetTurnColourAndShape(Color color, Shape shape);
 	void ShufflePlayerTiles();
 	int CheckIfPlacingInSameLine(int row, int col);
+	int AddScoresForTurn();
+
 	sf::Vector2i sameLineVector;
 	int currentLineNumber;
 	bool isSameColumn = false;
@@ -63,10 +65,13 @@ private:
 	void SortAiTurn();
 	sf::Vector2i MakeAiMove();
 	sf::Vector2i GetAiMove();
+	std::vector<Tile> FindPiecesOnBoard();
 	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
 	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
-	bool CheckValidTileOrShapeAi(std::vector<Tile> neighbours);
+	bool CheckValidTileOrShapeAi(Tile tile);
+	std::vector<Tile> GetValidNieghboursAi(std::vector<Tile> neighbours);
 
+	std::vector<Tile> allPiecesOnBoard;
 	int currentTurn = 1;
 
 	sf::RenderWindow m_window; 
@@ -124,8 +129,6 @@ private:
 	sf::Sprite playerShuffleButton;
 	sf::Sprite endTurnButton;
 
-
-	int AddScoresForTurn();
 	int playerScore = 0;
 	int scoreForCurrentTurn = 0;
 	sf::Font font;
