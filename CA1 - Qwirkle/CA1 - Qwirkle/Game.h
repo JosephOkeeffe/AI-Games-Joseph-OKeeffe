@@ -69,6 +69,7 @@ private:
 	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
 	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
 	bool CheckValidTileOrShapeAi(Tile tile);
+	//bool CheckValidTileOrShapeAi(std::vector<Tile> neighbours, Tile aiTileToCompare);
 	std::vector<Tile> GetValidNieghboursAi(std::vector<Tile> neighbours);
 
 	std::vector<Tile> allPiecesOnBoard;
@@ -103,13 +104,11 @@ private:
 	// Player
 	Piece currentSelectedPiece;
 	sf::Vector2i currentCellPos;
-	//std::vector<Tile> tilesInCurrentLine;
 	Tile tilesInCurrentLineForScore[6];
 	int selectedTile = 0;
 	sf::Vector2i previousPlacedTile;
 	int movesInTurnCount = 0;
 	Tile firstTilePlacedInTurn;
-	//std::vector<int> playerTileIdsForBag;
 	int playerTileIdsForBag[6];
 
 

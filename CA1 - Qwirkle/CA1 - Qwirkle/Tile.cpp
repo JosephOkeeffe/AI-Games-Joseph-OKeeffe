@@ -40,7 +40,7 @@ void Tile::CheckPiece(Piece piece)
 {
 	SetShape(piece);
 	SetColor(piece);
-	tileName = tileShape + " " + tileColor;
+	tileName = tileColor+ " " + tileShape;
 	
 }
 
