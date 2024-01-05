@@ -12,7 +12,6 @@ Game::Game() :
 {
 	srand(time(nullptr));
 	init();
-
 }
 
 
@@ -25,17 +24,16 @@ void Game::run()
 	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	const float fps{ 60.0f };
-	sf::Time timePerFrame = sf::seconds(1.0f / fps); // 60 fps
+	sf::Time timePerFrame = sf::seconds(1.0f / fps);
 	while (m_window.isOpen())
 	{
-		//processEvents(); // as many as possible
 		timeSinceLastUpdate += clock.restart();
 		while (timeSinceLastUpdate > timePerFrame)
 		{
 			timeSinceLastUpdate -= timePerFrame;
-			update(timePerFrame); //60 fps
+			update(timePerFrame);
 		}
-		render(); // as many as possible
+		render(); 
 	}
 }
 void Game::processEvents()
@@ -77,6 +75,10 @@ void Game::processKeys(sf::Event t_event)
 	}
 }
 
+/// <summary>
+/// Handles all the mouse press events
+/// </summary>
+/// <param name="t_event"></param>
 void Game::ProcessMouseDown(sf::Event t_event)
 {
 	if (sf::Mouse::Left == t_event.key.code)
@@ -136,7 +138,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 					{
 						if (difficulty == EASY)
 						{
-							if (shuffleCounter < 10)
+							if (shuffleCounter < MAX_SHUFFLE_EASY)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -147,7 +149,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == MEDIUM)
 						{
-							if (shuffleCounter < 4)
+							if (shuffleCounter < MAX_SHUFFLE_MEDIUM)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -158,7 +160,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == HARD)
 						{
-							if (shuffleCounter < 1)
+							if (shuffleCounter < MAX_SHUFFLE_HARD)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -178,7 +180,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 					{
 						if (difficulty == EASY)
 						{
-							if (shuffleCounter < 10)
+							if (shuffleCounter < MAX_SHUFFLE_EASY)
 							{
 								ShufflePlayerTiles(aiTiles);
 							}
@@ -189,7 +191,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == MEDIUM)
 						{
-							if (shuffleCounter < 4)
+							if (shuffleCounter < MAX_SHUFFLE_MEDIUM)
 							{
 								ShufflePlayerTiles(aiTiles);
 							}
@@ -200,7 +202,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == HARD)
 						{
-							if (shuffleCounter < 1)
+							if (shuffleCounter < MAX_SHUFFLE_HARD)
 							{
 								ShufflePlayerTiles(aiTiles);
 							}
@@ -226,7 +228,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 					{
 						if (difficulty == EASY)
 						{
-							if (shuffleCounter < 10)
+							if (shuffleCounter < MAX_SHUFFLE_EASY)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -237,7 +239,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == MEDIUM)
 						{
-							if (shuffleCounter < 4)
+							if (shuffleCounter < MAX_SHUFFLE_MEDIUM)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -248,7 +250,7 @@ void Game::ProcessMouseDown(sf::Event t_event)
 						}
 						else if (difficulty == HARD)
 						{
-							if (shuffleCounter < 1)
+							if (shuffleCounter < MAX_SHUFFLE_HARD)
 							{
 								ShufflePlayerTiles(playerTiles);
 							}
@@ -273,6 +275,10 @@ void Game::ProcessMouseDown(sf::Event t_event)
 
 }
 
+/// <summary>
+/// Update loop has all the functions depending on if its the players turn or the AI's turn
+/// </summary>
+/// <param name="t_deltaTime"></param>
 void Game::update(sf::Time t_deltaTime)
 {
 	
@@ -299,7 +305,6 @@ void Game::update(sf::Time t_deltaTime)
 		{
 			qwirkleText.setScale(qwirkleTimer.asSeconds(), qwirkleTimer.asSeconds());
 		}
-
 
 		if (isPlayerTurn)
 		{
@@ -329,6 +334,9 @@ void Game::update(sf::Time t_deltaTime)
 
 }
 
+/// <summary>
+/// Draws everything on the screen
+/// </summary>
 void Game::render()
 {
 	m_window.clear(sf::Color(0, 0, 255, 100));
@@ -395,6 +403,9 @@ void Game::render()
 	m_window.display();
 }
 
+/// <summary>
+/// Initilaises everything 
+/// </summary>
 void Game::init()
 {
 	state = MENU;
@@ -411,6 +422,9 @@ void Game::init()
 	
 }
 
+/// <summary>
+/// Sets up the board for the tiles to be placed on 
+/// </summary>
 void Game::InitBoard()
 {
 	// BOARD
@@ -430,6 +444,9 @@ void Game::InitBoard()
 	}
 }
 
+/// <summary>
+/// Sets up the bag of tiles where the player and AI get the tiles from
+/// </summary>
 void Game::SetupTilePool()
 {
 	for (int i = 0; i < 36; i++)
@@ -472,9 +489,11 @@ void Game::SetupTilePool()
 	bagRect.setPosition( Global::S_WIDTH * 0.3, 0);
 	bagRect.setTexture(&insideBagTexture);
 	bagRect.setSize(sf::Vector2f(Global::CELL_SIZE * 8, Global::CELL_SIZE * 20));
-	//bagRect.setFillColor(sf::Color(139, 69, 19));
 }
 
+/// <summary>
+/// Uses that tilepool to assign 6 random tiles to the player
+/// </summary>
 void Game::SetupPlayerTiles()
 {
 	int count = 0;
@@ -493,6 +512,9 @@ void Game::SetupPlayerTiles()
 	}
 }
 
+/// <summary>
+/// Uses that tilepool to assign 6 random tiles to the AI
+/// </summary>
 void Game::SetupAITiles()
 {
 	int count = 0;
@@ -511,7 +533,9 @@ void Game::SetupAITiles()
 	}
 }
 
-
+/// <summary>
+/// Sets up all the shapes, sprites and fonts 
+/// </summary>
 void Game::SetupSprites()
 {
 	shuffleTexture.loadFromFile("ASSETS\\IMAGES\\shuffle.png");
@@ -555,26 +579,12 @@ void Game::SetupSprites()
 	pveButton.setOutlineThickness(1);
 	pveButton.setOutlineColor(sf::Color::Black);
 
-	pveText.setFont(font);
-	pveText.setString("AI");
-	pveText.setCharacterSize(50);
-	pveText.setPosition(pveButton.getPosition());
-	pveText.setOrigin(pveText.getLocalBounds().width / 2, (pveText.getLocalBounds().height / 2) + 5);
-	pveText.setFillColor(sf::Color::Black);
-
 	pvpButton.setRadius(80);
 	pvpButton.setPosition(Global::S_WIDTH * 0.8, Global::S_HEIGHT * 0.9);
 	pvpButton.setOrigin(pvpButton.getRadius(), pvpButton.getRadius());
 	pvpButton.setFillColor(sf::Color::Red);
 	pvpButton.setOutlineThickness(1);
 	pvpButton.setOutlineColor(sf::Color::Black);
-
-	pvpText.setFont(font);
-	pvpText.setString("Multiplayer");
-	pvpText.setCharacterSize(30);
-	pvpText.setPosition(pvpButton.getPosition());
-	pvpText.setOrigin(pvpText.getLocalBounds().width / 2, (pvpText.getLocalBounds().height / 2) + 5);
-	pvpText.setFillColor(sf::Color::Black);
 
 	// Text
 	easyText.setFont(font);
@@ -617,7 +627,6 @@ void Game::SetupSprites()
 	tableSprite.setTexture(tableTexture);
 	tableSprite.setScale(static_cast<float>(Global::S_WIDTH) / tableTexture.getSize().x, static_cast<float>(Global::S_HEIGHT) / tableTexture.getSize().y);
 
-
 	playerNameText.setFont(font);
 	playerNameText.setString("Player");
 	playerNameText.setOutlineThickness(1);
@@ -648,8 +657,25 @@ void Game::SetupSprites()
 	qwirkleText.setCharacterSize(50);
 	qwirkleText.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 2);
 
+	pveText.setFont(font);
+	pveText.setString("AI");
+	pveText.setCharacterSize(50);
+	pveText.setPosition(pveButton.getPosition());
+	pveText.setOrigin(pveText.getLocalBounds().width / 2, (pveText.getLocalBounds().height / 2) + 5);
+	pveText.setFillColor(sf::Color::Black);
+
+	pvpText.setFont(font);
+	pvpText.setString("Multiplayer");
+	pvpText.setCharacterSize(30);
+	pvpText.setPosition(pvpButton.getPosition());
+	pvpText.setOrigin(pvpText.getLocalBounds().width / 2, (pvpText.getLocalBounds().height / 2) + 5);
+	pvpText.setFillColor(sf::Color::Black);
 }
 
+/// <summary>
+/// Looks through the tile pool and picks a random number as long as it hasnt been used already
+/// </summary>
+/// <returns>Random number of an active tile in the bag</returns>
 int Game::GetActiveTilePool()
 {
 	int random = rand() % 108;
@@ -673,9 +699,11 @@ int Game::GetActiveTilePool()
 
 }
 
+/// <summary>
+/// Starts the game, decides who goes first or if its singe player or multiplayer
+/// </summary>
 void Game::StartGame()
 {
-
 	if (isSinglePlayer)
 	{
 		if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
@@ -741,6 +769,11 @@ void Game::StartGame()
 	
 }
 
+/// <summary>
+/// Checks the playersTiles and AITiles, it sees which one has the most common shapes and colours
+/// </summary>
+/// <param name="t_tiles">Takes in an array of tiles for the player or AI</param>
+/// <returns>Returns the count of the most common colour or shape</returns>
 int Game::CheckWhoGoesFirst(Tile t_tiles[6])
 {
 	std::map<std::string, int> shapeCount;
@@ -777,44 +810,19 @@ int Game::CheckWhoGoesFirst(Tile t_tiles[6])
 
 	if (maxShapeCount > maxColorCount)
 	{
-		//std::cout << "The tile with the most common shape is: " << maxShape << " (" << maxShapeCount << " occurrences)\n";
 		return maxShapeCount;
 	}
 	else if (maxColorCount > 0)
 	{
-		//std::cout << "The tile with the most common color is: " << maxColor << " (" << maxColorCount << " occurrences)\n";
 		return maxColorCount;
 
 	}
 }
 
-//void Game::SelectPlayerTile()
-//{
-//	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
-//
-//	for (int i = 0; i < 6; i++)
-//	{
-//		sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
-//
-//		if (bounds.contains(mousePos))
-//		{
-//
-//			if (!playerTiles[i].GetUsed())
-//			{
-//				// Delsecect old tile
-//				playerTiles[selectedTile].DeselectTile();
-//				// Select new tile
-//				playerTiles[i].SelectTile();
-//				// Get a new selected tile
-//				selectedTile = i;
-//				// Get the shape / piece from the tile you selected
-//				currentSelectedPiece = playerTiles[i].GetCurrentPiece();
-//				playerTiles[i].CheckPiece(currentSelectedPiece);
-//			}
-//		}
-//	}
-//}
-
+/// <summary>
+/// Checks which player tile the player has selected
+/// </summary>
+/// <param name="tiles">Takes in an array of tiles from the player or AI</param>
 void Game::SelectPlayerTile(Tile tiles[6])
 {
 	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
@@ -842,64 +850,10 @@ void Game::SelectPlayerTile(Tile tiles[6])
 	}
 }
 
-//void Game::PlaceTileOnBoard()
-//{
-//	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
-//
-//	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
-//	{
-//		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
-//		{
-//			sf::FloatRect bounds = board[row][col].shape.getGlobalBounds();
-//
-//			if (bounds.contains(mousePos))
-//			{
-//				currentCellPos = { row, col };
-//				std::cout << "Row: " << row << ", " << col << "\n";
-//
-//				isValidPlacement = CheckValidTileColorOrShape(GetValidNeighbours(row, col));
-//				if (isValidPlacement && movesInTurnCount != 0)
-//				{
-//					if (row == CheckIfPlacingInSameLine(row, col) || col == CheckIfPlacingInSameLine(row, col))
-//					{
-//						isValidPlacement = true;
-//					}
-//					else
-//					{
-//						isValidPlacement = false;
-//					}
-//				}
-//
-//				if (isValidPlacement || isFirstMoveOfGame)
-//				{
-//
-//					previousPlacedTile = { row, col };
-//					//linesPlacedInTurn.push_back(playerTiles[selectedTile]);
-//					board[row][col].SetPiece(currentSelectedPiece);
-//					SetTurnColourAndShape(playerTiles[selectedTile].GetCurrentColor(), playerTiles[selectedTile].GetCurrentShape());
-//					playerTiles[selectedTile].DeselectTile();
-//					playerTiles[selectedTile].SetUsed();
-//					std::cout << "You have placed : " << board[row][col].tileName << "\n";
-//					board[row][col].tile.setFillColor(sf::Color::White);
-//					board[row][col].tile.setTexture(&tileTexture);
-//
-//					if (movesInTurnCount == 0)
-//					{
-//						firstTilePlacedInTurn = board[row][col];
-//						sameLineVector = { row, col };
-//					}
-//
-//					tilesPlacedInTurnForScore.push_back(board[row][col]);
-//					movesInTurnCount++;
-//					isFirstMoveOfGame = false;
-//
-//				}
-//			}
-//		}
-//
-//	}
-//}
-
+/// <summary>
+/// Using the selected tile, it places the tile on the game board
+/// </summary>
+/// <param name="tiles">Takes in an array of tiles from the player or AI</param>
 void Game::PlaceTileOnBoard(Tile tiles[6])
 {
 	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
@@ -956,7 +910,14 @@ void Game::PlaceTileOnBoard(Tile tiles[6])
 
 	}
 }
-
+/// <summary>
+/// Takes in the row and col from the board
+/// Checks if the tile you are trying to place matches the first tile you placed in your turn
+/// This stops you from placing tiles in the same line
+/// </summary>
+/// <param name="row">Checks the row on the board</param>
+/// <param name="col">Checks the col on the board</param>
+/// <returns>The number the </returns>
 int Game::CheckIfPlacingInSameLine(int row, int col)
 {
 	if (movesInTurnCount == 1)
@@ -980,7 +941,6 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 	{
 		for (int i = 1; i < 6; i++)
 		{
-		
 			int sameLineCountDown = sameLineVector.y + i;
 			int sameLineCountUp = sameLineVector.y - i;
 
@@ -1004,7 +964,6 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 					return -1;
 				}
 			}
-
 		}
 	}
 
@@ -1031,17 +990,18 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 					return -1;
 				}
 			}
-
 		}
 	}
-
 
 	return currentLineNumber;
 }
 
+/// <summary>
+/// Puts the players tiles back in the bag and takes out 6 more ones
+/// </summary>
+/// <param name="tiles">Takes in an array of tiles from the player or AI<</param>
 void Game::ShufflePlayerTiles(Tile tiles[6])
 {
-	//playerScore /= 2;
 	shuffleCounter++;
 
 	for (int i = 0; i < 6; i++)
@@ -1053,7 +1013,11 @@ void Game::ShufflePlayerTiles(Tile tiles[6])
 	}
 	RefillPlayerAndAITiles();
 }
-
+/// <summary>
+/// Sets the board tiles colour and shape of the tile you have selected
+/// </summary>
+/// <param name="color">Colour of the current tile selected</param>
+/// <param name="shape">Shape of the current tile selected</param>
 void Game::SetTurnColourAndShape(Color color, Shape shape)
 {
 	if (turnColor == EMPTY_C)
@@ -1066,6 +1030,9 @@ void Game::SetTurnColourAndShape(Color color, Shape shape)
 	}
 }
 
+/// <summary>
+/// Handles all the logic for when the current turn ends
+/// </summary>
 void Game::NextTurn()
 {
 	RefillPlayerAndAITiles();
@@ -1090,6 +1057,9 @@ void Game::NextTurn()
 	aiClock.restart();
 }
 
+/// <summary>
+/// At the end of each turn, refill all the tiles back to 6
+/// </summary>
 void Game::RefillPlayerAndAITiles()
 {
 	for (int i = 0; i < 6; i++)
@@ -1121,6 +1091,11 @@ void Game::RefillPlayerAndAITiles()
 	}
 }
 
+/// <summary>
+/// Takes a tile and gets its position on the board
+/// </summary>
+/// <param name="tile"Takes a tile from the board></param>
+/// <returns>A vector2i with the position of the tile on the board</returns>
 sf::Vector2i Game::GetCellPosFromTile(Tile tile)
 {
 	sf::Vector2i tilePos;
@@ -1129,7 +1104,11 @@ sf::Vector2i Game::GetCellPosFromTile(Tile tile)
 	tilePos.y = tile.tile.getPosition().y / Global::CELL_SIZE;
 	return tilePos;
 }
-
+/// <summary>
+/// Takes a vector of tiles and gets its position on the board
+/// </summary>
+/// <param name="tiles">Takes a vector of tiles</param>
+/// <returns>A vector of vector2i with the positions on the board</returns>
 std::vector<sf::Vector2i> Game::GetCellPosFromTileList(std::vector<Tile> tiles)
 {
 	std::vector<sf::Vector2i> tilePosVector;
@@ -1147,6 +1126,12 @@ std::vector<sf::Vector2i> Game::GetCellPosFromTileList(std::vector<Tile> tiles)
 	return tilePosVector;
 }
 
+/// <summary>
+/// Checks the current tiles, neighbours and checks to see if they arent empty
+/// </summary>
+/// <param name="row">Checks the row on the board</param>
+/// <param name="col">Checks the col on the board</param>
+/// <returns>Vector of tiles that are all the valid, non empty tiles</returns>
 std::vector<Tile> Game::GetValidNeighbours(int row, int col)
 {
 	std::vector<Tile> neighbourTiles;
@@ -1177,26 +1162,12 @@ std::vector<Tile> Game::GetValidNeighbours(int row, int col)
 	return validNeighbourTiles;
 }
 
-//bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours)
-//{
-//	bool isValid = false;
-//	Tile selectedPlayerTile = playerTiles[selectedTile];
-//
-//	for each (auto tile in validNeighbours)
-//	{
-//		if (selectedPlayerTile.GetCurrentColor() == tile.GetCurrentColor() || selectedPlayerTile.GetCurrentShape() == tile.GetCurrentShape())
-//		{
-//			isValid = CheckFurtherInLine(selectedPlayerTile, tile);
-//		}
-//		else
-//		{
-//			isValid = false;
-//			return isValid;
-//		}
-//	}
-//	return isValid;
-//}
-
+/// <summary>
+/// Checks to see if the tile you are placing can be placed by checking the valid neighbours 
+/// </summary>
+/// <param name="validNeighbours">The vector of non empty tiles that are the neighbours of the tile you are trying to place</param>
+/// <param name="tiles">Takes in the selected tile for the player or AI tiles</param>
+/// <returns>The bool to see if its a valid move or not</returns>
 bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours, Tile tiles[6])
 {
 	bool isValid = false;
@@ -1217,6 +1188,12 @@ bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours, Tile ti
 	return isValid;
 }
 
+/// <summary>
+/// This checks that the tile you are trying to place is in a valid line
+/// </summary>
+/// <param name="playerTile">Tile you want to place</param>
+/// <param name="validTile">Tile you are comparing it to</param>
+/// <returns>A bool to see if its valid</returns>
 bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 {
 	bool isValid = false;
@@ -1278,10 +1255,8 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		}
 		else if (validTileCell.y > playerCell.y)
 		{
-			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
 			for (int i = 0; validTileCell.y + i < Global::ROWS_COLUMNS && board[validTileCell.x][validTileCell.y + i].GetCurrentColor() != EMPTY_C; i++)
 			{
-				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x][validTileCell.y + i].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
 					_Output_To_Screen("Warning: Cant place two of the same tiles in the same line");
@@ -1318,10 +1293,8 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 	{
 		if (validTileCell.x < playerCell.x)
 		{
-			// CHECK IN A LINE GOING UP, IF THE COLORS MATCH. STOPS WHEN IT FINDS AN EMPTY TILE
 			for (int i = 0; validTileCell.x - i >= 0 && board[validTileCell.x - i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
 			{
-				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x - i][validTileCell.y].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
 					_Output_To_Screen("Warning: Cant place two of the same tiles in the same line");
@@ -1351,7 +1324,6 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 		{
 			for (int i = 0; validTileCell.x + i < Global::ROWS_COLUMNS && board[validTileCell.x + i][validTileCell.y].GetCurrentColor() != EMPTY_C; i++)
 			{
-				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
 				if (board[validTileCell.x + i][validTileCell.y].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
 					_Output_To_Screen("Warning: Cant place two of the same tiles in the same line");
@@ -1382,6 +1354,13 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 	return isValid;
 }
 
+/// <summary>
+/// Uses a map, loops through all the tiles connected to the tile you placed
+/// Adds that tile to the map and then increases the count
+/// If you get a Qwirkle, add on 6 extra points
+/// </summary>
+/// <param name="tilesToAddUp">Vector of tiles that you want to use to get the score</param>
+/// <returns>The size of the map</returns>
 int Game::AddScoresForTurn(std::vector<Tile> tilesToAddUp)
 {
 	int counter = 0;
@@ -1453,6 +1432,10 @@ int Game::AddScoresForTurn(std::vector<Tile> tilesToAddUp)
 	return tileMap.size() + qwirkleCount;
 }
 
+/// <summary>
+/// Sets the text to what ever you put in the paremters
+/// </summary>
+/// <param name="text">String for the text</param>
 void Game::SetQwirkleText(std::string text)
 {
 	qwirkleClock.restart();
@@ -1468,6 +1451,10 @@ void Game::SetQwirkleText(std::string text)
 ///////AI//////
 ///////////////
 
+/// <summary>
+/// The main loop that deals with the AI tile placement
+/// </summary>
+/// 
 void Game::SortAiTurn()
 {
 	sf::Vector2i move;
@@ -1484,7 +1471,7 @@ void Game::SortAiTurn()
 	{
 		if (difficulty == EASY)
 		{
-			if (movesInTurnCount < 1)
+			if (movesInTurnCount < MAX_AI_MOVES_EASY)
 			{
 				move = MakeAiMove();
 			}
@@ -1495,7 +1482,7 @@ void Game::SortAiTurn()
 		}
 		if (difficulty == MEDIUM)
 		{
-			if (movesInTurnCount < 3)
+			if (movesInTurnCount < MAX_AI_MOVES_MEDIUM)
 			{
 				move = MakeAiMove();
 			}
@@ -1506,7 +1493,7 @@ void Game::SortAiTurn()
 		}
 		if (difficulty == HARD)
 		{
-			if (movesInTurnCount < 6)
+			if (movesInTurnCount < MAX_AI_MOVES_HARD)
 			{
 				move = MakeAiMove();
 			}
@@ -1534,6 +1521,26 @@ void Game::SortAiTurn()
 
 }
 
+
+/// <summary>
+/// Gets the valid move from the main logic function
+/// </summary>
+/// <returns>Valid move position</returns>
+sf::Vector2i Game::MakeAiMove()
+{
+	sf::Vector2i movePos;
+
+	movePos = GetAiMove();
+	// If the vector2i map worked, I could sort out whats the best score here and return the best pos to move
+
+	return movePos;
+}
+
+
+/// <summary>
+/// Has all the logic that decides where the AI will place the tile
+/// </summary>
+/// <returns></returns>
 sf::Vector2i Game::GetAiMove()
 {
 	sf::Vector2i movePos = { -1, -1 };
@@ -1542,8 +1549,7 @@ sf::Vector2i Game::GetAiMove()
 	std::vector<Tile> neighbourTiles;
 	std::vector<sf::Vector2i> validMovePositions;
 
-	allPiecesOnBoard = FindPiecesOnBoard();
-
+	allPiecesOnBoard = FindAllValidTilesOnBoard();
 
 	for each (Tile validTile in allPiecesOnBoard)
 	{
@@ -1561,7 +1567,6 @@ sf::Vector2i Game::GetAiMove()
 
 				isValid = CheckValidTileOrShapeAi(validTile);
 				
-
 				if (isValid)
 				{
 					isValid = CheckFurtherInLine(aiTiles[aiSelectedTile], validTile);
@@ -1612,7 +1617,11 @@ sf::Vector2i Game::GetAiMove()
 	return movePos;
 }
 
-std::vector<Tile> Game::FindPiecesOnBoard()
+/// <summary>
+/// Loops through the tiles on the board and adds the tiles that arent empty to a vector
+/// </summary>
+/// <returns>Vector of tiles on the board</returns>
+std::vector<Tile> Game::FindAllValidTilesOnBoard()
 {
 	// REMOVE ALL TILES FROM VECTOR AT START
 	allPiecesOnBoard.clear();
@@ -1633,6 +1642,12 @@ std::vector<Tile> Game::FindPiecesOnBoard()
 	return tilesOnBoard;
 }
 
+/// <summary>
+/// Given a row and col, find all 4 neighbours of this tile
+/// </summary>
+/// <param name="row">Gets the row on the board</param>
+/// <param name="col">Gets the col on the board</param>
+/// <returns></returns>
 std::vector<Tile> Game::GetAiNeighbours(int row, int col)
 {
 	std::vector<Tile> neighbourTiles;
@@ -1653,6 +1668,11 @@ std::vector<Tile> Game::GetAiNeighbours(int row, int col)
 	return neighbourTiles;
 }
 
+/// <summary>
+/// Checks the neighbours of the tile and sees if its a valid move
+/// </summary>
+/// <param name="tile"></param>
+/// <returns>A bool to see if its a valid move or not</returns>
 bool Game::CheckValidTileOrShapeAi(Tile tile)
 {
 	bool isValid = false;
@@ -1692,33 +1712,10 @@ bool Game::CheckValidTileOrShapeAi(Tile tile)
 	return isValid;
 }
 
-std::vector<Tile> Game::GetValidNieghboursAi(std::vector<Tile> neighbours)
-{
-	std::vector<Tile> validNeighbourTiles;
-
-	for each (Tile tile in neighbours)
-	{
-		if (tile.GetCurrentColor() != EMPTY_C || tile.GetCurrentShape() != EMPTY_S)
-		{
-			validNeighbourTiles.push_back(tile);
-		}
-	}
-
-	return validNeighbourTiles;
-}
-
-sf::Vector2i Game::MakeAiMove()
-{
-	sf::Vector2i movePos;
-
-	movePos = GetAiMove();
-	// If the vector2i map worked, I could sort out whats the best score here and return the best pos to move
-
-
-
-	return movePos;
-}
-
+/// <summary>
+/// This is what places the valid tile on the board
+/// </summary>
+/// <param name="boardPos">Takes the position on the board</param>
 void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
 {
 	currentCellPos = boardPos;

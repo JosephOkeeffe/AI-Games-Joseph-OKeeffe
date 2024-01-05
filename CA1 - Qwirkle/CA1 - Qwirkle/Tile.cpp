@@ -5,6 +5,10 @@ Tile::Tile()
 {
 }
 
+/// <summary>
+/// Sets up all the data for the tile
+/// </summary>
+/// <param name="position">Takes a position of where the tile will be placed</param>
 void Tile::Init(sf::Vector2f& position)
 {
 
@@ -27,6 +31,10 @@ void Tile::Init(sf::Vector2f& position)
 	CheckPiece(GetCurrentPiece());
 }
 
+/// <summary>
+/// Draws everything on the screen
+/// </summary>
+/// <param name="window"></param>
 void Tile::Render(sf::RenderWindow& window)
 {
 	window.draw(tile);
@@ -36,6 +44,10 @@ void Tile::Render(sf::RenderWindow& window)
 	}
 }
 
+/// <summary>
+/// Checks what the piece or shape/color of the tile is and sets its color and shape
+/// </summary>
+/// <param name="piece">Takes a piece</param>
 void Tile::CheckPiece(Piece piece)
 {
 	SetShape(piece);
@@ -44,6 +56,10 @@ void Tile::CheckPiece(Piece piece)
 	
 }
 
+/// <summary>
+/// Sets the shape of the tile using the piece
+/// </summary>
+/// <param name="piece">Piece is just an enum between 0 and 36</param>
 void Tile::SetShape(Piece piece)
 {
  	CheckCurrentPieceSize(piece);
@@ -103,6 +119,10 @@ void Tile::SetShape(Piece piece)
 	shape.setPointCount(shapeSides);
 }
 
+/// <summary>
+/// Sets the color of the shape on the tile
+/// </summary>
+/// <param name="piece">Uses the piece to do this</param>
 void Tile::SetColor(Piece piece)
 {
 	switch (piece % 6)
@@ -140,6 +160,10 @@ void Tile::SetColor(Piece piece)
 	shape.setFillColor(shapeColor);
 }
 
+/// <summary>
+/// Sets the piece of the tile using an int
+/// </summary>
+/// <param name="piece">Int of the piece</param>
 void Tile::SetPiece(int piece)
 {
 	currentPiece = static_cast<Piece>(piece);
@@ -148,6 +172,9 @@ void Tile::SetPiece(int piece)
 	CheckPiece(GetCurrentPiece());
 }
 
+/// <summary>
+/// When the player chooses a tile this happens
+/// </summary>
 void Tile::SelectTile()
 {
 	tile.setFillColor(sf::Color(252, 3, 90, 230));
@@ -155,6 +182,9 @@ void Tile::SelectTile()
 	isSelected = true;
 }
 
+/// <summary>
+/// When the player places a tile or chooses another tile it deselects the last tile
+/// </summary>
 void Tile::DeselectTile()
 {
 	tile.setFillColor(sf::Color::White);
@@ -177,22 +207,32 @@ Shape Tile::GetCurrentShape()
 	return currentShape;
 }
 
+bool Tile::GetUsed()
+{
+	return isUsed;
+}
+
+/// <summary>
+///  Sets the tile as used
+/// </summary>
 void Tile::SetUsed()
 {
 	isUsed = true;
 	CheckPiece(GetCurrentPiece());
 }
 
-bool Tile::GetUsed()
-{
-	return isUsed;
-}
-
+/// <summary>
+/// Resets the tiles used back to false
+/// </summary>
 void Tile::ResetTile()
 {
 	isUsed = false;
 }
 
+/// <summary>
+/// This is used for converting the bag of 108 tiles down to a value between 0 and 36
+/// </summary>
+/// <param name="piece">Takes the int that might be larger than 36</param>
 void Tile::CheckCurrentPieceSize(int piece)
 {
 	if (piece >= 36)

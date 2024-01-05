@@ -1,0 +1,198 @@
+\doxysection{Game.\+h}
+\hypertarget{_game_8h_source}{}\label{_game_8h_source}\mbox{\hyperlink{_game_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ GAME\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ GAME\_HPP}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_tile_8h}{Tile.h}}"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_global_8h}{Global.h}}"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#define\ \_Output\_To\_Screen(x)\ std::cout\ <<\ x\ <<\ "{}\(\backslash\)n"{};}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285}{GameState}}}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285a4c40e60bc71a32b924ce1f08d57f9721}{MENU}},\mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285ad50cf309d7568040619ed26ee6835a84}{GAME}}}
+\DoxyCodeLine{00014\ \};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83}{Difficulty}}}
+\DoxyCodeLine{00017\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a26d394b5caf2853dbcef5884f0f068dd}{EASY}},\ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a5340ec7ecef6cc3886684a3bd3450d64}{MEDIUM}},\ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a712b8eb9268f114b4afc567f24bc536f}{HARD}}}
+\DoxyCodeLine{00019\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_game}{Game}}}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_game_ad59df6562a58a614fda24622d3715b65}{Game}}();}
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{class_game_ae3d112ca6e0e55150d2fdbc704474530}{\string~Game}}();}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_game_a1ab78f5ed0d5ea879157357cf2fb2afa}{run}}();}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{bool}\ isSinglePlayer\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285}{GameState}}\ state\ =\ \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285a4c40e60bc71a32b924ce1f08d57f9721}{MENU}};}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83}{Difficulty}}\ difficulty\ =\ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a26d394b5caf2853dbcef5884f0f068dd}{EASY}};}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{int}\ shuffleCounter\ =\ 0;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_SHUFFLE\_EASY\ =\ 5;}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_SHUFFLE\_MEDIUM\ =\ 3;}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_SHUFFLE\_HARD\ =\ 1;\ }
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_AI\_MOVES\_EASY\ =\ 1;}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_AI\_MOVES\_MEDIUM\ =\ 3;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ MAX\_AI\_MOVES\_HARD\ =\ 6;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ processEvents();}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ processKeys(sf::Event\ t\_event);}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ ProcessMouseDown(sf::Event\ t\_event);}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ update(sf::Time\ t\_deltaTime);}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{void}\ render();}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{void}\ init();}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ InitBoard();}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ SetupTilePool();}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ SetupPlayerTiles();}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ SetupSprites();}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ SetupAITiles();}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{int}\ GetActiveTilePool();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{void}\ StartGame();}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{int}\ CheckWhoGoesFirst(\mbox{\hyperlink{class_tile}{Tile}}\ tile[6]);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{void}\ SelectPlayerTile(\mbox{\hyperlink{class_tile}{Tile}}\ tiles[6]);}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{void}\ PlaceTileOnBoard(\mbox{\hyperlink{class_tile}{Tile}}\ tiles[6]);}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{void}\ NextTurn();}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{void}\ RefillPlayerAndAITiles();}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ sf::Vector2i\ GetCellPosFromTile(\mbox{\hyperlink{class_tile}{Tile}}\ tile);}
+\DoxyCodeLine{00066\ \ \ \ \ std::vector<sf::Vector2i>\ GetCellPosFromTileList(std::vector<Tile>\ tiles);}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{comment}{//\ Rules}}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{bool}\ isValidPlacement\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ std::vector<Tile>\ GetValidNeighbours(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col);}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{bool}\ CheckValidTileColorOrShape(std::vector<Tile>\ neighbours,\ \mbox{\hyperlink{class_tile}{Tile}}\ tiles[6]);}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{bool}\ CheckFurtherInLine(\mbox{\hyperlink{class_tile}{Tile}}\ playerTile,\ \mbox{\hyperlink{class_tile}{Tile}}\ validTile);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ SetTurnColourAndShape(\mbox{\hyperlink{_tile_8h_ab87bacfdad76e61b9412d7124be44c1c}{Color}}\ color,\ \mbox{\hyperlink{_tile_8h_a55b506070847a13554f8b879c1bfb37c}{Shape}}\ shape);}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ ShufflePlayerTiles(\mbox{\hyperlink{class_tile}{Tile}}\ tiles[6]);}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{int}\ CheckIfPlacingInSameLine(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{int}\ AddScoresForTurn(std::vector<Tile>\ tilesToAddUp);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ sf::Vector2i\ sameLineVector;}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{int}\ currentLineNumber;}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{bool}\ isSameColumn\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{bool}\ isSameRow\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ AI}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{bool}\ aiCanPlaceTile\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ SortAiTurn();}
+\DoxyCodeLine{00087\ \ \ \ \ sf::Vector2i\ MakeAiMove();}
+\DoxyCodeLine{00088\ \ \ \ \ sf::Vector2i\ GetAiMove();}
+\DoxyCodeLine{00089\ \ \ \ \ std::vector<Tile>\ FindAllValidTilesOnBoard();}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{void}\ AiPlaceTileOnBoard(sf::Vector2i\ boardPos);}
+\DoxyCodeLine{00091\ \ \ \ \ std::vector<Tile>\ Game::GetAiNeighbours(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col);}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{bool}\ CheckValidTileOrShapeAi(\mbox{\hyperlink{class_tile}{Tile}}\ tile);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ std::vector<Tile>\ allPiecesOnBoard;}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordtype}{int}\ currentTurn\ =\ 1;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ sf::RenderWindow\ m\_window;\ }
+\DoxyCodeLine{00098\ \ \ \ \ sf::Font\ m\_ArialBlackfont;}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}**\ board;}
+\DoxyCodeLine{00101\ \ \ \ \ sf::RectangleShape\ bagRect;}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{bool}\ isBagOpen\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ tilePool1[36];\ \textcolor{comment}{//\ 108\ (36\ x\ 3)}}
+\DoxyCodeLine{00105\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ tilePool2[36];}
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ tilePool3[36];}
+\DoxyCodeLine{00107\ \ \ \ \ }
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ totalTilePool[108];}
+\DoxyCodeLine{00110\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ playerTiles[6];}
+\DoxyCodeLine{00111\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ aiTiles[6];\ }
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{comment}{//\ Turns}}
+\DoxyCodeLine{00116\ \ \ \ \ \mbox{\hyperlink{_tile_8h_ab87bacfdad76e61b9412d7124be44c1c}{Color}}\ turnColor;}
+\DoxyCodeLine{00117\ \ \ \ \ \mbox{\hyperlink{_tile_8h_a55b506070847a13554f8b879c1bfb37c}{Shape}}\ turnShape;}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{bool}\ isColorTurn\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{bool}\ isShapeTurn\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{bool}\ isFirstMoveOfGame\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{comment}{//\ Player}}
+\DoxyCodeLine{00124\ \ \ \ \ \mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}\ currentSelectedPiece;}
+\DoxyCodeLine{00125\ \ \ \ \ sf::Vector2i\ currentCellPos;}
+\DoxyCodeLine{00126\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ tilesInCurrentLineForScore[6];}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{int}\ selectedTile\ =\ 0;}
+\DoxyCodeLine{00128\ \ \ \ \ sf::Vector2i\ previousPlacedTile;}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{int}\ movesInTurnCount\ =\ 0;}
+\DoxyCodeLine{00130\ \ \ \ \ \mbox{\hyperlink{class_tile}{Tile}}\ firstTilePlacedInTurn;}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordtype}{int}\ playerTileIdsForBag[6];}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_exitGame;\ \ }
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{comment}{//\ AI}}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordtype}{bool}\ isPlayerTurn\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00137\ \ \ \ \ \mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}\ aiCurrentPiece;}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{int}\ aiSelectedTile\ =\ 0;}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{int}\ aiTileIdsForBag[6];}
+\DoxyCodeLine{00140\ \ \ \ \ }
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ sf::Clock\ aiClock;}
+\DoxyCodeLine{00143\ \ \ \ \ sf::Time\ aiTimer;}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ sf::Texture\ shuffleTexture;}
+\DoxyCodeLine{00146\ \ \ \ \ sf::Texture\ endTurnTexture;}
+\DoxyCodeLine{00147\ \ \ \ \ sf::Texture\ bagTexture;}
+\DoxyCodeLine{00148\ \ \ \ \ sf::Texture\ insideBagTexture;}
+\DoxyCodeLine{00149\ \ \ \ \ sf::Texture\ tableTexture;}
+\DoxyCodeLine{00150\ \ \ \ \ sf::Texture\ tileTexture;}
+\DoxyCodeLine{00151\ \ \ \ \ sf::Texture\ playerNameTexture;}
+\DoxyCodeLine{00152\ \ \ \ \ sf::Texture\ aiNameTexture;}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ sf::Sprite\ playerShuffleButton;}
+\DoxyCodeLine{00155\ \ \ \ \ sf::Sprite\ endTurnButton;}
+\DoxyCodeLine{00156\ \ \ \ \ sf::Sprite\ bagButton;}
+\DoxyCodeLine{00157\ \ \ \ \ sf::Sprite\ tableSprite;}
+\DoxyCodeLine{00158\ \ \ \ \ sf::Text\ playerNameText;}
+\DoxyCodeLine{00159\ \ \ \ \ sf::Text\ aiNameText;}
+\DoxyCodeLine{00160\ \ \ \ \ sf::Text\ qwirkleText;}
+\DoxyCodeLine{00161\ \ \ \ \ std::string\ qwirkleString\ =\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keywordtype}{void}\ SetQwirkleText(std::string\ text);}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordtype}{int}\ playerScore\ =\ 0;}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keywordtype}{int}\ aiScore\ =\ 0;}
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keywordtype}{int}\ scoreForCurrentTurn\ =\ 0;}
+\DoxyCodeLine{00167\ \ \ \ \ sf::Font\ font;}
+\DoxyCodeLine{00168\ \ \ \ \ sf::Text\ playerScoreText;}
+\DoxyCodeLine{00169\ \ \ \ \ sf::Text\ aiScoreText;}
+\DoxyCodeLine{00170\ \ \ \ \ std::vector<Tile>\ tilesPlacedInTurnForScore;}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ std::vector<sf::Vector2i>\ validAiMoves;}
+\DoxyCodeLine{00173\ \ \ \ \ std::vector<Tile>\ validAiTiles;}
+\DoxyCodeLine{00174\ \ \ \ \ sf::Clock\ qwirkleClock;}
+\DoxyCodeLine{00175\ \ \ \ \ sf::Time\ qwirkleTimer;}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ sf::Text\ qwirkleHeadingText;}
+\DoxyCodeLine{00178\ \ \ \ \ sf::RectangleShape\ easyButton;}
+\DoxyCodeLine{00179\ \ \ \ \ sf::Text\ easyText;}
+\DoxyCodeLine{00180\ \ \ \ \ sf::RectangleShape\ mediumButton;}
+\DoxyCodeLine{00181\ \ \ \ \ sf::Text\ mediumText;}
+\DoxyCodeLine{00182\ \ \ \ \ sf::RectangleShape\ hardButton;}
+\DoxyCodeLine{00183\ \ \ \ \ sf::Text\ hardText;}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \ \ sf::CircleShape\ pvpButton;}
+\DoxyCodeLine{00187\ \ \ \ \ sf::Text\ pvpText;}
+\DoxyCodeLine{00188\ \ \ \ \ sf::CircleShape\ pveButton;}
+\DoxyCodeLine{00189\ \ \ \ \ sf::Text\ pveText;}
+\DoxyCodeLine{00190\ \};}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00193\ }
+
+\end{DoxyCode}

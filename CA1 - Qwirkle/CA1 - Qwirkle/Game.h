@@ -18,8 +18,6 @@ enum Difficulty
 	EASY, MEDIUM, HARD
 };
 
-
-
 class Game
 {
 public:
@@ -34,6 +32,13 @@ private:
 	GameState state = MENU;
 	Difficulty difficulty = EASY;
 	int shuffleCounter = 0;
+	const int MAX_SHUFFLE_EASY = 5;
+	const int MAX_SHUFFLE_MEDIUM = 3;
+	const int MAX_SHUFFLE_HARD = 1;	
+
+	const int MAX_AI_MOVES_EASY = 1;
+	const int MAX_AI_MOVES_MEDIUM = 3;
+	const int MAX_AI_MOVES_HARD = 6;
 
 	void processEvents();
 	void processKeys(sf::Event t_event);
@@ -51,8 +56,6 @@ private:
 	void StartGame();
 	int CheckWhoGoesFirst(Tile tile[6]);
 
-	//void SelectPlayerTile();
-	//void PlaceTileOnBoard();
 	void SelectPlayerTile(Tile tiles[6]);
 	void PlaceTileOnBoard(Tile tiles[6]);
 
@@ -65,11 +68,9 @@ private:
 	bool isValidPlacement = false;
 
 	std::vector<Tile> GetValidNeighbours(int row, int col);
-	//bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
 	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours, Tile tiles[6]);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
 	void SetTurnColourAndShape(Color color, Shape shape);
-	//void ShufflePlayerTiles();
 	void ShufflePlayerTiles(Tile tiles[6]);
 	int CheckIfPlacingInSameLine(int row, int col);
 	int AddScoresForTurn(std::vector<Tile> tilesToAddUp);
@@ -85,11 +86,10 @@ private:
 	void SortAiTurn();
 	sf::Vector2i MakeAiMove();
 	sf::Vector2i GetAiMove();
-	std::vector<Tile> FindPiecesOnBoard();
+	std::vector<Tile> FindAllValidTilesOnBoard();
 	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
 	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
 	bool CheckValidTileOrShapeAi(Tile tile);
-	std::vector<Tile> GetValidNieghboursAi(std::vector<Tile> neighbours);
 
 	std::vector<Tile> allPiecesOnBoard;
 	int currentTurn = 1;

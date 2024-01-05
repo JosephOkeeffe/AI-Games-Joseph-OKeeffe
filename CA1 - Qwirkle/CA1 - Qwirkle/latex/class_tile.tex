@@ -1,0 +1,338 @@
+\doxysection{Tile Class Reference}
+\hypertarget{class_tile}{}\label{class_tile}\index{Tile@{Tile}}
+
+
+{\ttfamily \#include $<$Tile.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_tile_ad88507f7303f12c7625a031b4eb4b67c}{operator$<$}} (const \mbox{\hyperlink{class_tile}{Tile}} \&other) const
+\item 
+\mbox{\hyperlink{class_tile_aeeb5593bb6b75aae2edfcccbc84ab378}{Tile}} ()
+\item 
+void \mbox{\hyperlink{class_tile_ac4a4731fa884d9d8712b8ef5f7c7b5bf}{Init}} (sf\+::\+Vector2f \&position)
+\begin{DoxyCompactList}\small\item\em Sets up all the data for the tile. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a77eed941c573bdf6d265fdad11935e87}{Render}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Draws everything on the screen. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a0e176ea00a3b7eaceb7dfd6fa6fc5085}{Check\+Piece}} (\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} piece)
+\begin{DoxyCompactList}\small\item\em Checks what the piece or shape/color of the tile is and sets its color and shape. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a2d615c8870f8044515431917be98014c}{Set\+Shape}} (\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} piece)
+\begin{DoxyCompactList}\small\item\em Sets the shape of the tile using the piece. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a8b97fc95f8eccb7ed0cb1633840fc1c3}{Set\+Color}} (\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} piece)
+\begin{DoxyCompactList}\small\item\em Sets the color of the shape on the tile. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a8a607a95bd40790f79e2b4d92130cf59}{Set\+Piece}} (int piece)
+\begin{DoxyCompactList}\small\item\em Sets the piece of the tile using an int. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_af5ded5e18dc02929f9fce8e50efb0056}{Select\+Tile}} ()
+\begin{DoxyCompactList}\small\item\em When the player chooses a tile this happens. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_a1a7993b102ebf85fb6ed260a9f047b87}{Deselect\+Tile}} ()
+\begin{DoxyCompactList}\small\item\em When the player places a tile or chooses another tile it deselects the last tile. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} \mbox{\hyperlink{class_tile_a6b7841d09d9806285e21299a45e9e8a3}{Get\+Current\+Piece}} ()
+\item 
+\mbox{\hyperlink{_tile_8h_ab87bacfdad76e61b9412d7124be44c1c}{Color}} \mbox{\hyperlink{class_tile_a70cc1a6950b5a1c74de6906749b5e034}{Get\+Current\+Color}} ()
+\item 
+\mbox{\hyperlink{_tile_8h_a55b506070847a13554f8b879c1bfb37c}{Shape}} \mbox{\hyperlink{class_tile_abc227ee9e79cdb274c23f874ef822efc}{Get\+Current\+Shape}} ()
+\item 
+void \mbox{\hyperlink{class_tile_ae824f36ddd7617ef2b2c9355a04f7716}{Set\+Used}} ()
+\begin{DoxyCompactList}\small\item\em Sets the tile as used. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_tile_ac1def022000be32ecc09701d22583ebe}{Get\+Used}} ()
+\item 
+void \mbox{\hyperlink{class_tile_a1a919129e33e53f64f775f26dc2bd2a8}{Reset\+Tile}} ()
+\begin{DoxyCompactList}\small\item\em Resets the tiles used back to false. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_tile_ae1e8d3e3f72482f0b63ddf86be3c7720}{Check\+Current\+Piece\+Size}} (int piece)
+\begin{DoxyCompactList}\small\item\em This is used for converting the bag of 108 tiles down to a value between 0 and 36. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{class_tile_a9077011a35b8d48635b4d0f1dd0d4301}{tile\+Name}}
+\item 
+std\+::string \mbox{\hyperlink{class_tile_aadf1411e6e6b6e7c4a6ee0995578f0f2}{tile\+Color}}
+\item 
+std\+::string \mbox{\hyperlink{class_tile_a831df86982dc9586753834289fd506de}{tile\+Shape}}
+\item 
+bool \mbox{\hyperlink{class_tile_a11ee1a62a5b23b8c4925c245a12d8165}{is\+Selected}} = false
+\item 
+bool \mbox{\hyperlink{class_tile_ae8ff89ef9479790fd5f2fbb705f9f20f}{is\+Used}} = false
+\item 
+bool \mbox{\hyperlink{class_tile_a574b28ad92607250adfa8229ada82980}{is\+Placed}} = false
+\item 
+bool \mbox{\hyperlink{class_tile_aa8dda6a4c2ad974eb776c067aaa82b90}{is\+Player}} = false
+\item 
+bool \mbox{\hyperlink{class_tile_a7ad790ea3acf62a4c549d70865e33abc}{is\+AI}} = false
+\item 
+sf\+::\+Rectangle\+Shape \mbox{\hyperlink{class_tile_a4f816fa339e46bd55d28c2ffd29167a2}{tile}}
+\item 
+int \mbox{\hyperlink{class_tile_adaa2844aaf513f033860866e1396aabe}{shape\+Sides}} = 0
+\item 
+sf\+::\+Color \mbox{\hyperlink{class_tile_aa734bf60c00e297fe079eb6e337d740e}{shape\+Color}}
+\item 
+sf\+::\+Circle\+Shape \mbox{\hyperlink{class_tile_af34e0631e7f54437289cb8debef5eee9}{shape}} \{25\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_tile_aeeb5593bb6b75aae2edfcccbc84ab378}\label{class_tile_aeeb5593bb6b75aae2edfcccbc84ab378} 
+\index{Tile@{Tile}!Tile@{Tile}}
+\index{Tile@{Tile}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{Tile()}{Tile()}}
+{\footnotesize\ttfamily Tile\+::\+Tile (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_tile_ae1e8d3e3f72482f0b63ddf86be3c7720}\label{class_tile_ae1e8d3e3f72482f0b63ddf86be3c7720} 
+\index{Tile@{Tile}!CheckCurrentPieceSize@{CheckCurrentPieceSize}}
+\index{CheckCurrentPieceSize@{CheckCurrentPieceSize}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{CheckCurrentPieceSize()}{CheckCurrentPieceSize()}}
+{\footnotesize\ttfamily void Tile\+::\+Check\+Current\+Piece\+Size (\begin{DoxyParamCaption}\item[{int}]{piece }\end{DoxyParamCaption})}
+
+
+
+This is used for converting the bag of 108 tiles down to a value between 0 and 36. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em piece} & Takes the int that might be larger than 36\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_a0e176ea00a3b7eaceb7dfd6fa6fc5085}\label{class_tile_a0e176ea00a3b7eaceb7dfd6fa6fc5085} 
+\index{Tile@{Tile}!CheckPiece@{CheckPiece}}
+\index{CheckPiece@{CheckPiece}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{CheckPiece()}{CheckPiece()}}
+{\footnotesize\ttfamily void Tile\+::\+Check\+Piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}}]{piece }\end{DoxyParamCaption})}
+
+
+
+Checks what the piece or shape/color of the tile is and sets its color and shape. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em piece} & Takes a piece\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_a1a7993b102ebf85fb6ed260a9f047b87}\label{class_tile_a1a7993b102ebf85fb6ed260a9f047b87} 
+\index{Tile@{Tile}!DeselectTile@{DeselectTile}}
+\index{DeselectTile@{DeselectTile}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{DeselectTile()}{DeselectTile()}}
+{\footnotesize\ttfamily void Tile\+::\+Deselect\+Tile (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+When the player places a tile or chooses another tile it deselects the last tile. 
+
+\Hypertarget{class_tile_a70cc1a6950b5a1c74de6906749b5e034}\label{class_tile_a70cc1a6950b5a1c74de6906749b5e034} 
+\index{Tile@{Tile}!GetCurrentColor@{GetCurrentColor}}
+\index{GetCurrentColor@{GetCurrentColor}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{GetCurrentColor()}{GetCurrentColor()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_tile_8h_ab87bacfdad76e61b9412d7124be44c1c}{Color}} Tile\+::\+Get\+Current\+Color (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_tile_a6b7841d09d9806285e21299a45e9e8a3}\label{class_tile_a6b7841d09d9806285e21299a45e9e8a3} 
+\index{Tile@{Tile}!GetCurrentPiece@{GetCurrentPiece}}
+\index{GetCurrentPiece@{GetCurrentPiece}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{GetCurrentPiece()}{GetCurrentPiece()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} Tile\+::\+Get\+Current\+Piece (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_tile_abc227ee9e79cdb274c23f874ef822efc}\label{class_tile_abc227ee9e79cdb274c23f874ef822efc} 
+\index{Tile@{Tile}!GetCurrentShape@{GetCurrentShape}}
+\index{GetCurrentShape@{GetCurrentShape}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{GetCurrentShape()}{GetCurrentShape()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_tile_8h_a55b506070847a13554f8b879c1bfb37c}{Shape}} Tile\+::\+Get\+Current\+Shape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_tile_ac1def022000be32ecc09701d22583ebe}\label{class_tile_ac1def022000be32ecc09701d22583ebe} 
+\index{Tile@{Tile}!GetUsed@{GetUsed}}
+\index{GetUsed@{GetUsed}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{GetUsed()}{GetUsed()}}
+{\footnotesize\ttfamily bool Tile\+::\+Get\+Used (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_tile_ac4a4731fa884d9d8712b8ef5f7c7b5bf}\label{class_tile_ac4a4731fa884d9d8712b8ef5f7c7b5bf} 
+\index{Tile@{Tile}!Init@{Init}}
+\index{Init@{Init}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{Init()}{Init()}}
+{\footnotesize\ttfamily void Tile\+::\+Init (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f \&}]{position }\end{DoxyParamCaption})}
+
+
+
+Sets up all the data for the tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & Takes a position of where the tile will be placed\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_ad88507f7303f12c7625a031b4eb4b67c}\label{class_tile_ad88507f7303f12c7625a031b4eb4b67c} 
+\index{Tile@{Tile}!operator$<$@{operator$<$}}
+\index{operator$<$@{operator$<$}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{operator$<$()}{operator<()}}
+{\footnotesize\ttfamily bool Tile\+::operator$<$ (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_tile}{Tile}} \&}]{other }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_tile_a77eed941c573bdf6d265fdad11935e87}\label{class_tile_a77eed941c573bdf6d265fdad11935e87} 
+\index{Tile@{Tile}!Render@{Render}}
+\index{Render@{Render}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{Render()}{Render()}}
+{\footnotesize\ttfamily void Tile\+::\+Render (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Draws everything on the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_a1a919129e33e53f64f775f26dc2bd2a8}\label{class_tile_a1a919129e33e53f64f775f26dc2bd2a8} 
+\index{Tile@{Tile}!ResetTile@{ResetTile}}
+\index{ResetTile@{ResetTile}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{ResetTile()}{ResetTile()}}
+{\footnotesize\ttfamily void Tile\+::\+Reset\+Tile (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Resets the tiles used back to false. 
+
+\Hypertarget{class_tile_af5ded5e18dc02929f9fce8e50efb0056}\label{class_tile_af5ded5e18dc02929f9fce8e50efb0056} 
+\index{Tile@{Tile}!SelectTile@{SelectTile}}
+\index{SelectTile@{SelectTile}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{SelectTile()}{SelectTile()}}
+{\footnotesize\ttfamily void Tile\+::\+Select\+Tile (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+When the player chooses a tile this happens. 
+
+\Hypertarget{class_tile_a8b97fc95f8eccb7ed0cb1633840fc1c3}\label{class_tile_a8b97fc95f8eccb7ed0cb1633840fc1c3} 
+\index{Tile@{Tile}!SetColor@{SetColor}}
+\index{SetColor@{SetColor}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{SetColor()}{SetColor()}}
+{\footnotesize\ttfamily void Tile\+::\+Set\+Color (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}}]{piece }\end{DoxyParamCaption})}
+
+
+
+Sets the color of the shape on the tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em piece} & Uses the piece to do this\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_a8a607a95bd40790f79e2b4d92130cf59}\label{class_tile_a8a607a95bd40790f79e2b4d92130cf59} 
+\index{Tile@{Tile}!SetPiece@{SetPiece}}
+\index{SetPiece@{SetPiece}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{SetPiece()}{SetPiece()}}
+{\footnotesize\ttfamily void Tile\+::\+Set\+Piece (\begin{DoxyParamCaption}\item[{int}]{piece }\end{DoxyParamCaption})}
+
+
+
+Sets the piece of the tile using an int. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em piece} & Int of the piece\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_a2d615c8870f8044515431917be98014c}\label{class_tile_a2d615c8870f8044515431917be98014c} 
+\index{Tile@{Tile}!SetShape@{SetShape}}
+\index{SetShape@{SetShape}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{SetShape()}{SetShape()}}
+{\footnotesize\ttfamily void Tile\+::\+Set\+Shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{_tile_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}}]{piece }\end{DoxyParamCaption})}
+
+
+
+Sets the shape of the tile using the piece. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em piece} & Piece is just an enum between 0 and 36\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_tile_ae824f36ddd7617ef2b2c9355a04f7716}\label{class_tile_ae824f36ddd7617ef2b2c9355a04f7716} 
+\index{Tile@{Tile}!SetUsed@{SetUsed}}
+\index{SetUsed@{SetUsed}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{SetUsed()}{SetUsed()}}
+{\footnotesize\ttfamily void Tile\+::\+Set\+Used (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Sets the tile as used. 
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_tile_a7ad790ea3acf62a4c549d70865e33abc}\label{class_tile_a7ad790ea3acf62a4c549d70865e33abc} 
+\index{Tile@{Tile}!isAI@{isAI}}
+\index{isAI@{isAI}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{isAI}{isAI}}
+{\footnotesize\ttfamily bool Tile\+::is\+AI = false}
+
+\Hypertarget{class_tile_a574b28ad92607250adfa8229ada82980}\label{class_tile_a574b28ad92607250adfa8229ada82980} 
+\index{Tile@{Tile}!isPlaced@{isPlaced}}
+\index{isPlaced@{isPlaced}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{isPlaced}{isPlaced}}
+{\footnotesize\ttfamily bool Tile\+::is\+Placed = false}
+
+\Hypertarget{class_tile_aa8dda6a4c2ad974eb776c067aaa82b90}\label{class_tile_aa8dda6a4c2ad974eb776c067aaa82b90} 
+\index{Tile@{Tile}!isPlayer@{isPlayer}}
+\index{isPlayer@{isPlayer}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{isPlayer}{isPlayer}}
+{\footnotesize\ttfamily bool Tile\+::is\+Player = false}
+
+\Hypertarget{class_tile_a11ee1a62a5b23b8c4925c245a12d8165}\label{class_tile_a11ee1a62a5b23b8c4925c245a12d8165} 
+\index{Tile@{Tile}!isSelected@{isSelected}}
+\index{isSelected@{isSelected}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{isSelected}{isSelected}}
+{\footnotesize\ttfamily bool Tile\+::is\+Selected = false}
+
+\Hypertarget{class_tile_ae8ff89ef9479790fd5f2fbb705f9f20f}\label{class_tile_ae8ff89ef9479790fd5f2fbb705f9f20f} 
+\index{Tile@{Tile}!isUsed@{isUsed}}
+\index{isUsed@{isUsed}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{isUsed}{isUsed}}
+{\footnotesize\ttfamily bool Tile\+::is\+Used = false}
+
+\Hypertarget{class_tile_af34e0631e7f54437289cb8debef5eee9}\label{class_tile_af34e0631e7f54437289cb8debef5eee9} 
+\index{Tile@{Tile}!shape@{shape}}
+\index{shape@{shape}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{shape}{shape}}
+{\footnotesize\ttfamily sf\+::\+Circle\+Shape Tile\+::shape \{25\}}
+
+\Hypertarget{class_tile_aa734bf60c00e297fe079eb6e337d740e}\label{class_tile_aa734bf60c00e297fe079eb6e337d740e} 
+\index{Tile@{Tile}!shapeColor@{shapeColor}}
+\index{shapeColor@{shapeColor}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{shapeColor}{shapeColor}}
+{\footnotesize\ttfamily sf\+::\+Color Tile\+::shape\+Color}
+
+\Hypertarget{class_tile_adaa2844aaf513f033860866e1396aabe}\label{class_tile_adaa2844aaf513f033860866e1396aabe} 
+\index{Tile@{Tile}!shapeSides@{shapeSides}}
+\index{shapeSides@{shapeSides}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{shapeSides}{shapeSides}}
+{\footnotesize\ttfamily int Tile\+::shape\+Sides = 0}
+
+\Hypertarget{class_tile_a4f816fa339e46bd55d28c2ffd29167a2}\label{class_tile_a4f816fa339e46bd55d28c2ffd29167a2} 
+\index{Tile@{Tile}!tile@{tile}}
+\index{tile@{tile}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{tile}{tile}}
+{\footnotesize\ttfamily sf\+::\+Rectangle\+Shape Tile\+::tile}
+
+\Hypertarget{class_tile_aadf1411e6e6b6e7c4a6ee0995578f0f2}\label{class_tile_aadf1411e6e6b6e7c4a6ee0995578f0f2} 
+\index{Tile@{Tile}!tileColor@{tileColor}}
+\index{tileColor@{tileColor}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{tileColor}{tileColor}}
+{\footnotesize\ttfamily std\+::string Tile\+::tile\+Color}
+
+\Hypertarget{class_tile_a9077011a35b8d48635b4d0f1dd0d4301}\label{class_tile_a9077011a35b8d48635b4d0f1dd0d4301} 
+\index{Tile@{Tile}!tileName@{tileName}}
+\index{tileName@{tileName}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{tileName}{tileName}}
+{\footnotesize\ttfamily std\+::string Tile\+::tile\+Name}
+
+\Hypertarget{class_tile_a831df86982dc9586753834289fd506de}\label{class_tile_a831df86982dc9586753834289fd506de} 
+\index{Tile@{Tile}!tileShape@{tileShape}}
+\index{tileShape@{tileShape}!Tile@{Tile}}
+\doxysubsubsection{\texorpdfstring{tileShape}{tileShape}}
+{\footnotesize\ttfamily std\+::string Tile\+::tile\+Shape}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_tile_8h}{Tile.\+h}}\item 
+\mbox{\hyperlink{_tile_8cpp}{Tile.\+cpp}}\end{DoxyCompactItemize}

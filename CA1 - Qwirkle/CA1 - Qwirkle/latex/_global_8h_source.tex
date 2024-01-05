@@ -1,0 +1,34 @@
+\doxysection{Global.\+h}
+\hypertarget{_global_8h_source}{}\label{_global_8h_source}\mbox{\hyperlink{_global_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_global}{Global}}}
+\DoxyCodeLine{00004\ \{}
+\DoxyCodeLine{00005\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_global_a4187c3fa9aa792816911e6396366d81b}{S\_WIDTH}}\{\ 800U\ \};}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_global_aa47328c906980d2d7f08cdcc7087f662}{S\_HEIGHT}}\{\ 800U\ \};}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_global_a308487639bf44ccda01b65e235f11008}{ROWS\_COLUMNS}}\{\ 20\ \};\ \textcolor{comment}{//\ rows\ x\ columns}}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_global_a232903a611c8e550c94bc96751dbf301}{CELL\_SIZE}}\{\ \mbox{\hyperlink{struct_global_a4187c3fa9aa792816911e6396366d81b}{S\_WIDTH}}\ /\ \mbox{\hyperlink{struct_global_a308487639bf44ccda01b65e235f11008}{ROWS\_COLUMNS}}\ \};}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{static}\ sf::Vector2i\ \mbox{\hyperlink{struct_global_a1e43b28f07b8f7d0576061b25d8badb2}{GetCurrentCell}}(sf::RenderWindow\&\ window,\ sf::View\&\ view)}
+\DoxyCodeLine{00013\ \ \ \ \ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ sf::Vector2i\ mousePos\ =\ sf::Mouse::getPosition(window);}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ sf::Vector2i\ cellPosition;}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ cellPosition.x\ =\ mousePos.x\ /\ \mbox{\hyperlink{struct_global_a232903a611c8e550c94bc96751dbf301}{Global::CELL\_SIZE}};}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ cellPosition.y\ =\ mousePos.y\ /\ \mbox{\hyperlink{struct_global_a232903a611c8e550c94bc96751dbf301}{Global::CELL\_SIZE}};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cellPosition;}
+\DoxyCodeLine{00022\ \ \ \ \ \}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{static}\ sf::Vector2i\ \mbox{\hyperlink{struct_global_aa999f54d2520bb2d8860eff298dd6c31}{GetMousePos}}(sf::RenderWindow\&\ window)}
+\DoxyCodeLine{00025\ \ \ \ \ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ sf::Vector2i\ mousePos\ =\ sf::Mouse::getPosition(window);}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ mousePos;}
+\DoxyCodeLine{00028\ \ \ \ \ \}}
+\DoxyCodeLine{00029\ \};}
+
+\end{DoxyCode}

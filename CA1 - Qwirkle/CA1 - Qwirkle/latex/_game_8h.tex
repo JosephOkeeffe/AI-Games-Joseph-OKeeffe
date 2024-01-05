@@ -1,0 +1,75 @@
+\doxysection{Game.\+h File Reference}
+\hypertarget{_game_8h}{}\label{_game_8h}\index{Game.h@{Game.h}}
+{\ttfamily \#include $<$SFML/\+Graphics.\+hpp$>$}\newline
+{\ttfamily \#include "{}Tile.\+h"{}}\newline
+{\ttfamily \#include "{}Global.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_game}{Game}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_game_8h_afab7f427d6a60560e1c42cbe4fb414ce}{\+\_\+\+Output\+\_\+\+To\+\_\+\+Screen}}(x)~std\+::cout $<$$<$ x $<$$<$ "{}\textbackslash{}n"{};
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285}{Game\+State}} \{ \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285a4c40e60bc71a32b924ce1f08d57f9721}{MENU}}
+, \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285ad50cf309d7568040619ed26ee6835a84}{GAME}}
+ \}
+\item 
+enum \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83}{Difficulty}} \{ \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a26d394b5caf2853dbcef5884f0f068dd}{EASY}}
+, \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a5340ec7ecef6cc3886684a3bd3450d64}{MEDIUM}}
+, \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a712b8eb9268f114b4afc567f24bc536f}{HARD}}
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{_game_8h_afab7f427d6a60560e1c42cbe4fb414ce}\label{_game_8h_afab7f427d6a60560e1c42cbe4fb414ce} 
+\index{Game.h@{Game.h}!\_Output\_To\_Screen@{\_Output\_To\_Screen}}
+\index{\_Output\_To\_Screen@{\_Output\_To\_Screen}!Game.h@{Game.h}}
+\doxysubsubsection{\texorpdfstring{\_Output\_To\_Screen}{\_Output\_To\_Screen}}
+{\footnotesize\ttfamily \#define \+\_\+\+Output\+\_\+\+To\+\_\+\+Screen(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})~std\+::cout $<$$<$ x $<$$<$ "{}\textbackslash{}n"{};}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83}\label{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83} 
+\index{Game.h@{Game.h}!Difficulty@{Difficulty}}
+\index{Difficulty@{Difficulty}!Game.h@{Game.h}}
+\doxysubsubsection{\texorpdfstring{Difficulty}{Difficulty}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83}{Difficulty}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EASY@{EASY}!Game.h@{Game.h}}\index{Game.h@{Game.h}!EASY@{EASY}}}\Hypertarget{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a26d394b5caf2853dbcef5884f0f068dd}\label{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a26d394b5caf2853dbcef5884f0f068dd} 
+EASY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MEDIUM@{MEDIUM}!Game.h@{Game.h}}\index{Game.h@{Game.h}!MEDIUM@{MEDIUM}}}\Hypertarget{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a5340ec7ecef6cc3886684a3bd3450d64}\label{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a5340ec7ecef6cc3886684a3bd3450d64} 
+MEDIUM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HARD@{HARD}!Game.h@{Game.h}}\index{Game.h@{Game.h}!HARD@{HARD}}}\Hypertarget{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a712b8eb9268f114b4afc567f24bc536f}\label{_game_8h_a43efb0a2e61815a66134dfa5ccea0a83a712b8eb9268f114b4afc567f24bc536f} 
+HARD&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285}\label{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285} 
+\index{Game.h@{Game.h}!GameState@{GameState}}
+\index{GameState@{GameState}!Game.h@{Game.h}}
+\doxysubsubsection{\texorpdfstring{GameState}{GameState}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285}{Game\+State}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MENU@{MENU}!Game.h@{Game.h}}\index{Game.h@{Game.h}!MENU@{MENU}}}\Hypertarget{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285a4c40e60bc71a32b924ce1f08d57f9721}\label{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285a4c40e60bc71a32b924ce1f08d57f9721} 
+MENU&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GAME@{GAME}!Game.h@{Game.h}}\index{Game.h@{Game.h}!GAME@{GAME}}}\Hypertarget{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285ad50cf309d7568040619ed26ee6835a84}\label{_game_8h_a7899b65f1ea0f655e4bbf8d2a5714285ad50cf309d7568040619ed26ee6835a84} 
+GAME&\\
+\hline
+
+\end{DoxyEnumFields}
