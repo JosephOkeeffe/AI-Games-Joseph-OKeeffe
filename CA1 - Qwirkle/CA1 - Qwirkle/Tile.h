@@ -72,7 +72,18 @@ class Tile
 {
 public:
 
-
+	bool operator<(const Tile& other) const {
+		// check by piece
+		if (currentPiece != other.currentPiece) {
+			return currentPiece < other.currentPiece;
+		}
+		// check by colour
+		if (currentColor != other.currentColor) {
+			return currentColor < other.currentColor;
+		}
+		// check by shape
+		return currentShape < other.currentShape;
+	}
 
 
 	Tile();

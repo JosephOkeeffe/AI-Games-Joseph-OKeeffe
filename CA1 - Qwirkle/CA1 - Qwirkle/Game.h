@@ -8,6 +8,16 @@
 
 #define _Output_To_Screen(x) std::cout << x << "\n";
 
+enum GameState
+{
+	MENU,GAME
+};
+
+enum Difficulty
+{
+	EASY, MEDIUM, HARD
+};
+
 class Game
 {
 public:
@@ -17,6 +27,10 @@ public:
 	void run();
 
 private:
+
+	GameState state = MENU;
+	Difficulty difficulty = EASY;
+	int shuffleCounter = 0;
 
 	void processEvents();
 	void processKeys(sf::Event t_event);
@@ -30,7 +44,6 @@ private:
 	void SetupSprites();
 	void SetupAITiles();
 	int GetActiveTilePool();
-	int TileCount();
 
 	void StartGame();
 	int CheckWhoGoesFirst(Tile tile[6]);
@@ -52,7 +65,7 @@ private:
 	void SetTurnColourAndShape(Color color, Shape shape);
 	void ShufflePlayerTiles();
 	int CheckIfPlacingInSameLine(int row, int col);
-	int AddScoresForTurn();
+	int AddScoresForTurn(std::vector<Tile> tilesToAddUp);
 
 	sf::Vector2i sameLineVector;
 	int currentLineNumber;
@@ -69,7 +82,6 @@ private:
 	void AiPlaceTileOnBoard(sf::Vector2i boardPos);
 	std::vector<Tile> Game::GetAiNeighbours(int row, int col);
 	bool CheckValidTileOrShapeAi(Tile tile);
-	//bool CheckValidTileOrShapeAi(std::vector<Tile> neighbours, Tile aiTileToCompare);
 	std::vector<Tile> GetValidNieghboursAi(std::vector<Tile> neighbours);
 
 	std::vector<Tile> allPiecesOnBoard;
@@ -125,13 +137,43 @@ private:
 
 	sf::Texture shuffleTexture;
 	sf::Texture endTurnTexture;
+	sf::Texture bagTexture;
+	sf::Texture insideBagTexture;
+	sf::Texture tableTexture;
+	sf::Texture tileTexture;
+	sf::Texture playerNameTexture;
+	sf::Texture aiNameTexture;
+
 	sf::Sprite playerShuffleButton;
 	sf::Sprite endTurnButton;
+	sf::Sprite bagButton;
+	sf::Sprite tableSprite;
+	sf::Text playerNameText;
+	sf::Text aiNameText;
+	sf::Text qwirkleText;
+	std::string qwirkleString = "";
+	void SetQwirkleText(std::string text);
 
 	int playerScore = 0;
+	int aiScore = 0;
 	int scoreForCurrentTurn = 0;
 	sf::Font font;
 	sf::Text playerScoreText;
+	sf::Text aiScoreText;
+	std::vector<Tile> tilesPlacedInTurnForScore;
+
+	std::vector<sf::Vector2i> validAiMoves;
+	std::vector<Tile> validAiTiles;
+	sf::Clock qwirkleClock;
+	sf::Time qwirkleTimer;
+
+	sf::Text qwirkleHeadingText;
+	sf::RectangleShape easyButton;
+	sf::Text easyText;
+	sf::RectangleShape mediumButton;
+	sf::Text mediumText;
+	sf::RectangleShape hardButton;
+	sf::Text hardText;
 
 };
 

@@ -8,16 +8,16 @@ Tile::Tile()
 void Tile::Init(sf::Vector2f& position)
 {
 
-	tile.setFillColor(sf::Color::Black);
+	tile.setFillColor(sf::Color::Transparent);
 	tile.setSize(sf::Vector2f(Global::CELL_SIZE, Global::CELL_SIZE));
 	tile.setOutlineThickness(1);
-	tile.setOutlineColor(sf::Color(255,255,255, 255));
+	tile.setOutlineColor(sf::Color(255,255,255, 100));
 	tile.setPosition(position);
 
 	shape.setRadius(tile.getSize().x / 2.5);
 	shape.setOrigin(shape.getRadius(), shape.getRadius());
 	shape.setPosition(position.x + Global::CELL_SIZE / 2, position.y + Global::CELL_SIZE / 2);
-	shape.setOutlineThickness(2);
+	shape.setOutlineThickness(1);
 	shape.setOutlineColor(sf::Color::Black);
 
 	tileShape = "None";
@@ -150,13 +150,15 @@ void Tile::SetPiece(int piece)
 
 void Tile::SelectTile()
 {
-	tile.setFillColor(sf::Color(255, 99, 71, 200));
+	tile.setFillColor(sf::Color(252, 3, 90, 230));
+	shape.setOutlineThickness(1.5);
 	isSelected = true;
 }
 
 void Tile::DeselectTile()
 {
-	tile.setFillColor(sf::Color::Black);
+	tile.setFillColor(sf::Color::White);
+	shape.setOutlineThickness(1);
 	isSelected = false;
 }
 

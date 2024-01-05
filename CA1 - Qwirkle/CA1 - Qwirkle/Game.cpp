@@ -2,6 +2,9 @@
 #include "Game.h"
 #include <iostream>
 #include <random>
+#include <iostream>
+#include <vector>
+#include <set>
 
 Game::Game() :
 	m_window{ sf::VideoMode{ Global::S_WIDTH, Global::S_HEIGHT + 100, 32U }, "Qwirkle" },
@@ -48,7 +51,7 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
-		if (sf::Event::MouseButtonPressed == newEvent.type && isPlayerTurn)
+		if (sf::Event::MouseButtonPressed == newEvent.type && isPlayerTurn || state == MENU)
 		{
 			ProcessMouseDown(newEvent);
 		}
@@ -61,51 +64,140 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
-	if (sf::Keyboard::Space == t_event.key.code)
-	{
-	
-	}
-	if (sf::Keyboard::B == t_event.key.code)
-	{
-		isBagOpen = !isBagOpen;
-	}
 }
 
 void Game::ProcessMouseDown(sf::Event t_event)
 {
 	if (sf::Mouse::Left == t_event.key.code)
 	{
-		SelectPlayerTile();
-		PlaceTileOnBoard();
-		
-		if (isPlayerTurn)
+		if (state == MENU)
 		{
 			sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
-			if (playerShuffleButton.getGlobalBounds().contains(mousePos)){ ShufflePlayerTiles(); }
-			if (endTurnButton.getGlobalBounds().contains(mousePos)){ NextTurn(); }
+
+			if (easyButton.getGlobalBounds().contains(mousePos))
+			{
+				state = GAME;
+				difficulty = EASY;
+				StartGame();
+			}
+			if (mediumButton.getGlobalBounds().contains(mousePos))
+			{
+				state = GAME;
+				difficulty = MEDIUM;
+				StartGame();
+			}
+			if (hardButton.getGlobalBounds().contains(mousePos))
+			{
+				state = GAME;
+				difficulty = HARD;
+				StartGame();
+			}
+		}
+
+		else if (state == GAME)
+		{
+			SelectPlayerTile();
+			PlaceTileOnBoard();
+
+			if (isPlayerTurn)
+			{
+				sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+
+				if (playerShuffleButton.getGlobalBounds().contains(mousePos))
+				{
+					if (difficulty == EASY)
+					{
+						if (shuffleCounter < 10)
+						{
+							ShufflePlayerTiles();
+						}
+						else
+						{
+							playerShuffleButton.setColor(sf::Color::Red);
+						}
+					}
+					else if (difficulty == MEDIUM)
+					{
+						if (shuffleCounter < 4)
+						{
+							ShufflePlayerTiles();
+						}
+						else
+						{
+							playerShuffleButton.setColor(sf::Color::Red);
+						}
+					}
+					else if (difficulty == HARD)
+					{
+						if (shuffleCounter < 1)
+						{
+							ShufflePlayerTiles();
+						}
+						else
+						{
+							playerShuffleButton.setColor(sf::Color::Red);
+						}
+					}
+				}
+				if (endTurnButton.getGlobalBounds().contains(mousePos))
+				{
+					NextTurn();
+				}
+				if (bagButton.getGlobalBounds().contains(mousePos))
+				{
+					isBagOpen = !isBagOpen;
+				}
+			}
 		}
 	}
-	
+
 }
 
 void Game::update(sf::Time t_deltaTime)
 {
+	
 	if (m_exitGame)	{m_window.close();}
 
-	aiTimer = aiClock.getElapsedTime();
-
-	if (isPlayerTurn)
+	if (state == MENU)
 	{
-		playerScoreText.setString(std::to_string(playerScore));
 		processEvents();
 	}
-	else
+	else if (state == GAME)
 	{
-		if (aiTimer.asSeconds() >= 2)
+
+		aiTimer = aiClock.getElapsedTime();
+		qwirkleTimer = qwirkleClock.getElapsedTime();
+
+		playerScoreText.setString(std::to_string(playerScore));
+		aiScoreText.setString(std::to_string(aiScore));
+
+		if (qwirkleTimer.asSeconds() > 2)
 		{
-			SortAiTurn();
+			SetQwirkleText("");
 		}
-		
+		else
+		{
+			qwirkleText.setScale(qwirkleTimer.asSeconds(), qwirkleTimer.asSeconds());
+		}
+
+
+		if (isPlayerTurn)
+		{
+			processEvents();
+			playerNameText.setFillColor(sf::Color::Green);
+			aiNameText.setFillColor(sf::Color::White);
+		}
+		else
+		{
+			playerNameText.setFillColor(sf::Color::White);
+			aiNameText.setFillColor(sf::Color::Green);
+			if (aiTimer.asSeconds() >= 2)
+			{
+
+				SortAiTurn();
+			}
+
+		}
 	}
 
 }
@@ -113,50 +205,75 @@ void Game::update(sf::Time t_deltaTime)
 void Game::render()
 {
 	m_window.clear(sf::Color(0, 0, 255, 100));
+	m_window.draw(easyButton);
 
-	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+	if (state == MENU)
 	{
-		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+		m_window.draw(qwirkleHeadingText);
+		m_window.draw(easyButton);
+		m_window.draw(easyText);
+		m_window.draw(mediumButton);
+		m_window.draw(mediumText);
+		m_window.draw(hardButton);
+		m_window.draw(hardText);
+	}
+	else if (state == GAME)
+	{
+		m_window.draw(tableSprite);
+
+		for (int row = 0; row < Global::ROWS_COLUMNS; row++)
 		{
-			board[row][col].Render(m_window);
+			for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+			{
+				board[row][col].Render(m_window);
+			}
 		}
-	}
 
-	for (int i = 0; i < 6; i++)
-	{
-		playerTiles[i].Render(m_window);
-	}
-
-	for (int i = 0; i < 6; i++) 
-	{
-		aiTiles[i].Render(m_window);
-	}
-
-	if (isBagOpen)
-	{
-		m_window.draw(bagRect);
-		for (int i = 0; i < 108; i++)
+		for (int i = 0; i < 6; i++)
 		{
-			totalTilePool[i].Render(m_window);
+			playerTiles[i].Render(m_window);
 		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			aiTiles[i].Render(m_window);
+		}
+
+		if (isBagOpen)
+		{
+			m_window.draw(bagRect);
+			for (int i = 0; i < 108; i++)
+			{
+				totalTilePool[i].Render(m_window);
+			}
+		}
+		m_window.draw(playerShuffleButton);
+		m_window.draw(endTurnButton);
+		m_window.draw(bagButton);
+		m_window.draw(playerScoreText);
+		m_window.draw(aiScoreText);
+		m_window.draw(playerNameText);
+		m_window.draw(aiNameText);
+		m_window.draw(qwirkleText);
+		
 	}
 
-	m_window.draw(playerShuffleButton);
-	m_window.draw(endTurnButton);
-	m_window.draw(playerScoreText);
 	m_window.display();
 }
 
 void Game::init()
 {
+	state = MENU;
 	srand(time(nullptr));
-	
+	tileTexture.loadFromFile("ASSETS\\IMAGES\\tile.png");
+	insideBagTexture.loadFromFile("ASSETS\\IMAGES\\leather.png");
+
 	InitBoard();
 	SetupTilePool();
 	SetupPlayerTiles();
 	SetupAITiles();
 	SetupSprites();
-	StartGame();
+	
 }
 
 void Game::InitBoard()
@@ -186,6 +303,8 @@ void Game::SetupTilePool()
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE;
 
 		tilePool1[i].Init(sf::Vector2f(xPosition, yPosition));
+		tilePool1[i].tile.setFillColor(sf::Color::White);
+		tilePool1[i].tile.setTexture(&tileTexture);
 		tilePool1[i].SetPiece(i);
 	}
 
@@ -195,6 +314,8 @@ void Game::SetupTilePool()
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE + Global::CELL_SIZE * 6;
 
 		tilePool2[i].Init(sf::Vector2f(xPosition, yPosition));
+		tilePool2[i].tile.setFillColor(sf::Color::White);
+		tilePool2[i].tile.setTexture(&tileTexture);
 		tilePool2[i].SetPiece(i);
 	}
 
@@ -204,6 +325,8 @@ void Game::SetupTilePool()
 		float yPosition = Global::S_HEIGHT * 0.05 + (i / 6) * Global::CELL_SIZE + Global::CELL_SIZE * 12;
 
 		tilePool3[i].Init(sf::Vector2f(xPosition, yPosition));
+		tilePool3[i].tile.setFillColor(sf::Color::White);
+		tilePool3[i].tile.setTexture(&tileTexture);
 		tilePool3[i].SetPiece(i);
 	}
 
@@ -212,8 +335,9 @@ void Game::SetupTilePool()
 	std::copy(tilePool3, tilePool3 + 36, totalTilePool + 72);
 
 	bagRect.setPosition( Global::S_WIDTH * 0.3, 0);
+	bagRect.setTexture(&insideBagTexture);
 	bagRect.setSize(sf::Vector2f(Global::CELL_SIZE * 8, Global::CELL_SIZE * 20));
-	bagRect.setFillColor(sf::Color(139, 69, 19));
+	//bagRect.setFillColor(sf::Color(139, 69, 19));
 }
 
 void Game::SetupPlayerTiles()
@@ -225,6 +349,8 @@ void Game::SetupPlayerTiles()
 		int randomTileFromTilePool = rand() % 108;
 		if (!totalTilePool[randomTileFromTilePool].GetUsed())
 		{
+			playerTiles[count].tile.setFillColor(sf::Color::White);
+			playerTiles[count].tile.setTexture(&tileTexture);
 			playerTiles[count].SetPiece(totalTilePool[randomTileFromTilePool].GetCurrentPiece());
 			totalTilePool[randomTileFromTilePool].SetUsed();
 			count++;
@@ -241,6 +367,8 @@ void Game::SetupAITiles()
 		int randomTileFromTilePool = rand() % 108;
 		if (!totalTilePool[randomTileFromTilePool].GetUsed())
 		{
+			aiTiles[count].tile.setFillColor(sf::Color::White);
+			aiTiles[count].tile.setTexture(&tileTexture);
 			aiTiles[count].SetPiece(totalTilePool[randomTileFromTilePool].GetCurrentPiece());
 			totalTilePool[randomTileFromTilePool].SetUsed();
 			count++;
@@ -253,8 +381,61 @@ void Game::SetupSprites()
 {
 	shuffleTexture.loadFromFile("ASSETS\\IMAGES\\shuffle.png");
 	endTurnTexture.loadFromFile("ASSETS\\IMAGES\\turn.png");
+	bagTexture.loadFromFile("ASSETS\\IMAGES\\bag.png");
+	tableTexture.loadFromFile("ASSETS\\IMAGES\\table.png");
+	playerNameTexture.loadFromFile("ASSETS\\IMAGES\\playerName.png");
 	font.loadFromFile("ASSETS\\FONTS\\ariblk.ttf");
 
+	// MENU
+
+	qwirkleHeadingText.setFont(font);
+	qwirkleHeadingText.setString("Qwirkle");
+	qwirkleHeadingText.setCharacterSize(50);
+	qwirkleHeadingText.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 5);
+	qwirkleHeadingText.setOrigin(qwirkleHeadingText.getLocalBounds().width / 2, (qwirkleHeadingText.getLocalBounds().height / 2) + 5);
+	qwirkleHeadingText.setFillColor(sf::Color::Black);
+	qwirkleHeadingText.setLetterSpacing(2);
+
+	easyButton.setSize(sf::Vector2f{ 300, 50 });
+	easyButton.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 3);
+	easyButton.setOrigin(easyButton.getLocalBounds().width / 2, easyButton.getLocalBounds().height / 2);
+	easyButton.setFillColor(sf::Color::Green);
+
+	mediumButton.setSize(sf::Vector2f{ 300, 50 });
+	mediumButton.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 2);
+	mediumButton.setOrigin(easyButton.getLocalBounds().width / 2, easyButton.getLocalBounds().height / 2);
+	mediumButton.setFillColor(sf::Color(252, 186, 3));
+
+
+	hardButton.setSize(sf::Vector2f{ 300, 50 });
+	hardButton.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 1.5);
+	hardButton.setOrigin(hardButton.getLocalBounds().width / 2, hardButton.getLocalBounds().height / 2);
+	hardButton.setFillColor(sf::Color::Red);
+
+	easyText.setFont(font);
+	easyText.setString("Easy");
+	easyText.setCharacterSize(30);
+	easyText.setPosition(easyButton.getPosition());
+	easyText.setOrigin(easyText.getLocalBounds().width / 2, (easyText.getLocalBounds().height / 2) + 5);
+	easyText.setFillColor(sf::Color::Black);
+	easyText.setLetterSpacing(2);
+
+	mediumText.setFont(font);
+	mediumText.setString("Medium");
+	mediumText.setCharacterSize(30);
+	mediumText.setPosition(mediumButton.getPosition());
+	mediumText.setOrigin(mediumText.getLocalBounds().width / 2, (mediumText.getLocalBounds().height / 2) + 5);
+	mediumText.setFillColor(sf::Color::Black);
+
+	hardText.setFont(font);
+	hardText.setString("Hard");
+	hardText.setCharacterSize(30);
+	hardText.setPosition(hardButton.getPosition());
+	hardText.setOrigin(hardText.getLocalBounds().width / 2, (hardText.getLocalBounds().height / 2) + 5);
+	hardText.setFillColor(sf::Color::Black);
+
+
+	// GAME
 	playerShuffleButton.setTexture(shuffleTexture);
 	playerShuffleButton.setScale(0.2, 0.2);
 	playerShuffleButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y);	
@@ -263,10 +444,44 @@ void Game::SetupSprites()
 	endTurnButton.setScale(0.2, 0.2);
 	endTurnButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y + 45);
 
+	bagButton.setTexture(bagTexture);
+	bagButton.setScale(0.2, 0.2);
+	bagButton.setOrigin(bagButton.getLocalBounds().width / 2, bagButton.getLocalBounds().height / 2);
+	bagButton.setPosition(Global::S_WIDTH * 0.5, playerTiles[0].tile.getPosition().y + 45);
+
+	tableSprite.setTexture(tableTexture);
+	tableSprite.setScale(static_cast<float>(Global::S_WIDTH) / tableTexture.getSize().x, static_cast<float>(Global::S_HEIGHT) / tableTexture.getSize().y);
+
+
+	playerNameText.setFont(font);
+	playerNameText.setString("Player");
+	playerNameText.setOutlineThickness(1);
+	playerNameText.setOutlineColor(sf::Color::Black);
+	playerNameText.setCharacterSize(26);
+	playerNameText.setPosition(playerTiles[2].tile.getPosition().x, playerTiles[0].tile.getPosition().y + 50);
+
+	aiNameText.setFont(font);
+	aiNameText.setString("AI");
+	aiNameText.setOutlineThickness(1);
+	aiNameText.setOutlineColor(sf::Color::Black);
+	aiNameText.setCharacterSize(26);
+	aiNameText.setPosition(aiTiles[3].tile.getPosition().x, aiTiles[0].tile.getPosition().y + 50);
+
 	playerScoreText.setFont(font);
 	playerScoreText.setString(std::to_string(playerScore));
 	playerScoreText.setCharacterSize(26);
-	playerScoreText.setPosition(Global::S_WIDTH * 0.41, playerTiles[0].tile.getPosition().y + 5);
+	playerScoreText.setPosition(playerTiles[5].tile.getPosition().x + Global::CELL_SIZE * 1.3, playerTiles[0].tile.getPosition().y + 5);
+
+	aiScoreText.setFont(font);
+	aiScoreText.setString(std::to_string(aiScore));
+	aiScoreText.setCharacterSize(26);
+	aiScoreText.setPosition(aiTiles[0].tile.getPosition().x - Global::CELL_SIZE * 0.7, aiTiles[0].tile.getPosition().y + 5);
+
+	qwirkleText.setFont(font);
+	qwirkleText.setString(qwirkleString);
+	qwirkleText.setOrigin(qwirkleText.getLocalBounds().width / 2, qwirkleText.getLocalBounds().height /2);
+	qwirkleText.setCharacterSize(50);
+	qwirkleText.setPosition(Global::S_WIDTH / 2, Global::S_HEIGHT / 2);
 
 }
 
@@ -435,13 +650,16 @@ void Game::PlaceTileOnBoard()
 					playerTiles[selectedTile].DeselectTile();
 					playerTiles[selectedTile].SetUsed();
 					std::cout << "You have placed : " << board[row][col].tileName << "\n";
-					board[row][col].tile.setFillColor(sf::Color::Red);
+					board[row][col].tile.setFillColor(sf::Color::White);
+					board[row][col].tile.setTexture(&tileTexture);
+
 					if (movesInTurnCount == 0)
 					{
 						firstTilePlacedInTurn = board[row][col];
 						sameLineVector = { row, col };
 					}
 
+					tilesPlacedInTurnForScore.push_back(board[row][col]);
 					movesInTurnCount++;
 					isFirstMoveOfGame = false;
 
@@ -536,7 +754,8 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 
 void Game::ShufflePlayerTiles()
 {
-	playerScore /= 2;
+	//playerScore /= 2;
+	shuffleCounter++;
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -563,8 +782,17 @@ void Game::SetTurnColourAndShape(Color color, Shape shape)
 void Game::NextTurn()
 {
 	RefillPlayerAndAITiles();
-	if(isPlayerTurn){ playerScore += AddScoresForTurn(); }
-	
+	if(isPlayerTurn)
+	{
+		playerScore += AddScoresForTurn(tilesPlacedInTurnForScore);
+	}
+	else
+	{
+		aiScore += AddScoresForTurn(tilesPlacedInTurnForScore);
+	}
+	shuffleCounter = 0;
+	playerShuffleButton.setColor(sf::Color::White);
+	tilesPlacedInTurnForScore.clear();
 	movesInTurnCount = 0;
 	isColorTurn = false;
 	isShapeTurn = false;
@@ -710,8 +938,7 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 				int tilesInLineCountY = validTileCell.y - i;
 				
 				// CANT HAVE THE EXACT SAME TILE IN THE SAME LINE
-				if (board[validTileCell.x][tilesInLineCountY].GetCurrentPiece() == playerTile.GetCurrentPiece() ||
-					board[tilesInLineCountY][validTileCell.y].GetCurrentPiece() == playerTile.GetCurrentPiece())
+				if (board[validTileCell.x][tilesInLineCountY].GetCurrentPiece() == playerTile.GetCurrentPiece())
 				{
 					_Output_To_Screen("Warning: Cant place two of the same tiles in the same line");
 
@@ -848,34 +1075,90 @@ bool Game::CheckFurtherInLine(Tile playerTile, Tile validTile)
 	return isValid;
 }
 
-int Game::AddScoresForTurn()
+int Game::AddScoresForTurn(std::vector<Tile> tilesToAddUp)
 {
-	int counter = 1;
+	int counter = 0;
 
-	sf::Vector2i startPos = GetCellPosFromTile(firstTilePlacedInTurn);
-	for (int i = 1; startPos.x - i > 0 && board[startPos.x - i][startPos.y].GetCurrentColor() != EMPTY_C; i++)
+	std::vector<Tile> connectedTiles;
+
+	std::map<Tile, int> tileMap;
+	std::map<sf::Vector2i, int> posMap;
+	//posMap[{1, 1}]++; ///// ERROR
+
+	int qwirkleCount = 0;
+
+	bool qwirkle = false;
+
+	for each (Tile tile in tilesToAddUp)
 	{
-		counter++;
-	}
-	for (int i = 1; startPos.x + i < Global::ROWS_COLUMNS && board[startPos.x + i][startPos.y].GetCurrentColor() != EMPTY_C; i++)
-	{
-		counter++;
+		sf::Vector2i tilePos = GetCellPosFromTile(tile);
+
+		int leftCount = 0;
+		int rightCount = 0;
+		int upCount = 0;
+		int downCount = 0;
+		// RIGHT OF TILE UNTIL IT FINDS EMPTY TILE
+		for (int i = 1; tilePos.x + i < Global::ROWS_COLUMNS && board[tilePos.x + i][tilePos.y].GetCurrentColor() != EMPTY_C; i++)
+		{
+			tileMap[board[tilePos.x + i][tilePos.y]]++;
+			//posMap[GetCellPosFromTile(board[tilePos.x + i][tilePos.y])]++;
+			connectedTiles.push_back(board[tilePos.x + i][tilePos.y]);
+			rightCount++;
+		}
+		// LEFT OF TILE UNTIL IT FINDS EMPTY TILE
+		for (int i = 1; tilePos.x - i > 0 && board[tilePos.x - i][tilePos.y].GetCurrentColor() != EMPTY_C; i++)
+		{
+			tileMap[board[tilePos.x - i][tilePos.y]]++;
+			//posMap[GetCellPosFromTile(board[tilePos.x - i][tilePos.y])]++;
+			connectedTiles.push_back(board[tilePos.x - i][tilePos.y]);
+			leftCount++;
+		}
+		// ABOVE TILE UNTIL IT FINDS EMPTY TILE
+		for (int i = 1; tilePos.y - i > 0 && board[tilePos.x][tilePos.y - i].GetCurrentColor() != EMPTY_C; i++)
+		{
+			tileMap[board[tilePos.x][tilePos.y - i]]++;
+
+			//posMap[GetCellPosFromTile(board[tilePos.x][tilePos.y - i])]++;
+			connectedTiles.push_back(board[tilePos.x][tilePos.y - i]);
+			upCount++;
+		}
+		// BELOW TILE UNTIL IT FINDS EMPTY TILE
+		for (int i = 1; tilePos.y + i < Global::ROWS_COLUMNS && board[tilePos.x][tilePos.y + i].GetCurrentColor() != EMPTY_C; i++)
+		{
+			tileMap[board[tilePos.x][tilePos.y + i]]++;
+			//posMap[GetCellPosFromTile(board[tilePos.x][tilePos.y + i])]++;
+			connectedTiles.push_back(board[tilePos.x][tilePos.y + i]);
+			downCount++;
+		}
+
+		if (rightCount == 5 || leftCount == 5 || upCount == 5 || downCount == 5)
+		{
+			qwirkle = true;
+		}
 	}
 
-	for (int i = 1; startPos.y - i > 0 && board[startPos.x][startPos.y - i].GetCurrentColor() != EMPTY_C; i++)
+	if (qwirkle)
 	{
-		counter++;
-	}
-	for (int i = 1; startPos.y + i < Global::ROWS_COLUMNS && board[startPos.x][startPos.y + i].GetCurrentColor() != EMPTY_C; i++)
-	{
-		counter++;
+		SetQwirkleText("QWIRKLE");
+		qwirkleCount = 6;
 	}
 
-	return counter;
+	return tileMap.size() + qwirkleCount;
+}
+
+void Game::SetQwirkleText(std::string text)
+{
+	qwirkleClock.restart();
+
+	qwirkleString = text;
+	qwirkleText.setString(qwirkleString);
+	qwirkleText.setOrigin(qwirkleText.getLocalBounds().width / 2, qwirkleText.getLocalBounds().height / 2);
+
+	
 }
 
 ///////////////
-///////////////
+///////AI//////
 ///////////////
 
 void Game::SortAiTurn()
@@ -892,7 +1175,40 @@ void Game::SortAiTurn()
 	}
 	else
 	{
-		move = MakeAiMove();
+		if (difficulty == EASY)
+		{
+			if (movesInTurnCount < 1)
+			{
+				move = MakeAiMove();
+			}
+			else
+			{
+				move = { -1, -1 };
+			}	
+		}
+		if (difficulty == MEDIUM)
+		{
+			if (movesInTurnCount < 3)
+			{
+				move = MakeAiMove();
+			}
+			else
+			{
+				move = { -1, -1 };
+			}
+		}
+		if (difficulty == HARD)
+		{
+			if (movesInTurnCount < 6)
+			{
+				move = MakeAiMove();
+			}
+			else
+			{
+				move = { -1, -1 };
+			}
+		}
+		
 
 		if (move.x == -1)
 		{
@@ -903,6 +1219,7 @@ void Game::SortAiTurn()
 		else
 		{
 			AiPlaceTileOnBoard(move);
+
 		}
 	}
 	movesInTurnCount++;
@@ -935,7 +1252,6 @@ sf::Vector2i Game::GetAiMove()
 
 				currentCellPos = movePos;
 
-				
 				isValid = CheckValidTileOrShapeAi(validTile);
 				
 
@@ -944,11 +1260,7 @@ sf::Vector2i Game::GetAiMove()
 					isValid = CheckFurtherInLine(aiTiles[aiSelectedTile], validTile);
 				}
 
-				Tile selectedTileTile = aiTiles[aiSelectedTile];
-				sf::Vector2i tileWeAreCheckingAgainst = GetCellPosFromTile(validTile);
-				sf::Vector2i neighbourTemp = GetCellPosFromTile(tileToPlace);
-
-				
+				Tile selectedTile = aiTiles[aiSelectedTile];
 
 				if (isValid && movesInTurnCount != 0)
 				{
@@ -966,11 +1278,18 @@ sf::Vector2i Game::GetAiMove()
 				{
 					movePos = GetCellPosFromTile(tileToPlace);
 					validMovePositions.push_back(movePos);
-					bool x = CheckFurtherInLine(aiTiles[aiSelectedTile], validTile);
-					bool y = CheckValidTileOrShapeAi(validTile);
+					validAiMoves.push_back(movePos);
+					validAiTiles.push_back(selectedTile);
+					//int x = AddScoresForTurn(validAiTiles);
+					// Ideally, I'd make a std::map of Tile and std::vector<sf::vector2i> to store each tile and its possible positions it can move to
+					// But i cant get the map to work with sf::vector2i
+					// std::map <Tile, std::vector<sf::Vector2i>> tileMap;
+					// tileMap.insert(selectedTile, validAiMoves);
+					// That way I could compare each tile and all its moves and then check which one would get the best score
 
 					if (movesInTurnCount == 0)
 					{
+						firstTilePlacedInTurn = board[movePos.x][movePos.y];
 						sameLineVector = { movePos.x, movePos.y };
 					}
 
@@ -1061,7 +1380,6 @@ bool Game::CheckValidTileOrShapeAi(Tile tile)
 				return isValid;
 			}
 		}
-		
 	}
 
 	return isValid;
@@ -1087,15 +1405,12 @@ sf::Vector2i Game::MakeAiMove()
 	sf::Vector2i movePos;
 
 	movePos = GetAiMove();
-	//aiTiles[aiSelectedTile]
+	// If the vector2i map worked, I could sort out whats the best score here and return the best pos to move
 
 
 
 	return movePos;
 }
-
-
-
 
 void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
 {
@@ -1103,19 +1418,20 @@ void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
 	int row = boardPos.x;
 	int col = boardPos.y;
 
-	//
-	// Do more stuff,
-
 	if (isFirstMoveOfGame)
 	{
 		aiCurrentPiece = aiTiles[0].GetCurrentPiece();
 		board[row][col].SetPiece(aiCurrentPiece);
+		firstTilePlacedInTurn = board[row][col];
 	}
 	else if (!aiTiles[aiSelectedTile].GetUsed())
 	{
 		board[row][col].SetPiece(aiCurrentPiece);
 	}
 	std::cout << "AI has placed a " + board[row][col].tileName + " on tile " + std::to_string(row) + ", " + std::to_string(col) + "\n";
+	tilesPlacedInTurnForScore.push_back(board[row][col]);
+	board[row][col].tile.setFillColor(sf::Color::White);
+	board[row][col].tile.setTexture(&tileTexture);
 	aiTiles[aiSelectedTile].SetUsed();
 
 }
@@ -1135,3 +1451,40 @@ void Game::AiPlaceTileOnBoard(sf::Vector2i boardPos)
 //	return score;
 //}
 
+//int Game::MiniMax(int depth, bool isMaximizingPlayer)
+//{
+//	// Base case: check if the game has reached a terminal state
+//	// and return the evaluation score for that state
+//
+//	// Pseudo code: Check if the game is in a terminal state
+//	// if (depth == 0 or game is over)
+//	//     return EvaluateGameState();
+//
+//	// Check if it's the maximizing player's turn
+//	if (isMaximizingPlayer)
+//	{
+//		int maxEval = std::numeric_limits<int>::min();
+//
+//		// Iterate over all possible moves (child nodes)
+//		for each (possible move for maximizing player)
+//		{
+//			int eval = MiniMax(depth - 1, false);  // Recur for the next level (opponent's turn)
+//			maxEval = std::max(maxEval, eval);
+//		}
+//
+//		return maxEval;
+//	}
+//	else  // Minimizing player's turn
+//	{
+//		int minEval = std::numeric_limits<int>::max();
+//
+//		// Iterate over all possible moves (child nodes)
+//		for each (possible move for minimizing player)
+//		{
+//			int eval = MiniMax(depth - 1, true);  // Recur for the next level (maximizing player's turn)
+//			minEval = std::min(minEval, eval);
+//		}
+//
+//		return minEval;
+//	}
+//}
