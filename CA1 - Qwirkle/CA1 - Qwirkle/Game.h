@@ -18,6 +18,8 @@ enum Difficulty
 	EASY, MEDIUM, HARD
 };
 
+
+
 class Game
 {
 public:
@@ -28,6 +30,7 @@ public:
 
 private:
 
+	bool isSinglePlayer = true;
 	GameState state = MENU;
 	Difficulty difficulty = EASY;
 	int shuffleCounter = 0;
@@ -48,8 +51,10 @@ private:
 	void StartGame();
 	int CheckWhoGoesFirst(Tile tile[6]);
 
-	void SelectPlayerTile();
-	void PlaceTileOnBoard();
+	//void SelectPlayerTile();
+	//void PlaceTileOnBoard();
+	void SelectPlayerTile(Tile tiles[6]);
+	void PlaceTileOnBoard(Tile tiles[6]);
 
 	void NextTurn();
 	void RefillPlayerAndAITiles();
@@ -60,10 +65,12 @@ private:
 	bool isValidPlacement = false;
 
 	std::vector<Tile> GetValidNeighbours(int row, int col);
-	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
+	//bool CheckValidTileColorOrShape(std::vector<Tile> neighbours);
+	bool CheckValidTileColorOrShape(std::vector<Tile> neighbours, Tile tiles[6]);
 	bool CheckFurtherInLine(Tile playerTile, Tile validTile);
 	void SetTurnColourAndShape(Color color, Shape shape);
-	void ShufflePlayerTiles();
+	//void ShufflePlayerTiles();
+	void ShufflePlayerTiles(Tile tiles[6]);
 	int CheckIfPlacingInSameLine(int row, int col);
 	int AddScoresForTurn(std::vector<Tile> tilesToAddUp);
 
@@ -175,6 +182,11 @@ private:
 	sf::RectangleShape hardButton;
 	sf::Text hardText;
 
+
+	sf::CircleShape pvpButton;
+	sf::Text pvpText;
+	sf::CircleShape pveButton;
+	sf::Text pveText;
 };
 
 #endif

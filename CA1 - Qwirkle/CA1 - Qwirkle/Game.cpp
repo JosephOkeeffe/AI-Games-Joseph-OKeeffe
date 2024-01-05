@@ -51,10 +51,21 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
-		if (sf::Event::MouseButtonPressed == newEvent.type && isPlayerTurn || state == MENU)
+		if (isSinglePlayer)
 		{
-			ProcessMouseDown(newEvent);
+			if (sf::Event::MouseButtonPressed == newEvent.type && isPlayerTurn || state == MENU)
+			{
+				ProcessMouseDown(newEvent);
+			}
 		}
+		else
+		{
+			if (sf::Event::MouseButtonPressed == newEvent.type || state == MENU)
+			{
+				ProcessMouseDown(newEvent);
+			}
+		}
+		
 	}
 }
 
@@ -92,61 +103,170 @@ void Game::ProcessMouseDown(sf::Event t_event)
 				difficulty = HARD;
 				StartGame();
 			}
-		}
 
-		else if (state == GAME)
-		{
-			SelectPlayerTile();
-			PlaceTileOnBoard();
-
-			if (isPlayerTurn)
+			if (pveButton.getGlobalBounds().contains(mousePos))
 			{
-				sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+				pvpButton.setFillColor(sf::Color::Red);
+				pveButton.setFillColor(sf::Color::Green);
+				isSinglePlayer = true;
+			}
 
-				if (playerShuffleButton.getGlobalBounds().contains(mousePos))
+			if (pvpButton.getGlobalBounds().contains(mousePos))
+			{
+				pvpButton.setFillColor(sf::Color::Green);
+				pveButton.setFillColor(sf::Color::Red);
+				isSinglePlayer = false;
+			}
+
+		}
+		// GAME
+		else
+		{
+			sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+
+			// If playing against another person
+			if (!isSinglePlayer)
+			{
+				if (isPlayerTurn)
 				{
-					if (difficulty == EASY)
+					SelectPlayerTile(playerTiles);
+					PlaceTileOnBoard(playerTiles);
+
+					if (playerShuffleButton.getGlobalBounds().contains(mousePos))
 					{
-						if (shuffleCounter < 10)
+						if (difficulty == EASY)
 						{
-							ShufflePlayerTiles();
+							if (shuffleCounter < 10)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
 						}
-						else
+						else if (difficulty == MEDIUM)
 						{
-							playerShuffleButton.setColor(sf::Color::Red);
+							if (shuffleCounter < 4)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
 						}
-					}
-					else if (difficulty == MEDIUM)
-					{
-						if (shuffleCounter < 4)
+						else if (difficulty == HARD)
 						{
-							ShufflePlayerTiles();
-						}
-						else
-						{
-							playerShuffleButton.setColor(sf::Color::Red);
-						}
-					}
-					else if (difficulty == HARD)
-					{
-						if (shuffleCounter < 1)
-						{
-							ShufflePlayerTiles();
-						}
-						else
-						{
-							playerShuffleButton.setColor(sf::Color::Red);
+							if (shuffleCounter < 1)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
 						}
 					}
 				}
-				if (endTurnButton.getGlobalBounds().contains(mousePos))
+				else
 				{
-					NextTurn();
+					SelectPlayerTile(aiTiles);
+					PlaceTileOnBoard(aiTiles);
+
+					if (playerShuffleButton.getGlobalBounds().contains(mousePos))
+					{
+						if (difficulty == EASY)
+						{
+							if (shuffleCounter < 10)
+							{
+								ShufflePlayerTiles(aiTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+						else if (difficulty == MEDIUM)
+						{
+							if (shuffleCounter < 4)
+							{
+								ShufflePlayerTiles(aiTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+						else if (difficulty == HARD)
+						{
+							if (shuffleCounter < 1)
+							{
+								ShufflePlayerTiles(aiTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+					}
+
 				}
-				if (bagButton.getGlobalBounds().contains(mousePos))
+
+				
+			}
+			else
+			{
+				if (isPlayerTurn)
 				{
-					isBagOpen = !isBagOpen;
+					SelectPlayerTile(playerTiles);
+					PlaceTileOnBoard(playerTiles);
+
+					if (playerShuffleButton.getGlobalBounds().contains(mousePos))
+					{
+						if (difficulty == EASY)
+						{
+							if (shuffleCounter < 10)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+						else if (difficulty == MEDIUM)
+						{
+							if (shuffleCounter < 4)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+						else if (difficulty == HARD)
+						{
+							if (shuffleCounter < 1)
+							{
+								ShufflePlayerTiles(playerTiles);
+							}
+							else
+							{
+								playerShuffleButton.setColor(sf::Color::Red);
+							}
+						}
+					}
 				}
+			}
+			if (endTurnButton.getGlobalBounds().contains(mousePos))
+			{
+				NextTurn();
+			}
+			if (bagButton.getGlobalBounds().contains(mousePos))
+			{
+				isBagOpen = !isBagOpen;
 			}
 		}
 	}
@@ -191,10 +311,17 @@ void Game::update(sf::Time t_deltaTime)
 		{
 			playerNameText.setFillColor(sf::Color::White);
 			aiNameText.setFillColor(sf::Color::Green);
-			if (aiTimer.asSeconds() >= 2)
+			if (isSinglePlayer)
 			{
+				if (aiTimer.asSeconds() >= 2)
+				{
 
-				SortAiTurn();
+					SortAiTurn();
+				}
+			}
+			else
+			{
+				processEvents();
 			}
 
 		}
@@ -216,6 +343,13 @@ void Game::render()
 		m_window.draw(mediumText);
 		m_window.draw(hardButton);
 		m_window.draw(hardText);
+
+		m_window.draw(pveButton);
+		m_window.draw(pveText);
+
+		m_window.draw(pvpButton);
+		m_window.draw(pvpText);
+
 	}
 	else if (state == GAME)
 	{
@@ -264,6 +398,7 @@ void Game::render()
 void Game::init()
 {
 	state = MENU;
+	isSinglePlayer = true;
 	srand(time(nullptr));
 	tileTexture.loadFromFile("ASSETS\\IMAGES\\tile.png");
 	insideBagTexture.loadFromFile("ASSETS\\IMAGES\\leather.png");
@@ -388,6 +523,7 @@ void Game::SetupSprites()
 
 	// MENU
 
+		// Buttons
 	qwirkleHeadingText.setFont(font);
 	qwirkleHeadingText.setString("Qwirkle");
 	qwirkleHeadingText.setCharacterSize(50);
@@ -412,6 +548,35 @@ void Game::SetupSprites()
 	hardButton.setOrigin(hardButton.getLocalBounds().width / 2, hardButton.getLocalBounds().height / 2);
 	hardButton.setFillColor(sf::Color::Red);
 
+	pveButton.setRadius(80);
+	pveButton.setPosition(Global::S_WIDTH * 0.2, Global::S_HEIGHT * 0.9);
+	pveButton.setOrigin(pveButton.getRadius(), pveButton.getRadius());
+	pveButton.setFillColor(sf::Color::Green);
+	pveButton.setOutlineThickness(1);
+	pveButton.setOutlineColor(sf::Color::Black);
+
+	pveText.setFont(font);
+	pveText.setString("AI");
+	pveText.setCharacterSize(50);
+	pveText.setPosition(pveButton.getPosition());
+	pveText.setOrigin(pveText.getLocalBounds().width / 2, (pveText.getLocalBounds().height / 2) + 5);
+	pveText.setFillColor(sf::Color::Black);
+
+	pvpButton.setRadius(80);
+	pvpButton.setPosition(Global::S_WIDTH * 0.8, Global::S_HEIGHT * 0.9);
+	pvpButton.setOrigin(pvpButton.getRadius(), pvpButton.getRadius());
+	pvpButton.setFillColor(sf::Color::Red);
+	pvpButton.setOutlineThickness(1);
+	pvpButton.setOutlineColor(sf::Color::Black);
+
+	pvpText.setFont(font);
+	pvpText.setString("Multiplayer");
+	pvpText.setCharacterSize(30);
+	pvpText.setPosition(pvpButton.getPosition());
+	pvpText.setOrigin(pvpText.getLocalBounds().width / 2, (pvpText.getLocalBounds().height / 2) + 5);
+	pvpText.setFillColor(sf::Color::Black);
+
+	// Text
 	easyText.setFont(font);
 	easyText.setString("Easy");
 	easyText.setCharacterSize(30);
@@ -438,16 +603,16 @@ void Game::SetupSprites()
 	// GAME
 	playerShuffleButton.setTexture(shuffleTexture);
 	playerShuffleButton.setScale(0.2, 0.2);
-	playerShuffleButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y);	
+	playerShuffleButton.setPosition(playerTiles[5].tile.getPosition().x + Global::CELL_SIZE / 2, playerTiles[0].tile.getPosition().y + 45);
 	
 	endTurnButton.setTexture(endTurnTexture);
 	endTurnButton.setScale(0.2, 0.2);
-	endTurnButton.setPosition(Global::S_WIDTH * 0.025, playerTiles[0].tile.getPosition().y + 45);
+	endTurnButton.setPosition(aiTiles[0].tile.getPosition().x - Global::CELL_SIZE / 2, aiTiles[0].tile.getPosition().y + 45);
 
 	bagButton.setTexture(bagTexture);
 	bagButton.setScale(0.2, 0.2);
 	bagButton.setOrigin(bagButton.getLocalBounds().width / 2, bagButton.getLocalBounds().height / 2);
-	bagButton.setPosition(Global::S_WIDTH * 0.5, playerTiles[0].tile.getPosition().y + 45);
+	bagButton.setPosition(Global::S_WIDTH * 0.5, playerTiles[0].tile.getPosition().y + 25);
 
 	tableSprite.setTexture(tableTexture);
 	tableSprite.setScale(static_cast<float>(Global::S_WIDTH) / tableTexture.getSize().x, static_cast<float>(Global::S_HEIGHT) / tableTexture.getSize().y);
@@ -510,32 +675,70 @@ int Game::GetActiveTilePool()
 
 void Game::StartGame()
 {
-	if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
-	{
-		isPlayerTurn = true;
-		_Output_To_Screen("Player goes first");
-	}
-	else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
-	{
-		isPlayerTurn = false;
-		_Output_To_Screen("AI goes first");
-	}
-	else
-	{
-		int random = rand() % 2;
 
-		_Output_To_Screen("Draw, random time....");
-		if (random == 0)
+	if (isSinglePlayer)
+	{
+		if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
 		{
 			isPlayerTurn = true;
 			_Output_To_Screen("Player goes first");
 		}
-		else
+		else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
 		{
 			isPlayerTurn = false;
 			_Output_To_Screen("AI goes first");
 		}
+		else
+		{
+			int random = rand() % 2;
+
+			_Output_To_Screen("Draw, random time....");
+			if (random == 0)
+			{
+				isPlayerTurn = true;
+				_Output_To_Screen("Player goes first");
+			}
+			else
+			{
+				isPlayerTurn = false;
+				_Output_To_Screen("AI goes first");
+			}
+		}
 	}
+	else
+	{
+		playerNameText.setString("Player 1");
+		aiNameText.setString("Player 2");
+
+		if (CheckWhoGoesFirst(playerTiles) > CheckWhoGoesFirst(aiTiles))
+		{
+			isPlayerTurn = true;
+			_Output_To_Screen("Player1 goes first");
+		}
+		else if (CheckWhoGoesFirst(playerTiles) < CheckWhoGoesFirst(aiTiles))
+		{
+			isPlayerTurn = false;
+			_Output_To_Screen("Player 2 goes first");
+		}
+		else
+		{
+			int random = rand() % 2;
+
+			_Output_To_Screen("Draw, random time....");
+			if (random == 0)
+			{
+				isPlayerTurn = true;
+				_Output_To_Screen("Player 1 goes first");
+			}
+			else
+			{
+				isPlayerTurn = false;
+				_Output_To_Screen("Player 2 goes first");
+			}
+		}
+		
+	}
+	
 }
 
 int Game::CheckWhoGoesFirst(Tile t_tiles[6])
@@ -585,34 +788,119 @@ int Game::CheckWhoGoesFirst(Tile t_tiles[6])
 	}
 }
 
-void Game::SelectPlayerTile()
+//void Game::SelectPlayerTile()
+//{
+//	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+//
+//	for (int i = 0; i < 6; i++)
+//	{
+//		sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
+//
+//		if (bounds.contains(mousePos))
+//		{
+//
+//			if (!playerTiles[i].GetUsed())
+//			{
+//				// Delsecect old tile
+//				playerTiles[selectedTile].DeselectTile();
+//				// Select new tile
+//				playerTiles[i].SelectTile();
+//				// Get a new selected tile
+//				selectedTile = i;
+//				// Get the shape / piece from the tile you selected
+//				currentSelectedPiece = playerTiles[i].GetCurrentPiece();
+//				playerTiles[i].CheckPiece(currentSelectedPiece);
+//			}
+//		}
+//	}
+//}
+
+void Game::SelectPlayerTile(Tile tiles[6])
 {
 	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
 
 	for (int i = 0; i < 6; i++)
 	{
-		sf::FloatRect bounds = playerTiles[i].shape.getGlobalBounds();
+		sf::FloatRect bounds = tiles[i].shape.getGlobalBounds();
 
 		if (bounds.contains(mousePos))
 		{
 
-			if (!playerTiles[i].GetUsed())
+			if (!tiles[i].GetUsed())
 			{
 				// Delsecect old tile
-				playerTiles[selectedTile].DeselectTile();
+				tiles[selectedTile].DeselectTile();
 				// Select new tile
-				playerTiles[i].SelectTile();
+				tiles[i].SelectTile();
 				// Get a new selected tile
 				selectedTile = i;
 				// Get the shape / piece from the tile you selected
-				currentSelectedPiece = playerTiles[i].GetCurrentPiece();
-				playerTiles[i].CheckPiece(currentSelectedPiece);
+				currentSelectedPiece = tiles[i].GetCurrentPiece();
+				tiles[i].CheckPiece(currentSelectedPiece);
 			}
 		}
 	}
 }
 
-void Game::PlaceTileOnBoard()
+//void Game::PlaceTileOnBoard()
+//{
+//	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
+//
+//	for (int row = 0; row < Global::ROWS_COLUMNS; row++)
+//	{
+//		for (int col = 0; col < Global::ROWS_COLUMNS; col++)
+//		{
+//			sf::FloatRect bounds = board[row][col].shape.getGlobalBounds();
+//
+//			if (bounds.contains(mousePos))
+//			{
+//				currentCellPos = { row, col };
+//				std::cout << "Row: " << row << ", " << col << "\n";
+//
+//				isValidPlacement = CheckValidTileColorOrShape(GetValidNeighbours(row, col));
+//				if (isValidPlacement && movesInTurnCount != 0)
+//				{
+//					if (row == CheckIfPlacingInSameLine(row, col) || col == CheckIfPlacingInSameLine(row, col))
+//					{
+//						isValidPlacement = true;
+//					}
+//					else
+//					{
+//						isValidPlacement = false;
+//					}
+//				}
+//
+//				if (isValidPlacement || isFirstMoveOfGame)
+//				{
+//
+//					previousPlacedTile = { row, col };
+//					//linesPlacedInTurn.push_back(playerTiles[selectedTile]);
+//					board[row][col].SetPiece(currentSelectedPiece);
+//					SetTurnColourAndShape(playerTiles[selectedTile].GetCurrentColor(), playerTiles[selectedTile].GetCurrentShape());
+//					playerTiles[selectedTile].DeselectTile();
+//					playerTiles[selectedTile].SetUsed();
+//					std::cout << "You have placed : " << board[row][col].tileName << "\n";
+//					board[row][col].tile.setFillColor(sf::Color::White);
+//					board[row][col].tile.setTexture(&tileTexture);
+//
+//					if (movesInTurnCount == 0)
+//					{
+//						firstTilePlacedInTurn = board[row][col];
+//						sameLineVector = { row, col };
+//					}
+//
+//					tilesPlacedInTurnForScore.push_back(board[row][col]);
+//					movesInTurnCount++;
+//					isFirstMoveOfGame = false;
+//
+//				}
+//			}
+//		}
+//
+//	}
+//}
+
+void Game::PlaceTileOnBoard(Tile tiles[6])
 {
 	sf::Vector2f mousePos = static_cast<sf::Vector2f>(Global::GetMousePos(m_window));
 
@@ -627,7 +915,7 @@ void Game::PlaceTileOnBoard()
 				currentCellPos = { row, col };
 				std::cout << "Row: " << row << ", " << col << "\n";
 
-				isValidPlacement = CheckValidTileColorOrShape(GetValidNeighbours(row, col));
+				isValidPlacement = CheckValidTileColorOrShape(GetValidNeighbours(row, col), tiles);
 				if (isValidPlacement && movesInTurnCount != 0)
 				{
 					if (row == CheckIfPlacingInSameLine(row, col) || col == CheckIfPlacingInSameLine(row, col))
@@ -644,11 +932,10 @@ void Game::PlaceTileOnBoard()
 				{
 
 					previousPlacedTile = { row, col };
-					//linesPlacedInTurn.push_back(playerTiles[selectedTile]);
 					board[row][col].SetPiece(currentSelectedPiece);
-					SetTurnColourAndShape(playerTiles[selectedTile].GetCurrentColor(), playerTiles[selectedTile].GetCurrentShape());
-					playerTiles[selectedTile].DeselectTile();
-					playerTiles[selectedTile].SetUsed();
+					SetTurnColourAndShape(tiles[selectedTile].GetCurrentColor(), tiles[selectedTile].GetCurrentShape());
+					tiles[selectedTile].DeselectTile();
+					tiles[selectedTile].SetUsed();
 					std::cout << "You have placed : " << board[row][col].tileName << "\n";
 					board[row][col].tile.setFillColor(sf::Color::White);
 					board[row][col].tile.setTexture(&tileTexture);
@@ -752,7 +1039,7 @@ int Game::CheckIfPlacingInSameLine(int row, int col)
 	return currentLineNumber;
 }
 
-void Game::ShufflePlayerTiles()
+void Game::ShufflePlayerTiles(Tile tiles[6])
 {
 	//playerScore /= 2;
 	shuffleCounter++;
@@ -761,8 +1048,8 @@ void Game::ShufflePlayerTiles()
 	{
 		
 		totalTilePool[playerTileIdsForBag[i]].ResetTile();
-		playerTiles[i].SetUsed();
-		playerTiles[i].DeselectTile();
+		tiles[i].SetUsed();
+		tiles[i].DeselectTile();
 	}
 	RefillPlayerAndAITiles();
 }
@@ -890,10 +1177,30 @@ std::vector<Tile> Game::GetValidNeighbours(int row, int col)
 	return validNeighbourTiles;
 }
 
-bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours)
+//bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours)
+//{
+//	bool isValid = false;
+//	Tile selectedPlayerTile = playerTiles[selectedTile];
+//
+//	for each (auto tile in validNeighbours)
+//	{
+//		if (selectedPlayerTile.GetCurrentColor() == tile.GetCurrentColor() || selectedPlayerTile.GetCurrentShape() == tile.GetCurrentShape())
+//		{
+//			isValid = CheckFurtherInLine(selectedPlayerTile, tile);
+//		}
+//		else
+//		{
+//			isValid = false;
+//			return isValid;
+//		}
+//	}
+//	return isValid;
+//}
+
+bool Game::CheckValidTileColorOrShape(std::vector<Tile> validNeighbours, Tile tiles[6])
 {
 	bool isValid = false;
-	Tile selectedPlayerTile = playerTiles[selectedTile];
+	Tile selectedPlayerTile = tiles[selectedTile];
 
 	for each (auto tile in validNeighbours)
 	{
